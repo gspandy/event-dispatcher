@@ -1,0 +1,6 @@
+com\ctrip\infosec\riskverify\entity\RiskVerifyRequest.class
+com\ctrip\infosec\riskverify\rest\RiskRestImpl.class
+com\ctrip\infosec\riskverify\biz\RiskVerifyBiz.class
+com\ctrip\infosec\riskverify\rabbitmq\RabbitMqSender.class
+com\ctrip\infosec\riskverify\entity\RiskVerifyInsideResponse.class
+com\ctrip\infosec\riskverify\entity\RiskVerifyResponse.class
