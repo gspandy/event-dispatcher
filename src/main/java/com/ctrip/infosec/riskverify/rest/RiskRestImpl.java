@@ -11,7 +11,6 @@ import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import sun.net.www.http.HttpClient;
 
 import java.io.IOException;
 import java.net.URI;
