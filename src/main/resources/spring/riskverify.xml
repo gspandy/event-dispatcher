@@ -13,9 +13,9 @@
     <rabbit:template id="template" connection-factory="connectionFactory"
                      exchange="infosec.ruleengine.exchange" routing-key="ruleengine"/>
 
-    <bean class="org.springframework.web.client.RestTemplate">
-
+    <bean class="org.springframework.web.client.RestTemplate" > </bean>
+    <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
+        <property name="url" value="http://10.3.6.104:8084/rest/loadconfig"/>
+        <property name="part" value="EventDispatcher"/>
     </bean>
-
-
 </beans>
