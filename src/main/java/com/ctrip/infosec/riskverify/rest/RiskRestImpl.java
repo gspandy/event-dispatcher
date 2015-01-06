@@ -5,6 +5,7 @@ import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.riskverify.entity.RiskVerifyEventData;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,20 +27,23 @@ public class RiskRestImpl {
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
     public
     @ResponseBody
-    RiskVerifyEventData riskverify(@RequestBody RiskVerifyEventData req) {
-       if (Configs.isValidEventPoint(req.getEventPoint()) == true) {
-            req.setEventId(Configs.timeBasedUUID());
-            req.setEvent(Configs.normalizeEvent(req.getEventPoint(),req.getEvent()));
+    ResponseEntity<RiskVerifyEventData> riskverify(@RequestBody RiskVerifyEventData req) {
+        req.setReceiveTime(System.nanoTime());
+        if (!Configs.isValidEventPoint(req.getEventPoint())) {
+            //TODO set 403 code and retrun response
+            return new ResponseEntity<RiskVerifyEventData>(HttpStatus.FORBIDDEN);
         }
+        req.setEventId(Configs.timeBasedUUID());
+        req.setEvent(Configs.normalizeEvent(req.getEventPoint(), req.getEvent()));
         //send rest
-        ResponseEntity<Map> resp0 = biz.restSender(req);
+        ResponseEntity<RiskVerifyEventData> resp0 = biz.restSender(req);
         String msg = Utils.JSON.toJSONString(resp0.getBody());
         biz.sendToMQ(msg);
 
-        return req;
+        return new ResponseEntity<RiskVerifyEventData>(req, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "check", method = RequestMethod.GET)
+    @RequestMapping(value = "/check", method = RequestMethod.GET)
     public
     @ResponseBody
     String checkHealth() {

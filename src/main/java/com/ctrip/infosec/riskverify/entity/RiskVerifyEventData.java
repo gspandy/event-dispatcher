@@ -20,6 +20,16 @@ public class RiskVerifyEventData {
     private long requestTime;  //用Ticks表示
     private long receiveTime;
 
+    private boolean action;
+
+    public boolean isAction() {
+        return action;
+    }
+
+    public void setAction(boolean action) {
+        this.action = action;
+    }
+
     public String getEventPoint() {
         return eventPoint;
     }
