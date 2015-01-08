@@ -9,6 +9,7 @@ import java.util.Map;
  * Created by zhangsx on 2014/12/22.
  */
 //custor
+    @Deprecated
 public class RiskVerifyEventData {
     private String eventPoint;   //接入点
     private String eventId;
@@ -19,7 +20,6 @@ public class RiskVerifyEventData {
     private Map ext;
     private long requestTime;  //用Ticks表示
     private long receiveTime;
-
     private boolean action;
 
     public boolean isAction() {

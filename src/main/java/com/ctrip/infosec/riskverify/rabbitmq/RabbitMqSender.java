@@ -18,7 +18,6 @@ public class RabbitMqSender {
     public void Producer(String msg) {
         logger.info("Producer    ...");
         amqp.convertAndSend(msg);
-        logger.info("sendmsg:"+msg);
         logger.info("Done.");
     }
 }

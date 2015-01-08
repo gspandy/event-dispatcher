@@ -2,8 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     <context:annotation-config/>
     <!-- RabbitMQ Connection -->
     <rabbit:connection-factory id="connectionFactory"
@@ -13,16 +13,15 @@
     <rabbit:template id="template" connection-factory="connectionFactory"
                      exchange="infosec.ruleengine.exchange" routing-key="ruleengine"/>
 
-    <bean id="requestFactory" class="org.springframework.http.client.SimpleClientHttpRequestFactory">
-        <property name="readTimeout" value="60000"/>
-        <property name="connectTimeout" value="10000"/>
-    </bean>
-    <bean class="org.springframework.web.client.RestTemplate" >
-        <constructor-arg ref="requestFactory"/>
-    </bean>
 
     <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
         <property name="url" value="http://10.3.6.104:8084/rest/loadconfig"/>
         <property name="part" value="EventDispatcher"/>
     </bean>
+
+     <!--Monitor Self Health -->
+    <!--<bean id="sarsMonitorAdvice" class="com.ctrip.infosec.riskverify.aop.RiskVerifyAdvice" />-->
+    <!--<aop:config proxy-target-class="true">-->
+        <!--<aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>-->
+    <!--</aop:config>-->
 </beans>

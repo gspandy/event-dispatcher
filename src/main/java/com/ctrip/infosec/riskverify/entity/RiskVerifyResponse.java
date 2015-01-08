@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * Created by zhangsx on 2014/12/26.
  */
+@Deprecated
 public class RiskVerifyResponse {
     private String eventPoint;   //接入点
     private String eventId;
