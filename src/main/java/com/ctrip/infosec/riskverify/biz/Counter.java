@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by zhangsx on 2015/1/7.
  */
+@Deprecated
 public class Counter {
 
     private static Counter instance = null;

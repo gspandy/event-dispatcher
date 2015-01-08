@@ -5,6 +5,10 @@
        xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     <context:annotation-config/>
+
+    <!-- GlobalConfig -->
+    <context:property-placeholder ignore-unresolvable="false"
+                                  location="classpath*:./GlobalConfig.properties" />
     <!-- RabbitMQ Connection -->
     <rabbit:connection-factory id="connectionFactory"
                                host="10.3.6.42" virtual-host="medusa" username="bsc-medusa" password="bsc-medusa"/>
@@ -19,9 +23,14 @@
         <property name="part" value="EventDispatcher"/>
     </bean>
 
-     <!--Monitor Self Health -->
-    <!--<bean id="sarsMonitorAdvice" class="com.ctrip.infosec.riskverify.aop.RiskVerifyAdvice" />-->
-    <!--<aop:config proxy-target-class="true">-->
-        <!--<aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>-->
-    <!--</aop:config>-->
+    <!-- Monitor Self Health -->
+    <bean id="sarsMonitorAdvice" class="com.ctrip.infosec.sars.monitor.aop.SarsMonitorAdvice" />
+    <aop:config proxy-target-class="true">
+        <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.riskverify(..))"/>
+        <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>
+    </aop:config>
+    <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
+        <property name="appId" value="100000269"/>
+        <property name="postUrl" value="${sars.monitor.rest.url}"/>
+    </bean>
 </beans>

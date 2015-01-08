@@ -42,18 +42,18 @@ public class MainClass {
 //
 //
 
-        for (int i = 0; i < 10; i++) {
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-//                    for(int j=0;j<1000000;j++){
-                    for(;;){
-                        Counter.getInstance().addmqonce();
-                    }
-                }
-            });
-            t.start();
-        }
+//        for (int i = 0; i < 10; i++) {
+//            Thread t = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+////                    for(int j=0;j<1000000;j++){
+//                    for(;;){
+//                        Counter.getInstance().addmqonce();
+//                    }
+//                }
+//            });
+//            t.start();
+//        }
 
 //        for (int i = 0; i < 10; i++) {
 //            Thread t = new Thread(new Runnable() {
@@ -78,22 +78,17 @@ public class MainClass {
 //            });
 //            t.start();
 //        }
-
+        Clazz.func();
     }
 
     static class Clazz {
-        public Clazz() {
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    System.out.println("1");
-                }
-            }, 0L,1000L);
-
-        }
-        public void func() {
-            System.out.println("12");
+        static void func() throws RuntimeException{
+            try{
+                throw new Exception("test exception");
+            }catch (Throwable ex){
+                System.out.print(ex);
+                throw new RuntimeException();
+            }
         }
     }
 }
