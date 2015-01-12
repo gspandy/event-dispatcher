@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RiskRestImpl {
     @Autowired
     private RiskVerifyBiz biz;
-
+    private final String fact = "REST";
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
     public
     @ResponseBody
     ResponseEntity<RiskFact> riskverify(@RequestBody RiskFact req) {
         try {
-            return new ResponseEntity<RiskFact>(biz.exe(req), HttpStatus.OK);
+            return new ResponseEntity<RiskFact>(biz.exe(req,fact), HttpStatus.OK);
         } catch (ValidFailedException e) {
             return new ResponseEntity<RiskFact>(req, HttpStatus.BAD_REQUEST);
         }

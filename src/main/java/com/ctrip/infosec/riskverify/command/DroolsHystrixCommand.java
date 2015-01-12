@@ -29,7 +29,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskFact> {
     @Override
     protected RiskFact run() throws Exception {
         String fact = Utils.JSON.toJSONString(req);
-        byte[] response = Request.Post("http://10.3.6.218:8090/rule/query")
+        byte[] response = Request.Post("http://10.3.6.104:8090/rule/query")
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Accept-Encoding", "utf-8")
                 .bodyString(fact, ContentType.APPLICATION_JSON)

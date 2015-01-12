@@ -1,5 +1,6 @@
 package com.ctrip.infosec.riskverify.aop;
 
+import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.sars.monitor.SarsMonitorContext;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -14,7 +15,6 @@ import java.util.concurrent.Executor;
 /**
  * Created by zhangsx on 2015/1/8.
  */
-@Deprecated
 public class RiskVerifyAdvice implements MethodInterceptor {
     private final Log logger = LogFactory.getLog(RiskVerifyAdvice.class);
 
@@ -22,7 +22,8 @@ public class RiskVerifyAdvice implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         String serviceName = invocation.getThis().getClass().getSimpleName();
         String operationName = invocation.getMethod().getName();
-
+        String eventPoint = ((RiskFact)invocation.getArguments()[0]).getEventPoint();
+        String fact = ((String)invocation.getArguments()[1]);
         // invoke
         boolean fault = false;
         StopWatch clock = new StopWatch();
@@ -38,12 +39,12 @@ public class RiskVerifyAdvice implements MethodInterceptor {
         } finally {
             clock.stop();
             long handlingTime = clock.getTime();
-            CounterRepository.increaseCounter(serviceName + "." + operationName, handlingTime, fault);
+            CounterRepository.increaseCounter(eventPoint + "." + fact, handlingTime, fault);
             // operationPrefix
-            String operationPrefix = SarsMonitorContext.getOperationPrefix();
-            if (StringUtils.isNotBlank(operationPrefix)) {
-                CounterRepository.increaseCounter("[" + operationPrefix + "] " + serviceName + "." + operationName, handlingTime, fault);
-            }
+//            String operationPrefix = SarsMonitorContext.getOperationPrefix();
+//            if (StringUtils.isNotBlank(operationPrefix)) {
+//                CounterRepository.increaseCounter("[" + operationPrefix + "] " + serviceName + "." + operationName, handlingTime, fault);
+//            }
             // logger
             if (!fault) {
                 if (handlingTime < SarsMonitorContext.WARN_VALUE) {

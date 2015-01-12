@@ -20,24 +20,20 @@ public class RiskVerifyBiz {
     private static final Logger logger = LoggerFactory.getLogger(RiskVerifyBiz.class);
     @Autowired
     private RabbitMqSender sender;
-    public void sendToMQ(String msg) {
-        sender.Producer(msg);
-    }
-    public RiskFact restSender(RiskFact req) {
-        DroolsHystrixCommand command = new DroolsHystrixCommand(req);
-        return command.execute();
-    }
 
-    public RiskFact exe(RiskFact req) throws ValidFailedException {
-        req.setReceiveTime(System.nanoTime());
+    public RiskFact exe(RiskFact req,final String fact) throws ValidFailedException {
+        req.setReceiveTime(System.currentTimeMillis());
         if (!Configs.isValidEventPoint(req.getEventPoint())) {
             //TODO set 403 code and retrun response
             throw new ValidFailedException();
         }
         req.setEventId(Configs.timeBasedUUID());
-        req.setEvent(Configs.normalizeEvent(req.getEventPoint(), req.getEvent()));
-        RiskFact resp = restSender(req);
-        sendToMQ(Utils.JSON.toJSONString(resp));
+        req.setEventBody(Configs.normalizeEvent(req.getEventPoint(), req.getEventBody()));
+
+        DroolsHystrixCommand command = new DroolsHystrixCommand(req);
+        RiskFact resp =  command.execute();
+
+        sender.Producer(Utils.JSON.toJSONString(resp));
         return resp;
     }
 }
