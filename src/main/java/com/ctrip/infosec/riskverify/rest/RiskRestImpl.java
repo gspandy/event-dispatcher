@@ -1,14 +1,13 @@
 package com.ctrip.infosec.riskverify.rest;
 
 import com.ctrip.infosec.common.model.RiskFact;
-import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.riskverify.exception.ValidFailedException;
-import com.ctrip.infosec.sars.monitor.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,17 +21,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RiskRestImpl {
     @Autowired
     private RiskVerifyBiz biz;
-    private final String fact = "REST";
+    private final Logger logger = LoggerFactory.getLogger(RiskRestImpl.class);
+    private final String FACT = "REST";
+
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
     public
     @ResponseBody
     ResponseEntity<RiskFact> riskverify(@RequestBody RiskFact req) {
+        RiskFact respBody = req;
         try {
-            return new ResponseEntity<RiskFact>(biz.exe(req,fact), HttpStatus.OK);
+            respBody = biz.exe(req, FACT);
         } catch (ValidFailedException e) {
-            return new ResponseEntity<RiskFact>(req, HttpStatus.BAD_REQUEST);
+            logger.warn("http 403 exception");
+        } catch (Exception ex){
+            logger.warn(ex.toString());
+        }catch (Throwable t){
+            logger.error(t.toString());
         }
+        return new ResponseEntity<RiskFact>(respBody, HttpStatus.OK);
     }
+
 
     @RequestMapping(value = "/check", method = RequestMethod.GET)
     public

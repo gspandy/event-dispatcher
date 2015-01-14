@@ -7,19 +7,5 @@
     <context:annotation-config/>
 
 
-    <!-- RabbitMQ Connection -->
-    <rabbit:connection-factory id="connectionFactory"
-                               host="10.3.6.42" virtual-host="medusa" username="bsc-medusa" password="bsc-medusa"/>
-
-    <!-- RabbitMQ Template -->
-    <rabbit:template id="template" connection-factory="connectionFactory"
-                     exchange="infosec.ruleengine.exchange" routing-key="ruleengine"/>
-
-
-    <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
-        <property name="url" value="http://10.3.6.104:8084/rest/loadconfig"/>
-        <property name="part" value="EventDispatcher"/>
-    </bean>
-
 
 </beans>

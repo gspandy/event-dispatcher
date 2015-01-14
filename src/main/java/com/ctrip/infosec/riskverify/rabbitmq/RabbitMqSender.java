@@ -16,8 +16,8 @@ public class RabbitMqSender {
     private AmqpTemplate amqp;
 
     public void Producer(String msg) {
-        logger.info("Producer    ...");
+        logger.info("Producer");
         amqp.convertAndSend(msg);
-        logger.info("Done.");
+        logger.info("Done");
     }
 }
