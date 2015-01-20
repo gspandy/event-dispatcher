@@ -46,7 +46,7 @@
 
     <!-- RabbitMQ Listener -->
     <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">
-        <rabbit:listener ref="rabbitMqMessageHandler" method="handleMessage" queue-names="infosec.datadispatcher.queue"/>
+        <rabbit:listener ref="rabbitMqMessageHandler" method="handleMessage" queue-names="infosec.eventdispatcher.queue"/>
     </rabbit:listener-container>
 
     <!-- MessageHandler -->
