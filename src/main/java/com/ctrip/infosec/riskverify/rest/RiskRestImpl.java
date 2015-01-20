@@ -1,6 +1,7 @@
 package com.ctrip.infosec.riskverify.rest;
 
 import com.ctrip.infosec.common.model.RiskFact;
+import static com.ctrip.infosec.configs.utils.Utils.JSON;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.riskverify.exception.ValidFailedException;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public class RiskRestImpl {
     public
     @ResponseBody
     ResponseEntity<RiskFact> riskverify(@RequestBody RiskFact req) {
+        logger.info("REST: " + JSON.toJSONString(req));
         RiskFact respBody = req;
         try {
             respBody = biz.exe(req, FACT);
