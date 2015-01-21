@@ -60,6 +60,7 @@ public class RabbitMqSender {
 
     public void send(String msg) throws Exception {
         send(msg.getBytes());
+        logger.info("mq send msg:"+msg);
     }
 
     public static void close() {

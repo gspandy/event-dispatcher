@@ -7,8 +7,9 @@ import com.rabbitmq.client.QueueingConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.util.Timer;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,8 +25,13 @@ public class RabbitMqHandler {
     private static QueueingConsumer consumer = null;
     private static final Logger logger = LoggerFactory.getLogger(RabbitMqHandler.class);
 
-    private static boolean stop = true;
+    private static volatile boolean stop = true;
+
     public RabbitMqHandler() {
+        createConn();
+    }
+
+    private static void createConn(){
         if (factory == null || connection == null || channel == null || consumer == null) {
             try {
                 lock.lock();
@@ -40,18 +46,23 @@ public class RabbitMqHandler {
                     channel = connection.createChannel();
                     consumer = new QueueingConsumer(channel);
                     channel.basicConsume("infosec.eventdispatcher.queue", true, consumer);
+
+                    stop=false;
                 }
             } catch (Throwable t) {
-
+                stop=true;
+                logger.warn("RabbitMqHandler构造函数异常:" + t.getMessage());
             } finally {
                 lock.unlock();
             }
 
 
         }
-
     }
 
+    /**
+     * 连接异常每60s自连接
+     */
     public void init() {
 
         Executors.newFixedThreadPool(1).execute(new Runnable() {
@@ -59,18 +70,22 @@ public class RabbitMqHandler {
             public void run() {
                 while (true) {
                     try {
-                        QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-                        logger.info("handle eventqueue msg:"+new String(delivery.getBody()));
-                    } catch (InterruptedException e) {
-                        logger.warn("currentthread been interrupted");
+                        if (!stop) {
+                            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                            logger.info("handle eventqueue msg:" + new String(delivery.getBody()));
+                        }
                     } catch (Throwable t) {
-
-//                        Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(new Runnable() {
-//                            @Override
-//                            public void run() {
-//
-//                            }
-//                        }, 60L, 60L, TimeUnit.SECONDS);
+                        stop = true;
+                        final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+                        service.scheduleWithFixedDelay(new Runnable() {
+                            @Override
+                            public void run() {
+                                createConn();
+                                if (!stop) {
+                                    service.shutdownNow();
+                                }
+                            }
+                        }, 0L, 60L, TimeUnit.SECONDS);
                     }
                 }
             }

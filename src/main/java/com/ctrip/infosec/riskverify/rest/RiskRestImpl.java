@@ -31,7 +31,6 @@ public class RiskRestImpl {
     public
     @ResponseBody
     ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
-        logger.info("REST: " + JSON.toJSONString(req));
         RiskResult respBody = null;
         try {
             respBody = biz.exe(req, FACT);
