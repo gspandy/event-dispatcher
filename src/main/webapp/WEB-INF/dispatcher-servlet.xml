@@ -3,8 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 
     <!--GlobalConfig-->
@@ -17,26 +16,26 @@
     <mvc:annotation-driven/>
 
     <!--监控-->
-    <!--<bean id="sarsMonitorAdvice" class="com.ctrip.infosec.riskverify.aop.RiskVerifyAdvice"/>-->
-    <!--<aop:config proxy-target-class="true">-->
-        <!--<aop:advisor advice-ref="sarsMonitorAdvice"-->
-                     <!--pointcut="execution(* com.ctrip.infosec.riskverify.biz.RiskVerifyBiz.exe(..))"/>-->
-        <!--<aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>-->
-    <!--</aop:config>-->
-    <!--<bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">-->
-        <!--<property name="appId" value="100000269"/>-->
-        <!--&lt;!&ndash;<property name="postUrl" value="http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor"/>&ndash;&gt;-->
-        <!--<property name="postUrl" value="${sars.monitor.rest.url}"/>-->
-    <!--</bean>-->
+    <bean id="sarsMonitorAdvice" class="com.ctrip.infosec.riskverify.aop.RiskVerifyAdvice"/>
+    <aop:config proxy-target-class="true">
+        <aop:advisor advice-ref="sarsMonitorAdvice"
+                     pointcut="execution(* com.ctrip.infosec.riskverify.biz.RiskVerifyBiz.exe(..))"/>
+        <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>
+    </aop:config>
+    <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
+        <property name="appId" value="100000269"/>
+        <!--<property name="postUrl" value="http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor"/>-->
+        <property name="postUrl" value="${sars.monitor.rest.url}"/>
+    </bean>
 
 
     <!-- RabbitMQ Connection -->
-    <rabbit:connection-factory id="connectionFactory"
-                               host="10.3.6.42" virtual-host="medusa" username="bsc-medusa" password="bsc-medusa"/>
+    <!--<rabbit:connection-factory id="connectionFactory"-->
+                                   <!--host="10.3.6.42" virtual-host="medusa" username="bsc-medusa" password="bsc-medusa"/>-->
 
     <!-- RabbitMQ Template -->
-    <rabbit:template id="template" connection-factory="connectionFactory"
-                     exchange="infosec.ruleengine.exchange" routing-key="ruleengine"/>
+    <!--<rabbit:template id="template" connection-factory="connectionFactory"-->
+                     <!--exchange="infosec.ruleengine.exchange" routing-key="ruleengine"/>-->
 
 
     <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
@@ -44,12 +43,12 @@
         <property name="part" value="EventDispatcher"/>
     </bean>
 
+    <bean class="com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqHandler" init-method="init"/>
     <!-- RabbitMQ Listener -->
-    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">
-        <rabbit:listener ref="rabbitMqMessageHandler" method="handleMessage" queue-names="infosec.eventdispatcher.queue"/>
-    </rabbit:listener-container>
+    <!--<rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">-->
+        <!--<rabbit:listener ref="rabbitMqMessageHandler" method="handleMessage" queue-names="infosec.eventdispatcher.queue"  />-->
+    <!--</rabbit:listener-container>-->
 
     <!-- MessageHandler -->
-    <bean id="rabbitMqMessageHandler" class="com.ctrip.infosec.riskverify.rabbitmq.RabbitMqMessageHandler"/>
-
+    <!--<bean id="rabbitMqMessageHandler" class="com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqMessageHandler"/>-->
 </beans>

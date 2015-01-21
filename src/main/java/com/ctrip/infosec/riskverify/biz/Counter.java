@@ -1,11 +1,9 @@
 package com.ctrip.infosec.riskverify.biz;
 
-import com.ctrip.infosec.riskverify.rabbitmq.RabbitMqSender;
 import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 

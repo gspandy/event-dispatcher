@@ -1,7 +1,7 @@
-package com.ctrip.infosec.riskverify.command;
+package com.ctrip.infosec.riskverify.biz.command;
 
 import com.ctrip.infosec.common.model.RiskFact;
-import com.ctrip.infosec.riskverify.rabbitmq.RabbitMqSender;
+import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -11,11 +11,15 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by zhangsx on 2015/1/6.
  */
-public class DroolsHystrixCommand extends HystrixCommand<RiskFact> {
+public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DroolsHystrixCommand.class);
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private RiskFact req;
 
     public DroolsHystrixCommand(RiskFact req) {
@@ -27,7 +31,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskFact> {
     }
 
     @Override
-    protected RiskFact run() throws Exception {
+    protected RiskResult run() throws Exception {
         String fact = Utils.JSON.toJSONString(req);
         byte[] response = Request.Post("http://10.3.6.104:8090/rule/query")
                 .addHeader("Content-Type", "application/json")
@@ -38,13 +42,27 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskFact> {
                 .execute().returnContent().asBytes();
 
         RiskFact riskFact = Utils.JSON.parseObject(new String(response,"utf-8"),RiskFact.class);
+        RiskResult result = transform(riskFact);
+
         logger.info("success");
-        return riskFact;
+        return result;
     }
 
     @Override
-    protected RiskFact getFallback() {
+         protected RiskResult getFallback() {
         logger.info("call drools rest fail and req EventId=" + req.getEventId());
-        return req;
+        return transform(req);
+    }
+
+    private RiskResult transform(RiskFact req){
+        RiskResult result = new RiskResult();
+        result.setRequestReceive(req.getRequestReceive());
+        result.setEventPoint(req.getEventPoint());
+        result.setEventId(req.getEventId());
+        result.setRequestTime(req.getRequestTime());
+        result.setResponseReceive(sdf.format(new Date()));
+        result.setResponseTime(sdf.format(new Date()));
+        result.setResults(req.getFinalResult());
+        return result;
     }
 }

@@ -1,4 +1,4 @@
-package com.ctrip.infosec.riskverify.exception;
+package com.ctrip.infosec.riskverify.biz.exception;
 
 /**
  * Created by zhangsx on 2015/1/7.

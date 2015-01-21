@@ -1,18 +1,14 @@
 import com.ctrip.infosec.common.model.RiskFact;
+import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
-import com.ctrip.infosec.riskverify.exception.ValidFailedException;
+import com.ctrip.infosec.riskverify.biz.exception.ValidFailedException;
 import com.ctrip.infosec.sars.monitor.util.Utils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -87,9 +83,10 @@ public class RiskVerifyBizTest {
 
 
     @Test
+    @Ignore
     public void bizTest(){
         try {
-            RiskFact resp = biz.exe(fact, "TEST");
+            RiskResult resp = biz.exe(fact, "TEST");
             System.out.println(Utils.JSON.toJSONString(resp));
 
             System.out.println(((String)(((Map)resp.getResults().get("tie_you_1")).get("desc"))));
@@ -99,4 +96,6 @@ public class RiskVerifyBizTest {
             e.printStackTrace();
         }
     }
+
+
 }

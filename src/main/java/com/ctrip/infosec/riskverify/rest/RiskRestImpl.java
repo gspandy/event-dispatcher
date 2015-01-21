@@ -2,8 +2,10 @@ package com.ctrip.infosec.riskverify.rest;
 
 import com.ctrip.infosec.common.model.RiskFact;
 import static com.ctrip.infosec.configs.utils.Utils.JSON;
+
+import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
-import com.ctrip.infosec.riskverify.exception.ValidFailedException;
+import com.ctrip.infosec.riskverify.biz.exception.ValidFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +30,9 @@ public class RiskRestImpl {
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
     public
     @ResponseBody
-    ResponseEntity<RiskFact> riskverify(@RequestBody RiskFact req) {
+    ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
         logger.info("REST: " + JSON.toJSONString(req));
-        RiskFact respBody = req;
+        RiskResult respBody = null;
         try {
             respBody = biz.exe(req, FACT);
         } catch (ValidFailedException e) {
@@ -40,7 +42,7 @@ public class RiskRestImpl {
         }catch (Throwable t){
             logger.error(t.toString());
         }
-        return new ResponseEntity<RiskFact>(respBody, HttpStatus.OK);
+        return new ResponseEntity<RiskResult>(respBody, HttpStatus.OK);
     }
 
 
