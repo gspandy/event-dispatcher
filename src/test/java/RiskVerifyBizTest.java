@@ -2,6 +2,8 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.riskverify.biz.exception.ValidFailedException;
+import com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqHandler;
+import com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -97,5 +99,25 @@ public class RiskVerifyBizTest {
         }
     }
 
+    @Test
+    /**
+     * rabbitmq 发送测试
+     */
+    public void mqSendTest(){
+        RabbitMqSender sender = new RabbitMqSender();
+        boolean b = false;
+        try {
+            sender.send("test0");
+        } catch (Exception e) {
+            b=true;
+        }
+        Assert.assertFalse(b);
+    }
+    @Test
+    /**
+     * rabbitmq 接收测试
+     */
+    public void mqHandleTest(){
 
+    }
 }

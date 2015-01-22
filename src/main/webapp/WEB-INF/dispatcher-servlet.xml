@@ -23,7 +23,7 @@
         <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>
     </aop:config>
     <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
-        <property name="appId" value="100000269"/>
+        <property name="appId" value="100000557"/>
         <property name="postUrl" value="${sars.monitor.rest.url}"/>
     </bean>
 
