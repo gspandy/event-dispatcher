@@ -23,14 +23,13 @@ public class RabbitMqHystrixCommand extends HystrixCommand {
 
     @Override
     protected Object run() throws Exception {
-        RabbitMqSender sender = new RabbitMqSender();
+        RabbitMqSender sender = RabbitMqSender.getInstance();
         sender.send(msg);
         return null;
     }
     @Override
     protected Object getFallback() {
         logger.info("call error");
-        RabbitMqSender.close();
         return null;
     }
 }
