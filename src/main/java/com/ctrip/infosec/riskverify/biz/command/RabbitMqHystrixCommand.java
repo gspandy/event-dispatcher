@@ -1,6 +1,8 @@
 package com.ctrip.infosec.riskverify.biz.command;
 
+import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender;
+import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -12,19 +14,21 @@ import org.slf4j.LoggerFactory;
  */
 public class RabbitMqHystrixCommand extends HystrixCommand {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(RabbitMqHystrixCommand.class);
-    private String msg;
-    public RabbitMqHystrixCommand(String msg) {
+    private RiskFact req;
+    public RabbitMqHystrixCommand(RiskFact req) {
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("group"))
                 .andCommandKey(HystrixCommandKey.Factory.asKey("rabbitmq"))
                 .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
                         .withExecutionIsolationThreadTimeoutInMilliseconds(2000)));
-        this.msg = msg;
+        this.req = req;
     }
 
     @Override
     protected Object run() throws Exception {
         RabbitMqSender sender = RabbitMqSender.getInstance();
-        sender.send(msg);
+        String s = Utils.JSON.toJSONString(req);
+//        System.out.println(s);
+        sender.send(s);
         return null;
     }
     @Override

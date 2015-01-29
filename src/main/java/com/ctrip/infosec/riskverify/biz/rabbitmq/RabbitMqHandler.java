@@ -1,10 +1,15 @@
 package com.ctrip.infosec.riskverify.biz.rabbitmq;
 
+import com.ctrip.infosec.common.model.RiskFact;
+import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
+import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +29,8 @@ public class RabbitMqHandler {
 
     private static volatile boolean stop = false;
 
+    @Autowired
+    private RiskVerifyBiz biz;
     public RabbitMqHandler () throws Throwable{
         createConn();
     }
@@ -43,7 +50,6 @@ public class RabbitMqHandler {
             channel = connection.createChannel();
             consumer = new QueueingConsumer(channel);
             channel.basicConsume("infosec.eventdispatcher.queue", true, consumer);
-
             stop = false;
 
         } catch (IOException ex){
@@ -71,7 +77,12 @@ public class RabbitMqHandler {
                     try {
                         if (!stop) {
                             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-                            logger.info("handle eventqueue msg:" + new String(delivery.getBody()));
+//                            logger.info("handle eventqueue msg:" + new String(delivery.getBody()));
+                            //TODO
+                            RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
+                            if(fact!=null){
+                                biz.exe(fact,"MQ");
+                            }
                         }else{
                             Thread.sleep(1000);
                         }

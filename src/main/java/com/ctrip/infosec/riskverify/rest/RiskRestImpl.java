@@ -1,6 +1,7 @@
 package com.ctrip.infosec.riskverify.rest;
 
 import com.ctrip.infosec.common.model.RiskFact;
+
 import static com.ctrip.infosec.configs.utils.Utils.JSON;
 
 import com.ctrip.infosec.common.model.RiskResult;
@@ -34,11 +35,9 @@ public class RiskRestImpl {
         RiskResult respBody = null;
         try {
             respBody = biz.exe(req, FACT);
-        } catch (ValidFailedException e) {
-            logger.warn("http 403 exception");
-        } catch (Exception ex){
+        } catch (Exception ex) {
             logger.warn(ex.toString());
-        }catch (Throwable t){
+        } catch (Throwable t) {
             logger.error(t.toString());
         }
         return new ResponseEntity<RiskResult>(respBody, HttpStatus.OK);

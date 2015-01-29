@@ -2,6 +2,7 @@ package com.ctrip.infosec.riskverify.biz.command;
 
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
+import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -41,20 +42,20 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
                 .socketTimeout(10000)
                 .execute().returnContent().asBytes();
 
-        RiskFact riskFact = Utils.JSON.parseObject(new String(response,"utf-8"),RiskFact.class);
-        RiskResult result = transform(riskFact);
+        RiskFact riskFact = Utils.JSON.parseObject(new String(response, "utf-8"), RiskFact.class);
+        RiskResult result = transform(riskFact, true);
 
         logger.info("success");
         return result;
     }
 
     @Override
-         protected RiskResult getFallback() {
+    protected RiskResult getFallback() {
         logger.info("call drools rest fail and req EventId=" + req.getEventId());
-        return transform(req);
+        return transform(req, false);
     }
 
-    private RiskResult transform(RiskFact req){
+    private RiskResult transform(RiskFact req, boolean isSuccess) {
         RiskResult result = new RiskResult();
         result.setRequestReceive(req.getRequestReceive());
         result.setEventPoint(req.getEventPoint());
@@ -63,6 +64,9 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
         result.setResponseReceive(sdf.format(new Date()));
         result.setResponseTime(sdf.format(new Date()));
         result.setResults(req.getFinalResult());
+        if(!isSuccess){
+            result.setResults(Configs.DEFAULT_RESULTS);
+        }
         return result;
     }
 }

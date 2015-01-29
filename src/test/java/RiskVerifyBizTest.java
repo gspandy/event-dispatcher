@@ -12,6 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zhangsx on 2015/1/7.
@@ -21,7 +23,7 @@ import java.util.Map;
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/dispatcher-servlet.xml"})
 public class RiskVerifyBizTest {
     @Autowired
-    private RiskVerifyBiz biz ;
+    private RiskVerifyBiz biz;
     private RiskFact fact = null;
     private RiskFact expectedObj = null;
     private final String msg = "{\n" +
@@ -78,46 +80,51 @@ public class RiskVerifyBizTest {
             "}";
 
     @Before
-    public void setFact(){
-        fact = Utils.JSON.parseObject(msg,RiskFact.class);
+    public void setFact() {
+        fact = Utils.JSON.parseObject(msg, RiskFact.class);
 
     }
 
 
     @Test
     @Ignore
-    public void bizTest(){
-        try {
-            RiskResult resp = biz.exe(fact, "TEST");
-            System.out.println(Utils.JSON.toJSONString(resp));
+    public void bizTest() {
 
-            System.out.println(((String)(((Map)resp.getResults().get("tie_you_1")).get("desc"))));
-            Assert.assertArrayEquals("信用卡支付铁友订单，金额>=100".getBytes(),((String)(((Map)resp.getResults().get("tie_you_1")).get("desc"))).getBytes());
+        RiskResult resp = biz.exe(fact, "TEST");
+        System.out.println(Utils.JSON.toJSONString(resp));
 
-        } catch (ValidFailedException e) {
-            e.printStackTrace();
-        }
+        System.out.println(((String) (((Map) resp.getResults().get("tie_you_1")).get("desc"))));
+        Assert.assertArrayEquals("信用卡支付铁友订单，金额>=100".getBytes(), ((String) (((Map) resp.getResults().get("tie_you_1")).get("desc"))).getBytes());
+
+
     }
 
     @Test
+    @Ignore
     /**
      * rabbitmq 发送测试
      */
-    public void mqSendTest(){
-        RabbitMqSender sender = new RabbitMqSender();
+    public void mqSendTest() {
+        RabbitMqSender sender = null;
+        try {
+            sender = RabbitMqSender.getInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         boolean b = false;
         try {
             sender.send("test0");
         } catch (Exception e) {
-            b=true;
+            b = true;
         }
         Assert.assertFalse(b);
     }
+
     @Test
     /**
      * rabbitmq 接收测试
      */
-    public void mqHandleTest(){
+    public void mqHandleTest() {
 
     }
 }

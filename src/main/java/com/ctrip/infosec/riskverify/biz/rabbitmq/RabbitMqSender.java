@@ -3,12 +3,15 @@ package com.ctrip.infosec.riskverify.biz.rabbitmq;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.concurrent.*;
+import java.nio.charset.Charset;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -22,11 +25,12 @@ public class RabbitMqSender {
     private static Channel channel = null;
     private static Lock lockInstance = new ReentrantLock();
     private static RabbitMqSender sender = null;
+    private static LinkedBlockingQueue<byte[]>[] arr = new LinkedBlockingQueue[5];
+
     private static volatile boolean stop = false;
 
-    private static LinkedBlockingQueue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
-
     public static RabbitMqSender getInstance() throws Exception {
+
         if (sender == null) {
             try {
                 lockInstance.lock();
@@ -46,76 +50,57 @@ public class RabbitMqSender {
 
     private RabbitMqSender() throws Exception {
         createConn();
-        Executors.newFixedThreadPool(1).execute(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (!stop) {
-                        byte[] temp = null;
+
+        arr[0] = new LinkedBlockingQueue<byte[]>();
+        arr[1] = new LinkedBlockingQueue<byte[]>();
+        arr[2] = new LinkedBlockingQueue<byte[]>();
+        arr[3] = new LinkedBlockingQueue<byte[]>();
+        arr[4] = new LinkedBlockingQueue<byte[]>();
+
+        ExecutorService service = Executors.newFixedThreadPool(5);
+        for (int i = 0; i < 5; i++) {
+            final int finalI = i;
+
+            service.execute(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
                         try {
-                            temp = queue.take();
-                        } catch (InterruptedException e) {
-                            logger.warn(e.toString());
-                        }
-                        if (temp != null) {
-                            try {
-                                channel.basicPublish("infosec.ruleengine.exchange", "ruleengine", null, temp);
-                            } catch (IOException e) {
-                                //TODO reconnect
-                                createConn();
+                            byte[] temp = arr[finalI].take();
+                            if (temp != null) {
+                                try {
+                                    channel.basicPublish("infosec.ruleengine.exchange", "ruleengine", null, temp);
+                                } catch (IOException e) {
+                                    stop = true;
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    } else {
-                        try {
-                            Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
-
                 }
-            }
-        });
+            });
+        }
     }
 
-    private static void createConn() {
+    private static void createConn() throws IOException {
         factory = new ConnectionFactory();
         factory.setHost("10.3.6.42");
         factory.setVirtualHost("medusa");
         factory.setUsername("bsc-medusa");
         factory.setPassword("bsc-medusa");
 
-        try {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
-            stop = false;
-        } catch (IOException ex) {
-            if(!stop){
-                stop = true;
-                final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
-                service.scheduleWithFixedDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        createConn();
-                        if (!stop) {
-                            service.shutdownNow();
-                        }
-                    }
-                }, 0L, 60L, TimeUnit.SECONDS);
-            }
-
-        }
+        connection = factory.newConnection();
+        channel = connection.createChannel();
     }
 
     public void send(byte[] msg) throws Exception {
-        if (!stop && msg != null) {
-            queue.put(msg);
-        }
+        arr[RandomUtils.nextInt() % 5].put(msg);
     }
 
     public void send(String msg) throws Exception {
-        send(msg.getBytes());
-        logger.info("mq send msg:" + msg);
+        send(msg.getBytes(Charset.forName("utf-8")));
     }
 
 }

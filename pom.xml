@@ -202,8 +202,16 @@
         <dependency>
             <groupId>com.ctrip.framework.clogging</groupId>
             <artifactId>clogging-agent</artifactId>
-            <version>3.2.5</version>
+            <version>3.2.0</version>
         </dependency>
+
+        <!--CMessage-->
+        <dependency>
+            <groupId>com.ctrip.cmessaging</groupId>
+            <artifactId>cmessaging.client</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

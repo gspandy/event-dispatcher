@@ -20,7 +20,7 @@
     <aop:config proxy-target-class="true">
         <aop:advisor advice-ref="sarsMonitorAdvice"
                      pointcut="execution(* com.ctrip.infosec.riskverify.biz.RiskVerifyBiz.exe(..))"/>
-        <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>
+        <!--<aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>-->
     </aop:config>
     <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
         <property name="appId" value="100000557"/>
@@ -33,4 +33,7 @@
     </bean>
 
     <bean class="com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqHandler" init-method="init"/>
+
+    <!--cmessage-->
+    <bean class="com.ctrip.infosec.riskverify.orderIndex.CMessageReceiver" init-method="init"/>
 </beans>
