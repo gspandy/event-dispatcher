@@ -2,6 +2,7 @@ package com.ctrip.infosec.riskverify.orderIndex;
 
 import com.ctrip.cmessaging.client.IAsyncConsumer;
 import com.ctrip.cmessaging.client.IMessage;
+import com.ctrip.cmessaging.client.content.AckMode;
 import com.ctrip.cmessaging.client.event.IConsumerCallbackEventHandler;
 import com.ctrip.cmessaging.client.exception.IllegalExchangeName;
 import com.ctrip.cmessaging.client.exception.IllegalTopic;
@@ -12,6 +13,7 @@ import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,10 @@ public abstract class IOrderIndex {
     private String fact;
     private int batchSize;
     private int consumeMaxThreadSize;
+    private IAsyncConsumer consumer;
 
-    public IOrderIndex(String identifier, String subject, String exchange, String cp,String fact) {
-        this(identifier, subject, exchange, cp,fact, 20, 5);
+    public IOrderIndex(String identifier, String subject, String exchange, String cp, String fact) {
+        this(identifier, subject, exchange, cp, fact, 20, 5);
     }
 
     /**
@@ -39,7 +42,7 @@ public abstract class IOrderIndex {
      * UAT:http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/
      * PRD:http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/
      */
-    public IOrderIndex(String identifier, String subject, String exchange, String cp,String fact,
+    public IOrderIndex(String identifier, String subject, String exchange, String cp, String fact,
                        int batchSize, int consumeMaxThreadSize) {
         this.identifier = identifier;
         this.subject = subject;
@@ -65,10 +68,28 @@ public abstract class IOrderIndex {
         return consumer;
     }
 
-    public abstract void handleMessage(IMessage message);
+    public void handleMessage(IMessage message) {
+        try {
+            System.out.println("###");
+            Map map = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), Map.class);
+            List<Map> subjects = (List<Map>) map.get("Subjects");
+            for (Map item : subjects) {
+                RiskFact req = new RiskFact();
+                req.setEventPoint(cp);
+                req.setEventBody(item);
+                biz.exe(req, fact);
+            }
+        } catch (Throwable throwable) {
 
+        } finally {
+            message.setAcks(AckMode.Ack);
+            message.dispose();
+        }
+    }
+
+    @PostConstruct
     public void init() {
-        IAsyncConsumer consumer = setConsumer();
+        consumer = setConsumer();
         if (consumer != null) {
             consumer.addConsumerCallbackEventHandler(new IConsumerCallbackEventHandler() {
                 @Override
@@ -81,16 +102,23 @@ public abstract class IOrderIndex {
         }
     }
 
+    public void stop() {
+        if (consumer != null) {
+            consumer.stop();
+        }
+    }
+
+    @Deprecated
     public void assembleAndSend(byte[] body) {
+//        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
+//        Config.setAppId("100000557");
         Map map = Utils.JSON.parseObject(new String(body, Charset.forName("utf-8")), Map.class);
         List<Map> subjects = (List<Map>) map.get("Subjects");
         for (Map item : subjects) {
             RiskFact req = new RiskFact();
             req.setEventPoint(cp);
             req.setEventBody(item);
-
-            System.out.println(Utils.JSON.toJSONString(req));
-//            biz.exe(req, fact);
+            biz.exe(req, fact);
         }
     }
 }

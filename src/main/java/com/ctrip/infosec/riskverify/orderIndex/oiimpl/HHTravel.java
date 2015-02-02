@@ -1,7 +1,14 @@
 package com.ctrip.infosec.riskverify.orderIndex.oiimpl;
 
+import com.ctrip.infosec.riskverify.orderIndex.IOrderIndex;
+import org.springframework.stereotype.Component;
+
 /**
  * Created by zhangsx on 2015/1/29.
  */
-public class HHTravel {
+@Component
+public class HHTravel extends IOrderIndex{
+    public HHTravel() {
+        super("100000557_0449e2e7", "Order.Update", "OI.HHTravel.Order.Update", "CP0021004", "CMessage");
+    }
 }

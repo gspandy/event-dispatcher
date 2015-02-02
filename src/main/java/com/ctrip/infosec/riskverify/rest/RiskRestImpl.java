@@ -5,6 +5,7 @@ import com.ctrip.infosec.common.model.RiskFact;
 import static com.ctrip.infosec.configs.utils.Utils.JSON;
 
 import com.ctrip.infosec.common.model.RiskResult;
+import com.ctrip.infosec.riskverify.biz.CMessageSwitch;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.riskverify.biz.exception.ValidFailedException;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RiskRestImpl {
     @Autowired
     private RiskVerifyBiz biz;
+    @Autowired
+    private CMessageSwitch aSwitch;
     private final Logger logger = LoggerFactory.getLogger(RiskRestImpl.class);
     private final String FACT = "REST";
 
@@ -49,6 +52,18 @@ public class RiskRestImpl {
     @ResponseBody
     String checkHealth() {
         return "hello!";
+    }
+
+    @RequestMapping(value = "/stop", method = RequestMethod.GET)
+    public String stop(){
+        aSwitch.stop();
+        return "success";
+    }
+
+    @RequestMapping(value = "/start", method = RequestMethod.GET)
+    public String start(){
+        aSwitch.start();
+        return "success";
     }
 
 }

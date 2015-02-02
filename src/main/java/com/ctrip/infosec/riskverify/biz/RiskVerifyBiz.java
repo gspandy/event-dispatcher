@@ -48,6 +48,7 @@ public class RiskVerifyBiz {
         if(Configs.hasSyncRules(req)){
             DroolsHystrixCommand drools_command = new DroolsHystrixCommand(req);
             resp =  drools_command.execute();
+            logger.info(Utils.JSON.toJSONString(resp));
             if(req.getExt()==null){
                 req.setExt(new HashMap<String, Object>());
             }

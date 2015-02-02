@@ -36,6 +36,14 @@
 
     <!--cmessage-->
     <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.CMessageReceiver" init-method="init"/>-->
-    <bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Hotel" init-method="init"/>
-    <bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Trains" init-method="init"/>
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Hotel" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Trains" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Hotel" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Trains" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Hotel" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Trains" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Hotel" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Trains" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Hotel" init-method="init"/>-->
+    <!--<bean class="com.ctrip.infosec.riskverify.orderIndex.oiimpl.Trains" init-method="init"/>    -->
 </beans>
