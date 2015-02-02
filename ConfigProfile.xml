@@ -19,7 +19,11 @@
 		<add name="prd" target="prd" iis="ALL" net="ALL" dataCenter="ALL" />
 	</environments>
 	<!--environments节点有多少个子节点，则下文中必须出现同样数量的节点，且名称必须与上文中的name属性一致 -->
+	<!--FWS:http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
+	<!--* UAT:http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
+	<!--* PRD:http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
 	<dev>
+		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
@@ -27,6 +31,7 @@
 		<ClogPort>63100</ClogPort>
 	</dev>
 	<test>
+		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
@@ -34,6 +39,7 @@
 		<ClogPort>63100</ClogPort>
 	</test>
 	<lpt>
+		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
@@ -41,6 +47,7 @@
 		<ClogPort>63100</ClogPort>
 	</lpt>
 	<fat>
+		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
@@ -48,24 +55,28 @@
 		<ClogPort>63100</ClogPort>
 	</fat>
 	<fws>
+		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</fws>
 	<uat>
+		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.uat.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</uat>
 	<uat_nt>
+		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.uat.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</uat_nt>
 	<prd>
+		<CMessageUrl>http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.sh.ctriptravel.com</ClogIp>

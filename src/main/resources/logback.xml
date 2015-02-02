@@ -1,42 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-<!--    <substitutionProperty name="default_pattern" value="%date [%thread] %-5level %logger{80} - %msg%n" />-->
-<substitutionProperty name="default_pattern" value="%date %-5level %logger{40} - %msg%n" />
-
-<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-<encoding>UTF-8</encoding>
-<layout class="ch.qos.logback.classic.PatternLayout">
-<pattern>${default_pattern}</pattern>
-</layout>
-</appender>
-
-<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-<encoding>UTF-8</encoding>
-<file>/opt/logs/riskverify.log</file>
-<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-<fileNamePattern>/opt/logs/riskverify.log.%d{yyyy-MM-dd}</fileNamePattern>
-<maxHistory>15</maxHistory>
-</rollingPolicy>
-<layout class="ch.qos.logback.classic.PatternLayout">
-<pattern>${default_pattern}</pattern>
-</layout>
-</appender>
-<!---->
-<!--<logger name="com.ctrip.infosec.riskverify">-->
-<!--<level value="INFO" />-->
-<!--</logger>-->
-
-<!--Output to central logging-->
-<!--<appender name="CentralLogging" class="com.ctrip.framework.clogging.agent.appender.CLoggingAppender">-->
-<appender name="CentralLogging" class="com.ctrip.freeway.appender.CentralLoggingAppender">
-<appId>100000557</appId><!--这是你应用的appId-->
-<!--<serverIp>192.168.82.58</serverIp><!-这是centralLogging的地址，这是uat环境的，如果是生产环境，请换成相应的地址:collector.logging.sh.ctriptravel.com-->-->
+<!--Output to central logging -->
+<appender name="CentralLogging"
+class="com.ctrip.freeway.appender.CentralLoggingAppender">
+<appId>100000557</appId>
 <serverIp>collector.logging.fws.qa.nt.ctripcorp.com</serverIp>
-<serverPort>63100</serverPort><!--central logging端口号-->
+<serverPort>63100</serverPort>
 </appender>
-<root level="warn">
-<appender-ref ref="STDOUT" />
-<appender-ref ref="FILE" />
-<appender-ref ref="CentralLogging"/>
+
+<root level="INFO">
+<appender-ref ref="CentralLogging" />
 </root>
+
 </configuration>

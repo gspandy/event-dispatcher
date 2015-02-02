@@ -11,10 +11,13 @@ import com.ctrip.cmessaging.client.impl.ConsumerFactory;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.sars.monitor.util.Utils;
+import com.ctrip.infosec.sars.util.GlobalConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +54,10 @@ public abstract class IOrderIndex {
         this.fact = fact;
         this.batchSize = batchSize;
         this.consumeMaxThreadSize = consumeMaxThreadSize;
+//        System.out.println(GlobalConfig.getString("CMessageUrl"));
+        Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
+//        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
 
-        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
         Config.setAppId("100000557");
     }
 
@@ -70,13 +75,21 @@ public abstract class IOrderIndex {
 
     public void handleMessage(IMessage message) {
         try {
-            System.out.println("###");
+
             Map map = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), Map.class);
             List<Map> subjects = (List<Map>) map.get("Subjects");
             for (Map item : subjects) {
                 RiskFact req = new RiskFact();
                 req.setEventPoint(cp);
-                req.setEventBody(item);
+                Map _map = new HashMap();
+                for (Iterator it = item.keySet().iterator();it.hasNext();){
+                    String key = it.next().toString();
+                    String first = key.substring(0, 1).toLowerCase();
+                    String rest = key.substring(1, key.length());
+                    _map.put(first+rest,item.get(key));
+                }
+                req.setEventBody(_map);
+//                System.out.println(Utils.JSON.toJSONString(req));
                 biz.exe(req, fact);
             }
         } catch (Throwable throwable) {

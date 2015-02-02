@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 /**
  * Created by zhangsx on 2015/1/7.
  */
-
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/dispatcher-servlet.xml"})
 public class RiskVerifyBizTest {

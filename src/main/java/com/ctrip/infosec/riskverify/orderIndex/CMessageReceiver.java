@@ -7,11 +7,14 @@ import com.ctrip.cmessaging.client.exception.IllegalExchangeName;
 import com.ctrip.cmessaging.client.exception.IllegalTopic;
 import com.ctrip.cmessaging.client.impl.Config;
 import com.ctrip.cmessaging.client.impl.ConsumerFactory;
+import org.drools.definition.rule.Global;
+import org.drools.runtime.Globals;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by zhangsx on 2015/1/26.
  */
+@Deprecated
 public class CMessageReceiver {
 
     @Autowired

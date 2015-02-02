@@ -14,6 +14,7 @@ import java.util.Map;
 /**
  * Created by zhangsx on 2015/1/26.
  */
+@Deprecated
 @Component
 public class CMessageHandler {
     @Autowired

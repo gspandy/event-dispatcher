@@ -5,12 +5,6 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-
-    <!--GlobalConfig-->
-    <context:property-placeholder ignore-unresolvable="true"
-                                  location="classpath*:./GlobalConfig.properties"/>
-
-
     <context:component-scan base-package="com.ctrip.infosec.riskverify"/>
     <context:annotation-config/>
     <mvc:annotation-driven/>

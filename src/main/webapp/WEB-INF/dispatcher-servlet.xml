@@ -1,15 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-
-
-    <!--GlobalConfig-->
-    <context:property-placeholder ignore-unresolvable="true"
-                                  location="classpath*:./GlobalConfig.properties"/>
-
 
     <context:component-scan base-package="com.ctrip.infosec.riskverify"/>
     <context:annotation-config/>
@@ -24,7 +18,7 @@
     </aop:config>
     <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
         <property name="appId" value="100000557"/>
-        <property name="postUrl" value="${sars.monitor.rest.url}"/>
+        <property name="postUrl" value="http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor"/>
     </bean>
 
     <bean class="com.ctrip.infosec.configs.Caches" init-method="init">

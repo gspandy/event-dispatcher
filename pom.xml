@@ -212,6 +212,13 @@
             <version>1.0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.ctrip.infosec.sars</groupId>
+            <artifactId>sars-util</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -249,22 +256,22 @@
         <!--</plugin>-->
         <!--</plugins>-->
 
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>GlobalConfig.properties</include>
-                </includes>
-            </resource>
-        </resources>
-        <filters>
-            <filter>./${filter.file}</filter>
-        </filters>
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+                <!--<filtering>false</filtering>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+                <!--<filtering>true</filtering>-->
+                <!--<includes>-->
+                    <!--<include>GlobalConfig.properties</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+        <!--</resources>-->
+        <!--<filters>-->
+            <!--<filter>./${filter.file}</filter>-->
+        <!--</filters>-->
 
     </build>
 

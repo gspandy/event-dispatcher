@@ -58,7 +58,7 @@ public class RiskVerifyBiz {
         RabbitMqHystrixCommand mq_command = new RabbitMqHystrixCommand(req);
         mq_command.execute();
 
-//        logger.info(Utils.JSON.toJSONString(req));
+        logger.info(Utils.JSON.toJSONString(req));
         return resp;
     }
 
