@@ -24,11 +24,11 @@
     </aop:config>
     <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
         <property name="appId" value="100000557"/>
-        <property name="postUrl" value="${sars.monitor.rest.url}"/>
+        <property name="postUrl" value="{$MONITOR}"/>
     </bean>
 
     <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
-        <property name="url" value="http://10.3.6.104:8084/rest/loadconfig"/>
+        <property name="url" value="{$DATACONFI_URL}"/>
         <property name="part" value="EventDispatcher"/>
     </bean>
 
