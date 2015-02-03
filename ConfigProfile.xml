@@ -34,7 +34,7 @@
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
-		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
@@ -52,7 +52,7 @@
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
-		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
@@ -70,7 +70,7 @@
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
-		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
@@ -88,7 +88,7 @@
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
-		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
@@ -106,7 +106,7 @@
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
-		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
@@ -123,7 +123,7 @@
 
 		<RuleEngineUrl>http://10.2.25.54:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
-		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.25.53:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.uat.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
@@ -140,7 +140,7 @@
 
 		<RuleEngineUrl>http://10.2.25.54:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
-		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.25.53:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.uat.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
