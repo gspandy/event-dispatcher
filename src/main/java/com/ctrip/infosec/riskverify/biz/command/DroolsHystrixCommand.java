@@ -66,7 +66,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
         result.setResponseReceive(sdf.format(new Date()));
         result.setResponseTime(sdf.format(new Date()));
         result.setResults(req.getFinalResult());
-        if(!isSuccess){
+        if(!isSuccess||req.getFinalResult()==null){
             result.setResults(Configs.DEFAULT_RESULTS);
         }
         return result;
