@@ -42,7 +42,9 @@ public class MainClass {
     }
 
     static class Clazz1 extends Clazz0{
-
+        public <T> T parseObject(String jsonString, Class<T> clazz) {
+            return null;
+        }
         public Clazz1(String msg) {
             super(msg);
             sync();

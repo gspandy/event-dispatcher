@@ -4,6 +4,7 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.sars.monitor.util.Utils;
+import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -21,6 +22,7 @@ import java.util.Date;
 public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DroolsHystrixCommand.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static String url = GlobalConfig.getString("RuleEngineUrl");
     private RiskFact req;
 
     public DroolsHystrixCommand(RiskFact req) {
@@ -34,7 +36,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     @Override
     protected RiskResult run() throws Exception {
         String fact = Utils.JSON.toJSONString(req);
-        byte[] response = Request.Post("http://10.3.6.104:8090/rule/query")
+        byte[] response = Request.Post(url)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Accept-Encoding", "utf-8")
                 .bodyString(fact, ContentType.APPLICATION_JSON)

@@ -1,5 +1,6 @@
 package com.ctrip.infosec.riskverify.biz.rabbitmq;
 
+import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -86,10 +87,15 @@ public class RabbitMqSender {
 
     private static void createConn() throws IOException {
         factory = new ConnectionFactory();
-        factory.setHost("10.3.6.42");
-        factory.setVirtualHost("medusa");
-        factory.setUsername("bsc-medusa");
-        factory.setPassword("bsc-medusa");
+        factory.setHost(GlobalConfig.getString("InnerHost"));
+        factory.setVirtualHost(GlobalConfig.getString("InnerVirtualHost"));
+        factory.setUsername(GlobalConfig.getString("InnerUsername"));
+        factory.setPassword(GlobalConfig.getString("InnerPassword"));
+
+        System.out.println(GlobalConfig.getString("InnerHost"));
+        System.out.println(GlobalConfig.getString("InnerVirtualHost"));
+        System.out.println(GlobalConfig.getString("InnerUsername"));
+        System.out.println(GlobalConfig.getString("InnerPassword"));
 
         connection = factory.newConnection();
         channel = connection.createChannel();

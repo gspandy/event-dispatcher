@@ -77,16 +77,17 @@ public abstract class IOrderIndex {
         try {
 
             Map map = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), Map.class);
+//            Map map = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), Utils.JSON.constructCollectionType(Map.class,));
             List<Map> subjects = (List<Map>) map.get("Subjects");
             for (Map item : subjects) {
                 RiskFact req = new RiskFact();
                 req.setEventPoint(cp);
                 Map _map = new HashMap();
-                for (Iterator it = item.keySet().iterator();it.hasNext();){
-                    String key = it.next().toString();
+                for (Object o : item.keySet()) {
+                    String key = o.toString();
                     String first = key.substring(0, 1).toLowerCase();
                     String rest = key.substring(1, key.length());
-                    _map.put(first+rest,item.get(key));
+                    _map.put(first + rest, item.get(key));
                 }
                 req.setEventBody(_map);
 //                System.out.println(Utils.JSON.toJSONString(req));

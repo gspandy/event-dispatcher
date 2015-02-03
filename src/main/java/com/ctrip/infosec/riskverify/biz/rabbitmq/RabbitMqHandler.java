@@ -3,6 +3,7 @@ package com.ctrip.infosec.riskverify.biz.rabbitmq;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
 import com.ctrip.infosec.sars.monitor.util.Utils;
+import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +42,15 @@ public class RabbitMqHandler {
             lock.lock();
 
             factory = new ConnectionFactory();
-            factory.setHost("10.3.6.42");
-            factory.setVirtualHost("medusa");
-            factory.setUsername("bsc-medusa");
-            factory.setPassword("bsc-medusa");
+            factory.setHost(GlobalConfig.getString("EventHost"));
+            factory.setVirtualHost(GlobalConfig.getString("EventVirtualHost"));
+            factory.setUsername(GlobalConfig.getString("EventUsername"));
+            factory.setPassword(GlobalConfig.getString("EventPassword"));
+
+            System.out.println(GlobalConfig.getString("EventHost"));
+            System.out.println(GlobalConfig.getString("EventVirtualHost"));
+            System.out.println(GlobalConfig.getString("EventUsername"));
+            System.out.println(GlobalConfig.getString("EventPassword"));
 
             connection = factory.newConnection();
             channel = connection.createChannel();

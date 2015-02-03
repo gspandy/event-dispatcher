@@ -38,8 +38,6 @@ public class RiskRestImpl {
         RiskResult respBody = null;
         try {
             respBody = biz.exe(req, FACT);
-        } catch (Exception ex) {
-            logger.warn(ex.toString());
         } catch (Throwable t) {
             logger.error(t.toString());
         }

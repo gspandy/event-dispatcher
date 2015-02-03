@@ -23,45 +23,105 @@
 	<!--* UAT:http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
 	<!--* PRD:http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
 	<dev>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
-		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
+		<DATACONFI_URL>http://10.2.10.75:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</dev>
 	<test>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
-		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
+		<DATACONFI_URL>http://10.2.10.75:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</test>
 	<lpt>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
-		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
+		<DATACONFI_URL>http://10.2.10.75:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</lpt>
 	<fat>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
-		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
+		<DATACONFI_URL>http://10.2.10.75:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</fat>
 	<fws>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
-		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
+		<DATACONFI_URL>http://10.2.10.75:8080/configsws/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</fws>
 	<uat>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
@@ -69,6 +129,16 @@
 		<ClogPort>63100</ClogPort>
 	</uat>
 	<uat_nt>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
@@ -76,6 +146,16 @@
 		<ClogPort>63100</ClogPort>
 	</uat_nt>
 	<prd>
+		<EventHost>riskevent.rabbitmq.infosec.ctripcorp.com</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>riskinner.rabbitmq.infosec.ctripcorp.com</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+
+		<RuleEngineUrl>ws.ruleengine.infosec.ctripcorp.com/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
