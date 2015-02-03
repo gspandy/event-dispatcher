@@ -47,10 +47,6 @@ public class RabbitMqHandler {
             factory.setUsername(GlobalConfig.getString("EventUsername"));
             factory.setPassword(GlobalConfig.getString("EventPassword"));
 
-            System.out.println(GlobalConfig.getString("EventHost"));
-            System.out.println(GlobalConfig.getString("EventVirtualHost"));
-            System.out.println(GlobalConfig.getString("EventUsername"));
-            System.out.println(GlobalConfig.getString("EventPassword"));
 
             connection = factory.newConnection();
             channel = connection.createChannel();

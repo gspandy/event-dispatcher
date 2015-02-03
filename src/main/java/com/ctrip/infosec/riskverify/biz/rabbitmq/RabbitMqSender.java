@@ -92,10 +92,6 @@ public class RabbitMqSender {
         factory.setUsername(GlobalConfig.getString("InnerUsername"));
         factory.setPassword(GlobalConfig.getString("InnerPassword"));
 
-        System.out.println(GlobalConfig.getString("InnerHost"));
-        System.out.println(GlobalConfig.getString("InnerVirtualHost"));
-        System.out.println(GlobalConfig.getString("InnerUsername"));
-        System.out.println(GlobalConfig.getString("InnerPassword"));
 
         connection = factory.newConnection();
         channel = connection.createChannel();
