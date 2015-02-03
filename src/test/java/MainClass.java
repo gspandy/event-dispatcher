@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 public class MainClass {
 
     public static void main(String[] args) {
+        Clazz1 clazz1 = new Clazz1("");
 
     }
 
@@ -34,12 +35,17 @@ public class MainClass {
         public Clazz0(String msg){
             System.out.println(msg);
         }
+        public void sync(){
+
+            System.out.println(this.getClass());
+        }
     }
 
     static class Clazz1 extends Clazz0{
+
         public Clazz1(String msg) {
             super(msg);
+            sync();
         }
-
     }
 }

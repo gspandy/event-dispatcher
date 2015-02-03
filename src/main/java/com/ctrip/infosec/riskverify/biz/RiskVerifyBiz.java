@@ -59,6 +59,7 @@ public class RiskVerifyBiz {
         mq_command.execute();
 
         logger.info(Utils.JSON.toJSONString(req));
+//        System.out.println(Utils.JSON.toJSONString(req));
         return resp;
     }
 
