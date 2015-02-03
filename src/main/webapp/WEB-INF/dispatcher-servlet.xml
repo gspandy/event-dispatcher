@@ -22,7 +22,7 @@
     </bean>
 
     <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
-        <property name="url" value="http://10.2.10.75:8080/configsws/rest/loadconfig"/>
+        <property name="url" value="http://10.2.10.76:8080/configsws/rest/loadconfig"/>
         <property name="part" value="EventDispatcher"/>
     </bean>
 
