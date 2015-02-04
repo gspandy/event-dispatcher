@@ -10,6 +10,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
@@ -22,8 +23,10 @@ public class RiskVerifyAdvice implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         String serviceName = invocation.getThis().getClass().getSimpleName();
         String operationName = invocation.getMethod().getName();
-        String eventPoint = ((RiskFact)invocation.getArguments()[0]).getEventPoint();
-        String fact = ((String)invocation.getArguments()[1]);
+
+        Map map = (Map)invocation.getArguments()[0];
+        String fact = map.get("FACT").toString();
+        String cp = map.get("CP").toString();
         // invoke
         boolean fault = false;
         StopWatch clock = new StopWatch();
@@ -39,7 +42,7 @@ public class RiskVerifyAdvice implements MethodInterceptor {
         } finally {
             clock.stop();
             long handlingTime = clock.getTime();
-            CounterRepository.increaseCounter(eventPoint + "." + fact, handlingTime, fault);
+            CounterRepository.increaseCounter(cp + "." + fact, handlingTime, fault);
             // operationPrefix
 //            String operationPrefix = SarsMonitorContext.getOperationPrefix();
 //            if (StringUtils.isNotBlank(operationPrefix)) {

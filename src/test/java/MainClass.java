@@ -17,6 +17,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.AbstractOwnableSynchronizer;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
@@ -26,28 +28,58 @@ import java.util.regex.Pattern;
  */
 public class MainClass {
 
-    public static void main(String[] args) {
-        Clazz1 clazz1 = new Clazz1("");
+    public static void main(String[] args) throws InterruptedException {
+//        Clazz1 clazz1 = new Clazz1("");
+//        String s = Clazz1.<String>parseObject("",String.class);
+        for(int i=0;i<10000;i++){
+
+            System.out.println(RandomUtils.nextInt(5));
+        }
 
     }
 
-    static class Clazz0{
-        public Clazz0(String msg){
-            System.out.println(msg);
+    static class Sync extends AbstractQueuedSynchronizer {
+        final void lock() {
+            if (compareAndSetState(0, 1))
+                setExclusiveOwnerThread(Thread.currentThread());
+            else
+                acquire(1);
         }
-        public void sync(){
-
-            System.out.println(this.getClass());
+        final void unlock(){
+            release(1);
         }
-    }
-
-    static class Clazz1 extends Clazz0{
-        public <T> T parseObject(String jsonString, Class<T> clazz) {
-            return null;
+        protected final boolean tryAcquire(int acquires) {
+            return nonfairTryAcquire(acquires);
         }
-        public Clazz1(String msg) {
-            super(msg);
-            sync();
+        protected final boolean tryRelease(int releases) {
+            int c = getState() - releases;
+            if (Thread.currentThread() != getExclusiveOwnerThread())
+                throw new IllegalMonitorStateException();
+            boolean free = false;
+            if (c == 0) {
+                free = true;
+                setExclusiveOwnerThread(null);
+            }
+            setState(c);
+            return free;
+        }
+        final boolean nonfairTryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            int c = getState();
+            if (c == 0) {
+                if (compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0) // overflow
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
         }
     }
 }

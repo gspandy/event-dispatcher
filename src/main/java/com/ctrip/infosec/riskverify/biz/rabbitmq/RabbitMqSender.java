@@ -26,22 +26,16 @@ public class RabbitMqSender {
     private static Channel channel = null;
     private static Lock lockInstance = new ReentrantLock();
     private static RabbitMqSender sender = null;
-    private static LinkedBlockingQueue<byte[]>[] arr = new LinkedBlockingQueue[5];
 
-    private static volatile boolean stop = false;
-
-    public static RabbitMqSender getInstance() throws Exception {
+    public static RabbitMqSender getInstance() {
 
         if (sender == null) {
             try {
                 lockInstance.lock();
                 if (sender == null) {
                     sender = new RabbitMqSender();
+                    createConn();
                 }
-            } catch (Exception t) {
-                logger.warn("create instance of RabbitMqSender exception");
-                stop = true;
-                throw t;
             } finally {
                 lockInstance.unlock();
             }
@@ -49,56 +43,27 @@ public class RabbitMqSender {
         return sender;
     }
 
-    private RabbitMqSender() throws Exception {
-        createConn();
+    private RabbitMqSender(){
 
-        arr[0] = new LinkedBlockingQueue<byte[]>();
-        arr[1] = new LinkedBlockingQueue<byte[]>();
-        arr[2] = new LinkedBlockingQueue<byte[]>();
-        arr[3] = new LinkedBlockingQueue<byte[]>();
-        arr[4] = new LinkedBlockingQueue<byte[]>();
-
-        ExecutorService service = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 5; i++) {
-            final int finalI = i;
-
-            service.execute(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        try {
-                            byte[] temp = arr[finalI].take();
-                            if (temp != null) {
-                                try {
-                                    channel.basicPublish("infosec.ruleengine.exchange", "ruleengine", null, temp);
-                                } catch (IOException e) {
-                                    stop = true;
-                                    e.printStackTrace();
-                                }
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-        }
     }
 
-    private static void createConn() throws IOException {
+    private static void createConn() {
         factory = new ConnectionFactory();
         factory.setHost(GlobalConfig.getString("InnerHost"));
         factory.setVirtualHost(GlobalConfig.getString("InnerVirtualHost"));
         factory.setUsername(GlobalConfig.getString("InnerUsername"));
         factory.setPassword(GlobalConfig.getString("InnerPassword"));
-
-
-        connection = factory.newConnection();
-        channel = connection.createChannel();
+        try {
+            connection = factory.newConnection();
+            channel = connection.createChannel();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("IOException");
+        }
     }
 
     public void send(byte[] msg) throws Exception {
-        arr[RandomUtils.nextInt() % 5].put(msg);
+        channel.basicPublish("infosec.ruleengine.exchange", "ruleengine", null, msg);
     }
 
     public void send(String msg) throws Exception {

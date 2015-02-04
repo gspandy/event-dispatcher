@@ -53,7 +53,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
 
     @Override
     protected RiskResult getFallback() {
-        logger.info("call drools rest fail and req EventId=" + req.getEventId());
+        logger.error("call drools rest fail and req EventId=" + req.getEventId());
         return transform(req, false);
     }
 
