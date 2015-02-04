@@ -54,7 +54,6 @@ public class RiskVerifyBiz {
         if(Configs.hasSyncRules(req)){
             DroolsHystrixCommand drools_command = new DroolsHystrixCommand(req);
             result =  drools_command.execute();
-            logger.info(Utils.JSON.toJSONString(result));
             if(req.getExt()==null){
                 req.setExt(new HashMap<String, Object>());
             }
@@ -64,6 +63,7 @@ public class RiskVerifyBiz {
 //        mq_command.execute();
         RabbitMqSender sender = RabbitMqSender.getInstance();
         String s = Utils.JSON.toJSONString(req);
+        logger.info(s);
 //        System.out.println(s);
         try {
             sender.send(s);
