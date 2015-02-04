@@ -86,8 +86,8 @@ public class CMessage implements Receiver {
             //TODO
             throw new RuntimeException(illegalExchangeName);
         }
-//        Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
-        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
+        Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
+//        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
         Config.setAppId("100000557");
         if (consumer != null) {
             consumer.addConsumerCallbackEventHandler(new IConsumerCallbackEventHandler() {
