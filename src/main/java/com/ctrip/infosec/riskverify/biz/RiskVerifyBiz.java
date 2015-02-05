@@ -40,8 +40,6 @@ public class RiskVerifyBiz {
 
         RiskResult result = new RiskResult();
         if (!Configs.isValidEventPoint(req.getEventPoint())) {
-//            //TODO set 403 code and retrun response
-
             result.setEventId(req.getEventId());
             result.setEventPoint(req.getEventPoint());
             result.setRequestTime(req.getRequestTime());

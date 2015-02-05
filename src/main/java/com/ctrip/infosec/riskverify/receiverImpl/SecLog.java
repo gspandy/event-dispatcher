@@ -90,6 +90,13 @@ public class SecLog implements Receiver {
                         }
                     }
                     executorService.shutdown();
+                    try {
+                        channel.close();
+                        connection.close();
+                    } catch (IOException e) {
+                        logger.error(e.toString());
+                        throw new RuntimeException(e);
+                    }
                 }
             });
         }
