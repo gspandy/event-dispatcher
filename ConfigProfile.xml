@@ -191,7 +191,7 @@
 		<RuleEngineUrl>ws.ruleengine.infosec.ctripcorp.com/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
-		<DATACONFI_URL>http://10.3.6.104:8084/rest/loadconfig</DATACONFI_URL>
+		<DATACONFI_URL>http://ws.configs.infosec.ctripcorp.com/configsws/rest/loadconfig</DATACONFI_URL>
 		<ClogIp>collector.logging.sh.ctriptravel.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</prd>
