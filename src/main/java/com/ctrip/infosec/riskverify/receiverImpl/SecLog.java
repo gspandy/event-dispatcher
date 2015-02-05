@@ -14,8 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * Created by zhangsx on 2015/2/4.
@@ -27,17 +26,12 @@ public class SecLog implements Receiver {
     private Connection connection = null;
     private Channel channel = null;
     private QueueingConsumer consumer = null;
-    private volatile boolean stop = false;
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
     private volatile ReceiverStatus status;
 
     @Autowired
     @Qualifier(value = "secStandard")
     private StandardMiddleware standardMiddleware;
-
-//    public SecLog(String cp) {
-//        this.cp = cp;
-//    }
 
     @Override
     public void init() {
@@ -50,7 +44,6 @@ public class SecLog implements Receiver {
             return;
         }
         status = ReceiverStatus.running;
-
         logger.info("seclog start");
 
         factory = new ConnectionFactory();
@@ -64,14 +57,14 @@ public class SecLog implements Receiver {
             channel = connection.createChannel();
         } catch (IOException e) {
             logger.error(e.toString());
-            throw new RuntimeException("IOException");
+            throw new RuntimeException(e);
         }
         consumer = new QueueingConsumer(channel);
         try {
             channel.basicConsume("risk-log", true, consumer);
         } catch (IOException e) {
             logger.error(e.toString());
-            throw new RuntimeException("IOException");
+            throw new RuntimeException(e);
         }
 
         final ExecutorService executorService = Executors.newFixedThreadPool(5);
@@ -86,17 +79,10 @@ public class SecLog implements Receiver {
                             standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "body", delivery.getBody()));
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                            throw new RuntimeException("InterruptedException");
+                            throw new RuntimeException(e);
                         }
                     }
                     executorService.shutdown();
-                    try {
-                        channel.close();
-                        connection.close();
-                    } catch (IOException e) {
-                        logger.error(e.toString());
-                        throw new RuntimeException(e);
-                    }
                 }
             });
         }

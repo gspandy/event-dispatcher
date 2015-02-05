@@ -50,14 +50,14 @@ public class RabbitMq implements Receiver {
             channel = connection.createChannel();
         } catch (IOException e) {
             logger.error(e.toString());
-            throw new RuntimeException("IOException");
+            throw new RuntimeException(e);
         }
         consumer = new QueueingConsumer(channel);
         try {
             channel.basicConsume("infosec.eventdispatcher.queue", true, consumer);
         } catch (IOException e) {
             logger.error(e.toString());
-            throw new RuntimeException("IOException");
+            throw new RuntimeException(e);
         }
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -69,7 +69,7 @@ public class RabbitMq implements Receiver {
                         delivery = consumer.nextDelivery();
                     } catch (InterruptedException e) {
                         logger.error(e.toString());
-                        throw new RuntimeException("InterruptedException");
+                        throw new RuntimeException(e);
                     }
                     //TODO
                     RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
