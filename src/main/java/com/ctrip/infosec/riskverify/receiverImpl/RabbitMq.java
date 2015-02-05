@@ -10,6 +10,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ public class RabbitMq implements Receiver {
     private Channel channel = null;
     private QueueingConsumer consumer = null;
     private volatile boolean stop = false;
+    private static final Logger logger = LoggerFactory.getLogger(RabbitMq.class);
     @Autowired
     private Handler handler;
 
@@ -46,14 +49,14 @@ public class RabbitMq implements Receiver {
             connection = factory.newConnection();
             channel = connection.createChannel();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
             throw new RuntimeException("IOException");
         }
         consumer = new QueueingConsumer(channel);
         try {
             channel.basicConsume("infosec.eventdispatcher.queue", true, consumer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
             throw new RuntimeException("IOException");
         }
 
@@ -65,7 +68,7 @@ public class RabbitMq implements Receiver {
                     try {
                         delivery = consumer.nextDelivery();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error(e.toString());
                         throw new RuntimeException("InterruptedException");
                     }
                     //TODO

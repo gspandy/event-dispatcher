@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Manager implements ReceiverManager {
     Map<String, Receiver> asyncReceivers;
-
     public Manager(Map<String, Receiver> asyncReceivers) {
         this.asyncReceivers = asyncReceivers;
     }

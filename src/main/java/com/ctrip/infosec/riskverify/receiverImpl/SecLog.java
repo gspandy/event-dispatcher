@@ -30,6 +30,7 @@ public class SecLog implements Receiver {
     private volatile boolean stop = false;
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
     private volatile ReceiverStatus status;
+
     @Autowired
     @Qualifier(value = "secStandard")
     private StandardMiddleware standardMiddleware;
@@ -62,14 +63,14 @@ public class SecLog implements Receiver {
             connection = factory.newConnection();
             channel = connection.createChannel();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
             throw new RuntimeException("IOException");
         }
         consumer = new QueueingConsumer(channel);
         try {
             channel.basicConsume("risk-log", true, consumer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
             throw new RuntimeException("IOException");
         }
 
