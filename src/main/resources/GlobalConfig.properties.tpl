@@ -9,4 +9,9 @@ InnerVirtualHost={$InnerVirtualHost}
 InnerUsername={$InnerUsername}
 InnerPassword={$InnerPassword}
 
+SecLogHost={$SecLogHost}
+SecLogVirtualHost={$SecLogVirtualHost}
+SecLogUsername={$SecLogUsername}
+SecLogPassword={$SecLogPassword}
+
 RuleEngineUrl={$RuleEngineUrl}

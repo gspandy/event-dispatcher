@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by zhangsx on 2015/1/21.
  */
+@Deprecated
 public class RabbitMqHystrixCommand extends HystrixCommand {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(RabbitMqHystrixCommand.class);
     private RiskFact req;
@@ -25,15 +26,11 @@ public class RabbitMqHystrixCommand extends HystrixCommand {
 
     @Override
     protected Object run() throws Exception {
-        RabbitMqSender sender = RabbitMqSender.getInstance();
-        String s = Utils.JSON.toJSONString(req);
-        System.out.println(s);
-        sender.send(s);
-        return null;
+        throw new Exception();
     }
     @Override
     protected Object getFallback() {
-        logger.error("call error",this.getFailedExecutionException());
+        logger.error("call error", this.getFailedExecutionException());
         return null;
     }
 }

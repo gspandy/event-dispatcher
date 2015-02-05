@@ -27,24 +27,22 @@
     </bean>
 
 
-    <bean class="com.ctrip.infosec.riskverify.standardMiddlewareImpl.OrderIndexStandard"/>
+    <bean id="orderIndexStandard" class="com.ctrip.infosec.riskverify.standardMiddlewareImpl.OrderIndexStandard"/>
+    <bean id="secStandard" class="com.ctrip.infosec.riskverify.standardMiddlewareImpl.SecStandard"/>
+
     <bean class="com.ctrip.infosec.riskverify.handlerImpl.CommonHandler"/>
-    <!--<bean id="OrderIndex_Flight" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage" init-method="start">-->
     <bean id="OrderIndex_Flight" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
         <constructor-arg name="identifier" value="100000557_0449e2e7"/>
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Flight.Order.Update"/>
         <constructor-arg name="cp" value="CP0011004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
-    <!--<bean id="OrderIndex_Activity" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage" init-method="start">-->
     <bean id="OrderIndex_Activity" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
         <constructor-arg name="identifier" value="100000557_0449e2e7"/>
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Activity.Order.Update"/>
         <constructor-arg name="cp" value="CP0023004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Lipin" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -52,7 +50,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Lipin.Order.Update"/>
         <constructor-arg name="cp" value="CP0002004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Tuan" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -60,7 +57,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Tuan.Order.Update"/>
         <constructor-arg name="cp" value="CP0033004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Trains" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -68,7 +64,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Trains.Order.Update"/>
         <constructor-arg name="cp" value="CP0012004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Vacation" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -76,7 +71,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Vacation.Order.Update"/>
         <constructor-arg name="cp" value="CP0028004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
 
@@ -85,7 +79,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Piao.Order.Update"/>
         <constructor-arg name="cp" value="CP0022004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_DIY" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -93,7 +86,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.DIY.Order.Update"/>
         <constructor-arg name="cp" value="CP0027004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Cruise" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -101,7 +93,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Cruise.Order.Update"/>
         <constructor-arg name="cp" value="CP0026004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Car" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -109,7 +100,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Car.Order.Update"/>
         <constructor-arg name="cp" value="CP0024004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_HHTravel" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -117,7 +107,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.HHTravel.Order.Update"/>
         <constructor-arg name="cp" value="CP0021004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_VacationInsurance" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -125,7 +114,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.VacationInsurance.Order.Update"/>
         <constructor-arg name="cp" value="CP0029004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Golf" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -133,7 +121,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Golf.Order.Update"/>
         <constructor-arg name="cp" value="CP0025004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_SceneryHotel" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -141,7 +128,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.SceneryHotel.Order.Update"/>
         <constructor-arg name="cp" value="CP0032004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_GlobalBuy" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -149,7 +135,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.GlobalBuy.Order.Update"/>
         <constructor-arg name="cp" value="CP0005004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_AirportBus" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -157,7 +142,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.AirportBus.Order.Update"/>
         <constructor-arg name="cp" value="CP0015004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Mall" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -165,7 +149,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Mall.Order.Update"/>
         <constructor-arg name="cp" value="CP0003004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Bus" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -173,7 +156,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Bus.Order.Update"/>
         <constructor-arg name="cp" value="CP0014004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Visa" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -181,7 +163,6 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Visa.Order.Update"/>
         <constructor-arg name="cp" value="CP0031004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
 
     <bean id="OrderIndex_Hotel" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
@@ -189,8 +170,11 @@
         <constructor-arg name="subject" value="Order.Update"/>
         <constructor-arg name="exchange" value="OI.Hotel.Order.Update"/>
         <constructor-arg name="cp" value="CP0031004"/>
-        <!--<constructor-arg name="target" ref="orderIndex"/>-->
     </bean>
+
+    <bean id="mqsender" class="com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender" init-method="init"/>
+    <bean class="com.ctrip.infosec.riskverify.receiverImpl.RabbitMq" init-method="start"/>
+    <bean id="SEC_LOG" class="com.ctrip.infosec.riskverify.receiverImpl.SecLog"/>
 
     <bean class="com.ctrip.infosec.riskverify.ReceiverManagerImpl.Manager" init-method="manage">
         <constructor-arg name="asyncReceivers">
@@ -215,10 +199,9 @@
                 <entry key="OrderIndex_Bus" value-ref="OrderIndex_Bus"></entry>
                 <entry key="OrderIndex_Visa" value-ref="OrderIndex_Visa"></entry>
                 <entry key="OrderIndex_Hotel" value-ref="OrderIndex_Hotel"></entry>
+                <entry key="SEC_LOG" value-ref="SEC_LOG"></entry>
             </map>
         </constructor-arg>
     </bean>
-
-    <bean class="com.ctrip.infosec.riskverify.receiverImpl.RabbitMq" init-method="start"/>
 
 </beans>

@@ -4,14 +4,12 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.riskverify.biz.command.DroolsHystrixCommand;
-import com.ctrip.infosec.riskverify.biz.command.RabbitMqHystrixCommand;
 import com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-import org.apache.ibatis.annotations.ResultType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -26,7 +24,8 @@ import java.util.Map;
 public class RiskVerifyBiz {
     private static final Logger logger = LoggerFactory.getLogger(RiskVerifyBiz.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-//    public RiskResult exe(RiskFact req,final String fact) {
+    @Autowired
+    private RabbitMqSender sender;
     public RiskResult exe(Map map) {
         RiskFact req = (RiskFact)map.get("body");
         String cp = map.get("CP").toString();
@@ -59,18 +58,9 @@ public class RiskVerifyBiz {
             }
             req.getExt().put("SYNC_RULE_EXECUTED", true);
         }
-//        RabbitMqHystrixCommand mq_command = new RabbitMqHystrixCommand(req);
-//        mq_command.execute();
-        RabbitMqSender sender = RabbitMqSender.getInstance();
         String s = Utils.JSON.toJSONString(req);
+        sender.send(s);
         logger.info(s);
-//        System.out.println(s);
-        try {
-            sender.send(s);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
         return result;
     }
 

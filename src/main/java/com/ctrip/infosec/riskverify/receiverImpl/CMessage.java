@@ -14,12 +14,8 @@ import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Created by zhangsx on 2015/2/3.
@@ -27,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class CMessage implements Receiver {
     private volatile ReceiverStatus status;
     @Autowired
+    @Qualifier(value = "orderIndexStandard")
     private StandardMiddleware standardMiddleware;
     private final String FACT = "CMessage";
     private IAsyncConsumer consumer = null;
@@ -35,9 +32,8 @@ public class CMessage implements Receiver {
     private String exchange;
     private String cp;
     private static final Logger logger = LoggerFactory.getLogger(CMessage.class);
-    private LinkedBlockingQueue<Map> queue = new LinkedBlockingQueue<Map>();
 
-    public CMessage(String identifier,String subject,String exchange,String cp){
+    public CMessage(String identifier, String subject, String exchange, String cp) {
         this.identifier = identifier;
         this.subject = subject;
         this.exchange = exchange;
@@ -45,6 +41,7 @@ public class CMessage implements Receiver {
         status = ReceiverStatus.init;
 
     }
+
     @Override
     public void init() {
         throw new RuntimeException("过期方法");
@@ -57,24 +54,10 @@ public class CMessage implements Receiver {
      */
     @Override
     public void start() {
-        if (status==ReceiverStatus.running){
+        if (status == ReceiverStatus.running) {
             return;
         }
         status = ReceiverStatus.running;
-
-//        Executors.newSingleThreadExecutor().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(status==ReceiverStatus.running){
-//                    try {
-//                        standardMiddleware.assembleAndSend(queue.take());
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                        throw new RuntimeException("InterruptedException");
-//                    }
-//                }
-//            }
-//        });
 
         logger.info("cmessage start");
         try {
@@ -95,12 +78,11 @@ public class CMessage implements Receiver {
                 public void callback(IMessage iMessage) throws Exception {
                     try {
                         standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "CP", cp, "body", iMessage.getBody()));
-//                        queue.offer(ImmutableMap.of("fact", FACT, "CP", cp, "body", iMessage.getBody()));
-                    }catch (Throwable t){
+                    } catch (Throwable t) {
                         iMessage.setAcks(AckMode.Nack);
                         logger.error(t.toString());
                         throw new RuntimeException(t);
-                    }finally {
+                    } finally {
                         iMessage.setAcks(AckMode.Ack);
                         iMessage.dispose();
                     }
@@ -114,7 +96,7 @@ public class CMessage implements Receiver {
 
     @Override
     public void stop() {
-        if(consumer!=null&&status==ReceiverStatus.running){
+        if (consumer != null && status == ReceiverStatus.running) {
             consumer.stop();
             status = ReceiverStatus.stoped;
             logger.info("cmessage stop");

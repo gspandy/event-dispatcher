@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  * Created by zhangsx on 2015/2/4.
  */
 public class Manager implements ReceiverManager {
-    //    List<Map<String,Receiver>> syncReceivers;
     Map<String, Receiver> asyncReceivers;
 
     public Manager(Map<String, Receiver> asyncReceivers) {
@@ -26,26 +25,6 @@ public class Manager implements ReceiverManager {
 
     }
 
-    //    OrderIndex_Flight,
-//    OrderIndex_Lipin,
-//    OrderIndex_Tuan,
-//    OrderIndex_Trains,
-//    OrderIndex_Vacation,
-//    OrderIndex_Piao,
-//    OrderIndex_DIY,
-//    OrderIndex_Cruise,
-//    OrderIndex_Car,
-//    OrderIndex_HHTravel,
-//    OrderIndex_Activity,
-//    OrderIndex_VacationInsurance,
-//    OrderIndex_Golf,
-//    OrderIndex_SceneryHotel,
-//    OrderIndex_GlobalBuy,
-//    OrderIndex_AirportBus,
-//    OrderIndex_Mall,
-//    OrderIndex_Bus,
-//    OrderIndex_Visa,
-//    OrderIndex_Hotel;
     @Override
     public void manage() {
         Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(new Runnable() {
@@ -53,13 +32,15 @@ public class Manager implements ReceiverManager {
             public void run() {
                 //TODO
                 for (EventAgentName name : EventAgentName.values()) {
-                    EventAgentStatus status = Configs.getEventAgentStatus(name);
-                    if (status == EventAgentStatus.DISABLED) {
-                        asyncReceivers.get(name.name()).stop();
-                    }
-                    if (status == EventAgentStatus.ENABLED) {
-                        asyncReceivers.get(name.name()).start();
-
+                    Receiver receiver = asyncReceivers.get(name.name());
+                    if (receiver != null) {
+                        EventAgentStatus status = Configs.getEventAgentStatus(name);
+                        if (status == EventAgentStatus.DISABLED) {
+                            receiver.stop();
+                        }
+                        if (status == EventAgentStatus.ENABLED) {
+                            receiver.start();
+                        }
                     }
                 }
             }

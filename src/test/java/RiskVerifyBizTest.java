@@ -103,7 +103,7 @@ public class RiskVerifyBizTest {
     public void mqSendTest() {
         RabbitMqSender sender = null;
         try {
-            sender = RabbitMqSender.getInstance();
+//            sender = RabbitMqSender.getInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }

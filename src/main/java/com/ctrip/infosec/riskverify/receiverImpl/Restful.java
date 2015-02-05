@@ -4,7 +4,6 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.riskverify.Handler;
 import com.ctrip.infosec.riskverify.Receiver;
-import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class Restful implements Receiver {
     private final String FACT = "REST";
     @Autowired
-//    private RiskVerifyBiz biz;
     private Handler handler;
 
     @Override
@@ -36,7 +34,6 @@ public class Restful implements Receiver {
     ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
         RiskResult riskResult = handler.send(ImmutableMap.of("FACT", FACT, "CP", req.getEventPoint(), "body", req));
         return new ResponseEntity<RiskResult>(riskResult, HttpStatus.OK);
-//        return new ResponseEntity<RiskResult>(biz.exe(req, FACT), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/check", method = RequestMethod.GET)

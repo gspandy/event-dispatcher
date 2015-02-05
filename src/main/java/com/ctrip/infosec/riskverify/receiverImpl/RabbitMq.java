@@ -1,7 +1,6 @@
 package com.ctrip.infosec.riskverify.receiverImpl;
 
 import com.ctrip.infosec.common.model.RiskFact;
-import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.riskverify.Handler;
 import com.ctrip.infosec.riskverify.Receiver;
 import com.ctrip.infosec.sars.monitor.util.Utils;

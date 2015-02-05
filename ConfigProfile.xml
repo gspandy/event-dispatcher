@@ -31,6 +31,11 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>secbd1.qa.nt.ctripcorp.com</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
+
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
@@ -49,6 +54,10 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>secbd1.qa.nt.ctripcorp.com</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
@@ -67,6 +76,10 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>secbd1.qa.nt.ctripcorp.com</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
@@ -85,6 +98,10 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>secbd1.qa.nt.ctripcorp.com</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
@@ -103,6 +120,10 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>secbd1.qa.nt.ctripcorp.com</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
 
 		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
@@ -120,6 +141,10 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>10.2.24.236</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
 
 		<RuleEngineUrl>http://10.2.25.54:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
@@ -137,6 +162,10 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>10.2.24.236</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
 
 		<RuleEngineUrl>http://10.2.25.54:8080/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
@@ -154,6 +183,10 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>colletor.infosec.ctripcorp.com</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
 
 		<RuleEngineUrl>ws.ruleengine.infosec.ctripcorp.com/ruleenginews/rule/query</RuleEngineUrl>
 		<CMessageUrl>http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
