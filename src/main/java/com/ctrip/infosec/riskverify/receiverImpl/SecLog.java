@@ -55,13 +55,14 @@ public class SecLog implements Receiver {
         try {
             connection = factory.newConnection();
             channel = connection.createChannel();
+            channel.basicQos(100);
         } catch (IOException e) {
             logger.error(e.toString());
             throw new RuntimeException(e);
         }
         consumer = new QueueingConsumer(channel);
         try {
-            channel.basicConsume("risk-log", true, consumer);
+            channel.basicConsume("risk-log", false, consumer);
         } catch (IOException e) {
             logger.error(e.toString());
             throw new RuntimeException(e);
@@ -80,6 +81,12 @@ public class SecLog implements Receiver {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e);
+                        }finally {
+                            try {
+                                channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
+                            } catch (IOException e) {
+                                logger.error(e.toString());
+                            }
                         }
                     }
                     executorService.shutdown();

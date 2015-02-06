@@ -1,28 +1,10 @@
-import com.ctrip.infosec.sars.monitor.util.Utils;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.QueueingConsumer;
-import org.apache.commons.lang.math.RandomUtils;
+import org.springframework.aop.scope.ScopedProxyUtils;
 
-import java.io.DataInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.MalformedParameterizedTypeException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.security.Key;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.AbstractOwnableSynchronizer;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
+import java.net.URLConnection;
 
 /**
  * Created by zhangsx on 2015/1/26.
@@ -40,7 +22,21 @@ public class MainClass {
 //            String key = ((Map) body.get(0)).get("Key").toString();
 //            String value = ((Map) body.get(0)).get("Value").toString();
 //        }
+        String url = "http://weather.yahooapis.com/forecastrss?p=02101";
+        try {
+            byte[] b = new byte[1024];
+            URL connection = new URL(url);
+            URLConnection u = connection.openConnection();
+            u.setDoInput(true);
+            InputStream is = u.getInputStream();
+            is.read(b);
 
+            System.out.println(new String(b));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static enum SEC {
