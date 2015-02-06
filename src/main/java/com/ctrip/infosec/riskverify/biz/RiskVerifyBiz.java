@@ -43,6 +43,7 @@ public class RiskVerifyBiz {
             result.setEventId(req.getEventId());
             result.setEventPoint(req.getEventPoint());
             result.setRequestTime(req.getRequestTime());
+            result.setRequestReceive(req.getRequestReceive());
             result.setResponseReceive(sdf.format(new Date()));
             result.setResponseTime(sdf.format(new Date()));
             result.setResults(ImmutableMap.<String, Object>of("riskLevel", Integer.valueOf(0), "riskMessage", "非法的EventPoint"));
