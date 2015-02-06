@@ -22,21 +22,10 @@ public class MainClass {
 //            String key = ((Map) body.get(0)).get("Key").toString();
 //            String value = ((Map) body.get(0)).get("Value").toString();
 //        }
-        String url = "http://weather.yahooapis.com/forecastrss?p=02101";
-        try {
-            byte[] b = new byte[1024];
-            URL connection = new URL(url);
-            URLConnection u = connection.openConnection();
-            u.setDoInput(true);
-            InputStream is = u.getInputStream();
-            is.read(b);
+        String s0=  "Abc";
+        String s1=  "abc";
+        s0.charAt(0);
 
-            System.out.println(new String(b));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static enum SEC {
