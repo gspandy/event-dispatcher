@@ -1,7 +1,10 @@
 package com.ctrip.infosec.riskverify.receiverImpl;
 
+import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.Receiver;
 import com.ctrip.infosec.riskverify.StandardMiddleware;
+import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
+import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
 import com.rabbitmq.client.Channel;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.*;
 
 /**
@@ -74,19 +78,31 @@ public class SecLog implements Receiver {
                 @Override
                 public void run() {
                     while (status == ReceiverStatus.running) {
-                        QueueingConsumer.Delivery delivery = null;
+//                        QueueingConsumer.Delivery delivery = null;
+//                        try {
+//                            delivery = consumer.nextDelivery();
+//                            standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "body", delivery.getBody()));
+//                        } catch (Throwable throwable) {
+//                            logger.error(throwable.toString());
+//                            CounterRepository.increaseCounter(FACT, 0, true);
+//                        }finally {
+//                            try {
+//                                channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
+//                            } catch (IOException e) {
+//                                logger.error(e.toString());
+//                            }
+//                        }
+
                         try {
-                            delivery = consumer.nextDelivery();
-                            standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "body", delivery.getBody()));
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e);
-                        }finally {
-                            try {
+                            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                            try{
+                                standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "body", delivery.getBody()));
+                            }finally {
                                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
-                            } catch (IOException e) {
-                                logger.error(e.toString());
                             }
+                        }catch (Throwable e) {
+                            CounterRepository.increaseCounter(FACT, 0, true);
+                            logger.error(e.getMessage(),e);
                         }
                     }
                     executorService.shutdown();

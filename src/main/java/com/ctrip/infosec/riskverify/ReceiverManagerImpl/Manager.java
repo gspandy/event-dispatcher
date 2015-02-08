@@ -5,6 +5,8 @@ import com.ctrip.infosec.configs.event.EventAgentName;
 import com.ctrip.infosec.configs.event.EventAgentStatus;
 import com.ctrip.infosec.riskverify.Receiver;
 import com.ctrip.infosec.riskverify.ReceiverManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -18,7 +20,7 @@ public class Manager implements ReceiverManager {
     public Manager(Map<String, Receiver> asyncReceivers) {
         this.asyncReceivers = asyncReceivers;
     }
-
+    private static final Logger logger = LoggerFactory.getLogger(Manager.class);
     @Override
     public void addReceiver() {
 
@@ -29,18 +31,21 @@ public class Manager implements ReceiverManager {
         Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
-                //TODO
-                for (EventAgentName name : EventAgentName.values()) {
-                    Receiver receiver = asyncReceivers.get(name.name());
-                    if (receiver != null) {
-                        EventAgentStatus status = Configs.getEventAgentStatus(name);
-                        if (status == EventAgentStatus.DISABLED) {
-                            receiver.stop();
-                        }
-                        if (status == EventAgentStatus.ENABLED) {
-                            receiver.start();
+                try {
+                    for (EventAgentName name : EventAgentName.values()) {
+                        Receiver receiver = asyncReceivers.get(name.name());
+                        if (receiver != null) {
+                            EventAgentStatus status = Configs.getEventAgentStatus(name);
+                            if (status == EventAgentStatus.DISABLED) {
+                                receiver.stop();
+                            }
+                            if (status == EventAgentStatus.ENABLED) {
+                                receiver.start();
+                            }
                         }
                     }
+                }catch (Throwable throwable){
+                    logger.error(throwable.getMessage(),throwable);
                 }
             }
 

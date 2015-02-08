@@ -3,6 +3,7 @@ package com.ctrip.infosec.riskverify.receiverImpl;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.Handler;
 import com.ctrip.infosec.riskverify.Receiver;
+import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
@@ -64,26 +65,45 @@ public class RabbitMq implements Receiver {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                while (!stop) {
-                    QueueingConsumer.Delivery delivery = null;
+//                while (!stop) {
+//                    QueueingConsumer.Delivery delivery = null;
+//                    try {
+//                        delivery = consumer.nextDelivery();
+//                    } catch (Throwable e) {
+//                        logger.error(e.toString());
+//                        CounterRepository.increaseCounter(FACT, 0, true);
+//                    }finally {
+//                        try {
+//                            channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
+//                        } catch (Throwable e) {
+//                            logger.error(e.toString());
+//                        }
+//                    }
+//                    //TODO
+//                    RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
+//                    if (fact != null) {
+//                        handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
+//                    }
+//                }
+
+
+                while (!stop){
                     try {
-                        delivery = consumer.nextDelivery();
-                    } catch (InterruptedException e) {
-                        logger.error(e.toString());
-                        throw new RuntimeException(e);
-                    }finally {
-                        try {
+                        QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                        try{
+                            RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
+                            if (fact != null) {
+                                handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
+                            }
+                        }finally {
                             channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
-                        } catch (IOException e) {
-                            logger.error(e.toString());
                         }
-                    }
-                    //TODO
-                    RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                    if (fact != null) {
-                        handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
+                    }catch (Throwable e) {
+                        CounterRepository.increaseCounter(FACT, 0, true);
+                        logger.error(e.getMessage(),e);
                     }
                 }
+
             }
         });
 

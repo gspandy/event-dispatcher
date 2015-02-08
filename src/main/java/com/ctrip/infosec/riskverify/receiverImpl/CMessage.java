@@ -10,6 +10,7 @@ import com.ctrip.cmessaging.client.impl.Config;
 import com.ctrip.cmessaging.client.impl.ConsumerFactory;
 import com.ctrip.infosec.riskverify.Receiver;
 import com.ctrip.infosec.riskverify.StandardMiddleware;
+import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -79,14 +80,12 @@ public class CMessage implements Receiver {
                     try {
                         standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "CP", cp, "body", iMessage.getBody()));
                     } catch (Throwable t) {
-                        iMessage.setAcks(AckMode.Nack);
-                        logger.error(t.toString());
-                        throw new RuntimeException(t);
+                        CounterRepository.increaseCounter(FACT, 0, true);
+                        logger.error(t.getMessage(),t);
                     } finally {
                         iMessage.setAcks(AckMode.Ack);
                         iMessage.dispose();
                     }
-
                 }
             });
             consumer.setBatchSize(20);

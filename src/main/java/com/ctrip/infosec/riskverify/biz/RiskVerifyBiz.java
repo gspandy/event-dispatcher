@@ -59,7 +59,7 @@ public class RiskVerifyBiz {
         }
         String s = Utils.JSON.toJSONString(req);
         sender.send(s);
-        logger.info(s);
+//        logger.info(s);
         return result;
     }
 
