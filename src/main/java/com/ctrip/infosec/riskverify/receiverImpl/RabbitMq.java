@@ -7,10 +7,7 @@ import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.QueueingConsumer;
+import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +95,17 @@ public class RabbitMq implements Receiver {
                         }finally {
                             channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
                         }
-                    }catch (Throwable e) {
+                    }catch (ConsumerCancelledException e){
+                        try {
+                            connection = factory.newConnection();
+                            channel = connection.createChannel();
+                            channel.basicQos(100);
+                            consumer = new QueueingConsumer(channel);
+                            channel.basicConsume("infosec.eventdispatcher.queue", false, consumer);
+                        } catch (IOException e1) {
+                            logger.error(e1.getMessage(), e1);
+                        }
+                    } catch (Throwable e) {
                         CounterRepository.increaseCounter(FACT, 0, true);
                         logger.error(e.getMessage(),e);
                     }

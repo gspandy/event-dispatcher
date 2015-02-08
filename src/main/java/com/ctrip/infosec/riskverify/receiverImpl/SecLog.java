@@ -7,10 +7,7 @@ import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.QueueingConsumer;
+import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +23,10 @@ import java.util.concurrent.*;
 public class SecLog implements Receiver {
     private final String FACT = "SecLog";
     //    private String cp;
-    private ConnectionFactory factory = null;
-    private Connection connection = null;
-    private Channel channel = null;
-    private QueueingConsumer consumer = null;
+//    private ConnectionFactory factory = null;
+//    private Connection connection = null;
+//    private Channel channel = null;
+//    private QueueingConsumer consumer = null;
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
     private volatile ReceiverStatus status;
 
@@ -50,33 +47,60 @@ public class SecLog implements Receiver {
         status = ReceiverStatus.running;
         logger.info("seclog start");
 
-        factory = new ConnectionFactory();
-        factory.setHost(GlobalConfig.getString("SecLogHost"));
-        factory.setVirtualHost(GlobalConfig.getString("SecLogVirtualHost"));
-        factory.setUsername(GlobalConfig.getString("SecLogUsername"));
-        factory.setPassword(GlobalConfig.getString("SecLogPassword"));
-
-        try {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
-            channel.basicQos(100);
-        } catch (IOException e) {
-            logger.error(e.toString());
-            throw new RuntimeException(e);
-        }
-        consumer = new QueueingConsumer(channel);
-        try {
-            channel.basicConsume("risk-log", false, consumer);
-        } catch (IOException e) {
-            logger.error(e.toString());
-            throw new RuntimeException(e);
-        }
+//        factory = new ConnectionFactory();
+//        factory.setHost(GlobalConfig.getString("SecLogHost"));
+//        factory.setVirtualHost(GlobalConfig.getString("SecLogVirtualHost"));
+//        factory.setUsername(GlobalConfig.getString("SecLogUsername"));
+//        factory.setPassword(GlobalConfig.getString("SecLogPassword"));
+//
+//        try {
+//            connection = factory.newConnection();
+//            channel = connection.createChannel();
+//            channel.basicQos(100);
+//        } catch (IOException e) {
+//            logger.error(e.toString());
+//            throw new RuntimeException(e);
+//        }
+//        consumer = new QueueingConsumer(channel);
+//        try {
+//            channel.basicConsume("risk-log", false, consumer);
+//        } catch (IOException e) {
+//            logger.error(e.toString());
+//            throw new RuntimeException(e);
+//        }
 
         final ExecutorService executorService = Executors.newFixedThreadPool(5);
         for (int i = 0; i < 5; i++) {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
+                    ConnectionFactory factory = null;
+                    Connection connection = null;
+                    Channel channel = null;
+                    QueueingConsumer consumer = null;
+
+                    factory = new ConnectionFactory();
+                    factory.setHost(GlobalConfig.getString("SecLogHost"));
+                    factory.setVirtualHost(GlobalConfig.getString("SecLogVirtualHost"));
+                    factory.setUsername(GlobalConfig.getString("SecLogUsername"));
+                    factory.setPassword(GlobalConfig.getString("SecLogPassword"));
+
+                    try {
+                        connection = factory.newConnection();
+                        channel = connection.createChannel();
+                        channel.basicQos(100);
+                    } catch (IOException e) {
+                        logger.error(e.toString());
+                        throw new RuntimeException(e);
+                    }
+                    consumer = new QueueingConsumer(channel);
+                    try {
+                        channel.basicConsume("risk-log", false, consumer);
+                    } catch (IOException e) {
+                        logger.error(e.toString());
+                        throw new RuntimeException(e);
+                    }
+
                     while (status == ReceiverStatus.running) {
 //                        QueueingConsumer.Delivery delivery = null;
 //                        try {
@@ -95,14 +119,26 @@ public class SecLog implements Receiver {
 
                         try {
                             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-                            try{
+                            try {
                                 standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "body", delivery.getBody()));
-                            }finally {
-                                channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
+                            } finally {
+                                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
                             }
-                        }catch (Throwable e) {
+                        } catch (ConsumerCancelledException e) {
+                            try {
+                                //Sleep 1s and reconnect to rabbitmq-server
+                                connection = factory.newConnection();
+                                channel = connection.createChannel();
+                                channel.basicQos(100);
+
+                                consumer = new QueueingConsumer(channel);
+                                channel.basicConsume("risk-log", false, consumer);
+                            } catch (IOException e1) {
+                                logger.error(e1.getMessage(), e1);
+                            }
+                        } catch (Throwable e) {
                             CounterRepository.increaseCounter(FACT, 0, true);
-                            logger.error(e.getMessage(),e);
+                            logger.error(e.getMessage(), e);
                         }
                     }
                     executorService.shutdown();
