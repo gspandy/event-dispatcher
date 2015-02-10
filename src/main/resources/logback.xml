@@ -8,6 +8,9 @@
         <serverPort>63100</serverPort>
     </appender>
 
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+
+    </appender>
     <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoding>UTF-8</encoding>
         <file>/opt/logs/tomcat/eventdispatcher.log</file>
@@ -20,6 +23,7 @@
         </layout>
     </appender>
     <root level="INFO">
+        <appender-ref ref="stdout"/>
         <appender-ref ref="fileAppender"/>
         <appender-ref ref="CentralLogging"/>
     </root>

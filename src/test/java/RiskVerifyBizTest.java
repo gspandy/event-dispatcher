@@ -8,7 +8,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -25,16 +27,21 @@ public class RiskVerifyBizTest {
     private RabbitMqSender sender;
     @Autowired
     private RiskVerifyBiz biz;
+    @Autowired
+    @Qualifier(value = "template1")
+    private AmqpTemplate template;
 
     @Test
-    public void senderTest(){
+    @Ignore
+    public void senderTest() {
         sender.init();
         System.out.println("***");
         sender.send("hello");
     }
 
     @Test
-    public void bizTest(){
+    @Ignore
+    public void bizTest() {
         String msg = "{\n" +
                 "\"eventPoint\": \"CP0011004\",\n" +
                 "\"eventBody\": {\n" +
@@ -92,8 +99,12 @@ public class RiskVerifyBizTest {
                 "\"version\": \"0:0\"\n" +
                 "}\n" +
                 "}\n";
-        Map body = Utils.JSON.parseObject(msg,Map.class);
+        Map body = Utils.JSON.parseObject(msg, Map.class);
         Map map = ImmutableMap.of("FACT", "Test", "CP", "CP0011004", "body", body);
         biz.exe(map);
+    }
+
+    public void mqTest(){
+        template.receive("");
     }
 }

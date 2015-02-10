@@ -3,36 +3,35 @@ package com.ctrip.infosec.riskverify.receiverImpl;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.Receiver;
 import com.ctrip.infosec.riskverify.StandardMiddleware;
-import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
-import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
-import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.concurrent.*;
 
 /**
  * Created by zhangsx on 2015/2/4.
  */
-public class SecLog implements Receiver {
+public class SecLog implements Receiver ,MessageListener{
     private final String FACT = "SecLog";
-    //    private String cp;
-//    private ConnectionFactory factory = null;
-//    private Connection connection = null;
-//    private Channel channel = null;
-//    private QueueingConsumer consumer = null;
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
     private volatile ReceiverStatus status;
-
+    private SimpleMessageListenerContainer container;
     @Autowired
     @Qualifier(value = "secStandard")
     private StandardMiddleware standardMiddleware;
+
+    @Autowired
+    @Qualifier(value = "connectionFactory0")
+    private ConnectionFactory factory;
 
     @Override
     public void init() {
@@ -47,111 +46,20 @@ public class SecLog implements Receiver {
         status = ReceiverStatus.running;
         logger.info("seclog start");
 
-//        factory = new ConnectionFactory();
-//        factory.setHost(GlobalConfig.getString("SecLogHost"));
-//        factory.setVirtualHost(GlobalConfig.getString("SecLogVirtualHost"));
-//        factory.setUsername(GlobalConfig.getString("SecLogUsername"));
-//        factory.setPassword(GlobalConfig.getString("SecLogPassword"));
-//
-//        try {
-//            connection = factory.newConnection();
-//            channel = connection.createChannel();
-//            channel.basicQos(100);
-//        } catch (IOException e) {
-//            logger.error(e.toString());
-//            throw new RuntimeException(e);
-//        }
-//        consumer = new QueueingConsumer(channel);
-//        try {
-//            channel.basicConsume("risk-log", false, consumer);
-//        } catch (IOException e) {
-//            logger.error(e.toString());
-//            throw new RuntimeException(e);
-//        }
+        container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(factory);
+        container.addQueues(new Queue("zsx_test"));
+        container.setMessageListener(this);
+        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
 
-        final ExecutorService executorService = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 5; i++) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    ConnectionFactory factory = null;
-                    Connection connection = null;
-                    Channel channel = null;
-                    QueueingConsumer consumer = null;
-
-                    factory = new ConnectionFactory();
-                    factory.setHost(GlobalConfig.getString("SecLogHost"));
-                    factory.setVirtualHost(GlobalConfig.getString("SecLogVirtualHost"));
-                    factory.setUsername(GlobalConfig.getString("SecLogUsername"));
-                    factory.setPassword(GlobalConfig.getString("SecLogPassword"));
-
-                    try {
-                        connection = factory.newConnection();
-                        channel = connection.createChannel();
-                        channel.basicQos(100);
-                    } catch (IOException e) {
-                        logger.error(e.toString());
-                        throw new RuntimeException(e);
-                    }
-                    consumer = new QueueingConsumer(channel);
-                    try {
-                        channel.basicConsume("risk-log", false, consumer);
-                    } catch (IOException e) {
-                        logger.error(e.toString());
-                        throw new RuntimeException(e);
-                    }
-
-                    while (status == ReceiverStatus.running) {
-//                        QueueingConsumer.Delivery delivery = null;
-//                        try {
-//                            delivery = consumer.nextDelivery();
-//                            standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "body", delivery.getBody()));
-//                        } catch (Throwable throwable) {
-//                            logger.error(throwable.toString());
-//                            CounterRepository.increaseCounter(FACT, 0, true);
-//                        }finally {
-//                            try {
-//                                channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
-//                            } catch (IOException e) {
-//                                logger.error(e.toString());
-//                            }
-//                        }
-
-                        try {
-                            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-                            try {
-                                standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "body", delivery.getBody()));
-                            } finally {
-                                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-                            }
-                        } catch (ConsumerCancelledException e) {
-                            try {
-                                //Sleep 1s and reconnect to rabbitmq-server
-                                connection = factory.newConnection();
-                                channel = connection.createChannel();
-                                channel.basicQos(100);
-
-                                consumer = new QueueingConsumer(channel);
-                                channel.basicConsume("risk-log", false, consumer);
-                            } catch (IOException e1) {
-                                logger.error(e1.getMessage(), e1);
-                            }
-                        } catch (Throwable e) {
-                            CounterRepository.increaseCounter(FACT, 0, true);
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                    executorService.shutdown();
-                }
-            });
-        }
-
+        container.start();
     }
 
     @Override
     public void stop() {
         if (status == ReceiverStatus.running) {
             status = ReceiverStatus.stoped;
+            container.shutdown();
             logger.info("seclog stoped");
         }
     }
@@ -167,4 +75,11 @@ public class SecLog implements Receiver {
     }
 
 
+    @Override
+    public void onMessage(Message message) {
+        RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
+        if (fact != null) {
+            standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", fact, "CP", message.getBody(), "body", fact));
+        }
+    }
 }
