@@ -4,7 +4,6 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.riskverify.biz.command.DroolsHystrixCommand;
-import com.ctrip.infosec.riskverify.RabbitMqSender;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
