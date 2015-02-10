@@ -4,11 +4,14 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.riskverify.biz.command.DroolsHystrixCommand;
-import com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender;
+import com.ctrip.infosec.riskverify.RabbitMqSender;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +27,10 @@ import java.util.Map;
 public class RiskVerifyBiz {
     private static final Logger logger = LoggerFactory.getLogger(RiskVerifyBiz.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private final String exchangeName = "infosec.ruleengine.exchange";
+    private final String routingKey = "ruleengine";
     @Autowired
-    private RabbitMqSender sender;
+    private RabbitTemplate sender;
     public RiskResult exe(Map map) {
         RiskFact req = (RiskFact)map.get("body");
         String cp = map.get("CP").toString();
@@ -58,8 +63,7 @@ public class RiskVerifyBiz {
             req.getExt().put("SYNC_RULE_EXECUTED", true);
         }
         String s = Utils.JSON.toJSONString(req);
-        sender.send(s);
-//        logger.info(s);
+        sender.send(exchangeName,routingKey,new Message(s.getBytes(),new MessageProperties()));
         return result;
     }
 

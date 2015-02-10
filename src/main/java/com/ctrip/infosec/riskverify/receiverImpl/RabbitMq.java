@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 /**
  * Created by zhangsx on 2015/2/3.
  */
-public class RabbitMq implements Receiver ,MessageListener{
+public class RabbitMq implements Receiver {
     private final String FACT = "RabbitMq";
     private static final Logger logger = LoggerFactory.getLogger(RabbitMq.class);
     private SimpleMessageListenerContainer container;
@@ -40,12 +40,20 @@ public class RabbitMq implements Receiver ,MessageListener{
     public void start() {
         container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(factory);
-        container.addQueues(new Queue("risk-log"));
-        container.setMessageListener(this);
+        container.addQueues(new Queue("infosec.eventdispatcher.queue"));
+        container.setMessageListener(new MessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                System.out.println(new String(message.getBody()));
+                RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
+                handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
+            }
+        });
         container.setAutoDeclare(true);
-        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
 
+        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
         container.start();
+        System.out.println("***start");
     }
 
     @Override
@@ -59,11 +67,4 @@ public class RabbitMq implements Receiver ,MessageListener{
         start();
     }
 
-    @Override
-    public void onMessage(Message message) {
-        if(message!=null){
-            RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
-            handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
-        }
-    }
 }

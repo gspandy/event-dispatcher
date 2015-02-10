@@ -1,6 +1,6 @@
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
-import com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender;
+import com.ctrip.infosec.riskverify.RabbitMqSender;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Assert;

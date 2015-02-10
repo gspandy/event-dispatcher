@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 /**
  * Created by zhangsx on 2015/2/4.
  */
-public class SecLog implements Receiver ,MessageListener{
+public class SecLog implements Receiver{
     private final String FACT = "SecLog";
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
     private volatile ReceiverStatus status;
@@ -49,9 +49,13 @@ public class SecLog implements Receiver ,MessageListener{
         container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(factory);
         container.addQueues(new Queue("risk-log"));
-        container.setMessageListener(this);
+        container.setMessageListener(new MessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", FACT, "body",message.getBody()));
+            }
+        });
         container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
-        container.setAutoDeclare(true);
 
         container.start();
     }
@@ -71,10 +75,4 @@ public class SecLog implements Receiver ,MessageListener{
         start();
     }
 
-    @Override
-    public void onMessage(Message message) {
-        if (message != null) {
-            standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", FACT, "body",message.getBody()));
-        }
-    }
 }

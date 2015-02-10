@@ -30,7 +30,6 @@
 
     <bean id="orderIndexStandard" class="com.ctrip.infosec.riskverify.standardMiddlewareImpl.OrderIndexStandard"/>
     <bean id="secStandard" class="com.ctrip.infosec.riskverify.standardMiddlewareImpl.SecStandard"/>
-
     <bean class="com.ctrip.infosec.riskverify.handlerImpl.CommonHandler"/>
     <bean id="OrderIndex_Flight" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
         <constructor-arg name="identifier" value="100000557_0449e2e7"/>
@@ -173,7 +172,8 @@
         <constructor-arg name="cp" value="CP0031004"/>
     </bean>
 
-    <bean id="mqsender" class="com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender" init-method="init"/>
+    <!--<bean id="mqsender" class="com.ctrip.infosec.riskverify.RabbitMqSender" init-method="init"/>-->
+
     <bean class="com.ctrip.infosec.riskverify.receiverImpl.RabbitMq" init-method="start"/>
     <bean id="SEC_LOG" class="com.ctrip.infosec.riskverify.receiverImpl.SecLog"/>
 
@@ -221,5 +221,8 @@
         <property name="password" value="bsc-medusa"/>
     </bean>
 
+    <bean id="mqsender" class="org.springframework.amqp.rabbit.core.RabbitTemplate">
+        <constructor-arg name="connectionFactory" ref="connectionFactory1"/>
+    </bean>
 
 </beans>
