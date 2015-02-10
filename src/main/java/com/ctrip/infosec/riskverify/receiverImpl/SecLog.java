@@ -48,9 +48,10 @@ public class SecLog implements Receiver ,MessageListener{
 
         container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(factory);
-        container.addQueues(new Queue("zsx_test"));
+        container.addQueues(new Queue("risk-log"));
         container.setMessageListener(this);
         container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
+        container.setAutoDeclare(true);
 
         container.start();
     }
@@ -71,15 +72,9 @@ public class SecLog implements Receiver ,MessageListener{
     }
 
     @Override
-    public void recovery() {
-    }
-
-
-    @Override
     public void onMessage(Message message) {
-        RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
-        if (fact != null) {
-            standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", fact, "CP", message.getBody(), "body", fact));
+        if (message != null) {
+            standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", FACT, "body",message.getBody()));
         }
     }
 }

@@ -22,10 +22,6 @@ public interface Lifecycle {
      * 重启接收器
      */
     void restart();
-    /**
-     *回收资源
-     */
-    void recovery();
 
     public enum ReceiverStatus {
         init,

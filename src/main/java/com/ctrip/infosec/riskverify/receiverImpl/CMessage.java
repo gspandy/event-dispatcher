@@ -109,8 +109,4 @@ public class CMessage implements Receiver {
         start();
     }
 
-    @Override
-    public void recovery() {
-
-    }
 }

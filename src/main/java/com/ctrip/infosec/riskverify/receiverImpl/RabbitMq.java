@@ -3,32 +3,33 @@ package com.ctrip.infosec.riskverify.receiverImpl;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.Handler;
 import com.ctrip.infosec.riskverify.Receiver;
-import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
-import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
-import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.concurrent.Executors;
 
 /**
  * Created by zhangsx on 2015/2/3.
  */
-public class RabbitMq implements Receiver {
+public class RabbitMq implements Receiver ,MessageListener{
     private final String FACT = "RabbitMq";
-    private ConnectionFactory factory = null;
-    private Connection connection = null;
-    private Channel channel = null;
-    private QueueingConsumer consumer = null;
-    private volatile boolean stop = false;
     private static final Logger logger = LoggerFactory.getLogger(RabbitMq.class);
+    private SimpleMessageListenerContainer container;
     @Autowired
     private Handler handler;
+
+    @Autowired
+    @Qualifier(value = "connectionFactory1")
+    private ConnectionFactory factory;
 
     @Override
     public void init() {
@@ -37,88 +38,19 @@ public class RabbitMq implements Receiver {
 
     @Override
     public void start() {
-        factory = new ConnectionFactory();
-        factory.setHost(GlobalConfig.getString("EventHost"));
-        factory.setVirtualHost(GlobalConfig.getString("EventVirtualHost"));
-        factory.setUsername(GlobalConfig.getString("EventUsername"));
-        factory.setPassword(GlobalConfig.getString("EventPassword"));
+        container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(factory);
+        container.addQueues(new Queue("risk-log"));
+        container.setMessageListener(this);
+        container.setAutoDeclare(true);
+        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
 
-        try {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
-            channel.basicQos(100);
-        } catch (IOException e) {
-            logger.error(e.toString());
-            throw new RuntimeException(e);
-        }
-        consumer = new QueueingConsumer(channel);
-        try {
-            channel.basicConsume("infosec.eventdispatcher.queue", false, consumer);
-        } catch (IOException e) {
-            logger.error(e.toString());
-            throw new RuntimeException(e);
-        }
-
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-//                while (!stop) {
-//                    QueueingConsumer.Delivery delivery = null;
-//                    try {
-//                        delivery = consumer.nextDelivery();
-//                    } catch (Throwable e) {
-//                        logger.error(e.toString());
-//                        CounterRepository.increaseCounter(FACT, 0, true);
-//                    }finally {
-//                        try {
-//                            channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
-//                        } catch (Throwable e) {
-//                            logger.error(e.toString());
-//                        }
-//                    }
-//                    //TODO
-//                    RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
-//                    if (fact != null) {
-//                        handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
-//                    }
-//                }
-
-
-                while (!stop){
-                    try {
-                        QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-                        try{
-                            RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                            if (fact != null) {
-                                handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
-                            }
-                        }finally {
-                            channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
-                        }
-                    }catch (ConsumerCancelledException e){
-                        try {
-                            connection = factory.newConnection();
-                            channel = connection.createChannel();
-                            channel.basicQos(100);
-                            consumer = new QueueingConsumer(channel);
-                            channel.basicConsume("infosec.eventdispatcher.queue", false, consumer);
-                        } catch (IOException e1) {
-                            logger.error(e1.getMessage(), e1);
-                        }
-                    } catch (Throwable e) {
-                        CounterRepository.increaseCounter(FACT, 0, true);
-                        logger.error(e.getMessage(),e);
-                    }
-                }
-
-            }
-        });
-
+        container.start();
     }
 
     @Override
     public void stop() {
-        stop = true;
+        container.shutdown();
     }
 
     @Override
@@ -128,7 +60,10 @@ public class RabbitMq implements Receiver {
     }
 
     @Override
-    public void recovery() {
-
+    public void onMessage(Message message) {
+        if(message!=null){
+            RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
+            handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
+        }
     }
 }

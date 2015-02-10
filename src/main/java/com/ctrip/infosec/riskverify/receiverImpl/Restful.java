@@ -58,8 +58,4 @@ public class Restful implements Receiver {
 
     }
 
-    @Override
-    public void recovery() {
-
-    }
 }
