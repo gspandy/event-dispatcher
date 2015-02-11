@@ -90,7 +90,7 @@ public class RabbitMq implements Receiver {
                         try{
                             RiskFact fact = Utils.JSON.parseObject(new String(delivery.getBody(), Charset.forName("utf-8")), RiskFact.class);
                             if (fact != null) {
-                                handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
+                                handler.send(ImmutableMap.of("FACT", FACT, "CP", fact.getEventPoint(), "body", fact));
                             }
                         }finally {
                             channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
