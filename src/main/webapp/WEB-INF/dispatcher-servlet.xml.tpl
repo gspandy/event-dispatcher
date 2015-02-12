@@ -12,9 +12,8 @@
     <!--监控-->
     <bean id="sarsMonitorAdvice" class="com.ctrip.infosec.riskverify.aop.RiskVerifyAdvice"/>
     <aop:config proxy-target-class="true">
-    <aop:advisor advice-ref="sarsMonitorAdvice"
-    pointcut="execution(* com.ctrip.infosec.riskverify.biz.RiskVerifyBiz.exe(..))"/>
-    <!--<aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>-->
+        <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.biz.RiskVerifyBiz.exe(..))"/>
+        <!--<aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>-->
     </aop:config>
     <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
         <property name="appId" value="100000557"/>
@@ -25,7 +24,9 @@
         <property name="url" value="{$DATACONFI_URL}"/>
         <property name="part" value="EventDispatcher"/>
     </bean>
-
+    <bean class="com.ctrip.infosec.configs.event.monitor.EventCounterSender" init-method="start">
+        <property name="url" value="{$EVENT_MONITOR_URL}"/>
+    </bean>
 
     <bean id="orderIndexStandard" class="com.ctrip.infosec.riskverify.standardMiddlewareImpl.OrderIndexStandard"/>
     <bean id="secStandard" class="com.ctrip.infosec.riskverify.standardMiddlewareImpl.SecStandard"/>
@@ -72,7 +73,6 @@
         <constructor-arg name="exchange" value="OI.Vacation.Order.Update"/>
         <constructor-arg name="cp" value="CP0028004"/>
     </bean>
-
 
     <bean id="OrderIndex_Piao" class="com.ctrip.infosec.riskverify.receiverImpl.CMessage">
         <constructor-arg name="identifier" value="100000557_0449e2e7"/>

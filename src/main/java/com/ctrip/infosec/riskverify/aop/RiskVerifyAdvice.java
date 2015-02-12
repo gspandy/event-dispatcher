@@ -26,7 +26,7 @@ public class RiskVerifyAdvice implements MethodInterceptor {
 
         Map map = (Map) invocation.getArguments()[0];
         String fact = map.get("FACT").toString();
-        String cp = map.get("CP").toString();
+//        String cp = map.get("CP").toString();
         // invoke
         boolean fault = false;
         StopWatch clock = new StopWatch();
@@ -42,7 +42,7 @@ public class RiskVerifyAdvice implements MethodInterceptor {
         } finally {
             clock.stop();
             long handlingTime = clock.getTime();
-            CounterRepository.increaseCounter(cp + "." + fact, handlingTime, fault);
+//            CounterRepository.increaseCounter(cp + "." + fact, handlingTime, fault);
             CounterRepository.increaseCounter(fact, handlingTime, fault);
             // operationPrefix
 //            String operationPrefix = SarsMonitorContext.getOperationPrefix();

@@ -13,7 +13,7 @@
         <file>/opt/logs/tomcat/eventdispatcher.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/opt/logs/tomcat/eventdispatcher.log.%d{yyyy-MM-dd}</fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <maxHistory>7</maxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%date %-5level %logger{40} - %msg%n</pattern>
