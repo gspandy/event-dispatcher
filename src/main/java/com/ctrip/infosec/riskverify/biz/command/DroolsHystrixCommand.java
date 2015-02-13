@@ -50,13 +50,13 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
         RiskFact riskFact = Utils.JSON.parseObject(new String(response, "utf-8"), RiskFact.class);
         RiskResult result = transform(riskFact, true);
 
-        logger.info("success");
         return result;
     }
 
     @Override
     protected RiskResult getFallback() {
-        logger.error("call drools rest fail and req EventId=" + req.getEventId());
+        String logPrefix = "[" + req.getEventPoint() + "][" + req.getEventId() + "] ";
+        logger.error(logPrefix + "invoke ruleEngine timeout or exception.");
         return transform(req, false);
     }
 
