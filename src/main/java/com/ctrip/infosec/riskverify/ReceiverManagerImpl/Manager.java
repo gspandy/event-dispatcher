@@ -23,7 +23,6 @@ public class Manager implements ReceiverManager {
     private static final Logger logger = LoggerFactory.getLogger(Manager.class);
     @Override
     public void addReceiver() {
-
     }
 
     @Override

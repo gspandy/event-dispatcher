@@ -1,16 +1,10 @@
-import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.riskverify.biz.RiskVerifyBiz;
-import com.ctrip.infosec.riskverify.RabbitMqSender;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -24,19 +18,11 @@ import java.util.Map;
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/dispatcher-servlet.xml"})
 public class RiskVerifyBizTest {
     @Autowired
-    private RabbitMqSender sender;
-    @Autowired
     private RiskVerifyBiz biz;
-    @Autowired
-    @Qualifier(value = "template1")
-    private AmqpTemplate template;
 
     @Test
     @Ignore
     public void senderTest() {
-        sender.init();
-        System.out.println("***");
-        sender.send("hello");
     }
 
     @Test
@@ -104,7 +90,4 @@ public class RiskVerifyBizTest {
         biz.exe(map);
     }
 
-    public void mqTest(){
-        template.receive("");
-    }
 }
