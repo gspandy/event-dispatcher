@@ -46,11 +46,10 @@ public class RabbitMq implements Receiver {
             public void onMessage(Message message) {
                 System.out.println(new String(message.getBody()));
                 RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                handler.send(ImmutableMap.of("FACT", fact, "CP", fact.getEventPoint(), "body", fact));
+                handler.send(ImmutableMap.of("FACT", FACT, "CP", fact.getEventPoint(), "body", fact));
             }
         });
         container.setAutoDeclare(true);
-
         container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
         container.start();
         System.out.println("***start");

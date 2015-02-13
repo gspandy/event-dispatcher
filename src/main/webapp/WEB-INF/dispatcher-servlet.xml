@@ -207,10 +207,10 @@
 
     <!--大安-->
     <bean id="connectionFactory0" class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
-        <property name="host" value="10.3.6.42"/>
-        <property name="virtualHost" value="medusa"/>
-        <property name="username" value="bsc-medusa"/>
-        <property name="password" value="bsc-medusa"/>
+        <property name="host" value="secbd1.qa.nt.ctripcorp.com"/>
+        <property name="virtualHost" value="infosec"/>
+        <property name="username" value="sec-read"/>
+        <property name="password" value="sec-read"/>
         <property name="channelCacheSize" value="10"/>
     </bean>
 
