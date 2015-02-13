@@ -9,27 +9,37 @@ import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.HystrixThreadPoolProperties;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 /**
  * Created by zhangsx on 2015/1/6.
  */
-public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DroolsHystrixCommand.class);
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+public class RuleEngineHystrixCommand extends HystrixCommand<RiskResult> {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(RuleEngineHystrixCommand.class);
+    /**
+     * hystrix
+     */
+    private static final int coreSize = GlobalConfig.getInteger("hystrix.ruleengine.coreSize", 64);
+    private static final int maxQueueSize = GlobalConfig.getInteger("hystrix.ruleengine.maxQueueSize", 20);
+    private static final int timeout = GlobalConfig.getInteger("hystrix.ruleengine.timeout", 2000);
+
+    private FastDateFormat fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private static String url = GlobalConfig.getString("RuleEngineUrl");
     private RiskFact req;
 
-    public DroolsHystrixCommand(RiskFact req) {
-        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("group"))
-                .andCommandKey(HystrixCommandKey.Factory.asKey("drools"))
-                .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-                        .withExecutionIsolationThreadTimeoutInMilliseconds(2000)));
+    public RuleEngineHystrixCommand(RiskFact req) {
+        super(HystrixCommand.Setter
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("RuleEngineGroup"))
+                .andCommandKey(HystrixCommandKey.Factory.asKey("RuleEngineCommand"))
+                .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionIsolationThreadTimeoutInMilliseconds(timeout))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withCoreSize(coreSize).withQueueSizeRejectionThreshold(maxQueueSize)));
         this.req = req;
     }
 
@@ -40,20 +50,20 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Accept-Encoding", "utf-8")
                 .bodyString(fact, ContentType.APPLICATION_JSON)
-                .connectTimeout(5000)
-                .socketTimeout(10000)
+                .connectTimeout(1000)
+                .socketTimeout(5000)
                 .execute().returnContent().asBytes();
 
         RiskFact riskFact = Utils.JSON.parseObject(new String(response, "utf-8"), RiskFact.class);
         RiskResult result = transform(riskFact, true);
 
-        logger.info("success");
         return result;
     }
 
     @Override
     protected RiskResult getFallback() {
-        logger.error("call drools rest fail and req EventId=" + req.getEventId());
+        String logPrefix = "[" + req.getEventPoint() + "][" + req.getEventId() + "] ";
+        logger.error(logPrefix + "invoke ruleEngine timeout or exception.");
         return transform(req, false);
     }
 
@@ -63,10 +73,10 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
         result.setEventPoint(req.getEventPoint());
         result.setEventId(req.getEventId());
         result.setRequestTime(req.getRequestTime());
-        result.setResponseReceive(sdf.format(new Date()));
-        result.setResponseTime(sdf.format(new Date()));
+        result.setResponseReceive(fastDateFormat.format(new Date()));
+        result.setResponseTime(fastDateFormat.format(new Date()));
         result.setResults(req.getFinalResult());
-        if(!isSuccess||req.getFinalResult()==null){
+        if (!isSuccess || req.getFinalResult() == null) {
             result.setResults(Configs.DEFAULT_RESULTS);
         }
         return result;

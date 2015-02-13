@@ -6,7 +6,7 @@ import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.Ext;
 import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.configs.event.monitor.EventCounterRepository;
-import com.ctrip.infosec.riskverify.biz.command.DroolsHystrixCommand;
+import com.ctrip.infosec.riskverify.biz.command.RuleEngineHystrixCommand;
 import com.ctrip.infosec.riskverify.biz.rabbitmq.RabbitMqSender;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
@@ -53,13 +53,14 @@ public class RiskVerifyBiz {
         // 数据标准化
         Configs.normalizeEvent(fact);
 
+        // RiskResult
         RiskResult result = new RiskResult();
+        result.setEventId(fact.getEventId());
+        result.setEventPoint(fact.getEventPoint());
+        result.setRequestTime(fact.getRequestTime());
+        result.setRequestReceive(fact.getRequestReceive());
+
         if (!Configs.isValidEventPoint(fact.getEventPoint())) {
-            result.setEventId(fact.getEventId());
-            result.setEventPoint(fact.getEventPoint());
-            result.setRequestTime(fact.getRequestTime());
-            result.setRequestReceive(fact.getRequestReceive());
-            result.setResponseReceive(fastDateFormat.format(new Date()));
             result.setResponseTime(fastDateFormat.format(new Date()));
             result.setResults(invalidEventPointResult);
             logger.info(logPrefix + "result: " + Utils.JSON.toJSONString(result));
@@ -68,12 +69,15 @@ public class RiskVerifyBiz {
 
         // 执行同步规则
         if (Configs.hasSyncRules(fact)) {
-            DroolsHystrixCommand drools_command = new DroolsHystrixCommand(fact);
-            result = drools_command.execute();
+            RuleEngineHystrixCommand command = new RuleEngineHystrixCommand(fact);
+            result = command.execute();
             if (fact.getExt() == null) {
                 fact.setExt(new HashMap<String, Object>());
             }
-            fact.getExt().put("SYNC_RULE_EXECUTED", true);
+            fact.getExt().put(Ext.SYNC_RULE_EXECUTED, true);
+        } else {
+            result.setResponseTime(fastDateFormat.format(new Date()));
+            result.setResults(Configs.DEFAULT_RESULTS);
         }
 
         // 执行异步规则
