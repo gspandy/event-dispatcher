@@ -5,10 +5,8 @@ import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
-import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.*;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.slf4j.LoggerFactory;
@@ -21,15 +19,20 @@ import java.util.Date;
  */
 public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DroolsHystrixCommand.class);
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private static String url = GlobalConfig.getString("RuleEngineUrl");
     private RiskFact req;
 
+    private static final int coreSize = GlobalConfig.getInteger("hystrix.ruleengine.coreSize", 64);
+    private static final int maxQueueSize = GlobalConfig.getInteger("hystrix.ruleengine.maxQueueSize", 20);
+    private static final int timeout = GlobalConfig.getInteger("hystrix.ruleengine.timeout", 2000);
+
     public DroolsHystrixCommand(RiskFact req) {
-        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("group"))
-                .andCommandKey(HystrixCommandKey.Factory.asKey("drools"))
-                .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-                        .withExecutionIsolationThreadTimeoutInMilliseconds(2000)));
+        super(HystrixCommand.Setter
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("RuleEngineGroup"))
+                .andCommandKey(HystrixCommandKey.Factory.asKey("RuleEngineCommand"))
+                .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionIsolationThreadTimeoutInMilliseconds(timeout))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withCoreSize(coreSize).withQueueSizeRejectionThreshold(maxQueueSize)));
         this.req = req;
     }
 
