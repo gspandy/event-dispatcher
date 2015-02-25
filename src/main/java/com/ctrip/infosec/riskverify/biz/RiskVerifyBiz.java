@@ -43,15 +43,16 @@ public class RiskVerifyBiz {
         // 设置时间戳及扩展字段
         fact.setEventId(Configs.timeBasedUUID());
         fact.setRequestReceive(fastDateFormat.format(new Date()));
-
-        String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
-        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
+        // 数据标准化
+        Configs.normalizeEvent(fact);
+        // 设置CHANNEL
         if (fact.getExt() == null) {
             fact.setExt(new HashMap<String, Object>());
         }
         fact.getExt().put(Ext.CHANNEL, channel);
-        // 数据标准化
-        Configs.normalizeEvent(fact);
+
+        String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
 
         // RiskResult
         RiskResult result = new RiskResult();
