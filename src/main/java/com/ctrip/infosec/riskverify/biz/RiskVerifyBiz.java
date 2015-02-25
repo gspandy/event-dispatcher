@@ -45,7 +45,7 @@ public class RiskVerifyBiz {
         fact.setRequestReceive(fastDateFormat.format(new Date()));
 
         String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
-        logger.info(logPrefix + "event: " + Utils.JSON.toJSONString(fact.getEventBody()));
+        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
         if (fact.getExt() == null) {
             fact.setExt(new HashMap<String, Object>());
         }
