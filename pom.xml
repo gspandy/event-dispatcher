@@ -3,9 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ctrip.infosec</groupId>
     <artifactId>infosec-riskverify-service</artifactId>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>infosec-riskverify-service Maven Webapp</name>
+    <modules>
+        <module>infosec-riskverify-service-job</module>
+        <module>infosec-riskverify-service-core</module>
+        <module>infosec-riskverify-service-rest</module>
+    </modules>
     <url>http://maven.apache.org</url>
 
     <properties>
