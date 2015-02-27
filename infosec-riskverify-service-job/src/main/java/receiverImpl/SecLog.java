@@ -1,8 +1,8 @@
 package receiverImpl;
 
-import com.ctrip.infosec.riskverify.Receiver;
-import com.ctrip.infosec.riskverify.StandardMiddleware;
 import com.google.common.collect.ImmutableMap;
+import manager.Lifecycle;
+import manager.Receiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -12,14 +12,15 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import standardMiddlewareImpl.StandardMiddleware;
 
 /**
  * Created by zhangsx on 2015/2/4.
  */
-public class SecLog implements Receiver{
+public class SecLog implements Receiver {
     private final String FACT = "SecLog";
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
-    private volatile ReceiverStatus status;
+    private volatile Lifecycle.ReceiverStatus status;
     private SimpleMessageListenerContainer container;
     @Autowired
     @Qualifier(value = "secStandard")
