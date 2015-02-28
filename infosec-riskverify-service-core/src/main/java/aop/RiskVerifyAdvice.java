@@ -44,12 +44,6 @@ public class RiskVerifyAdvice implements MethodInterceptor {
             CounterRepository.increaseCounter(cp + "." + fact, handlingTime, fault);
             CounterRepository.increaseCounter(fact, handlingTime, fault);
             EventCounterRepository.increaseCounter(cp, Channel.valueOf(fact));
-            // operationPrefix
-//            String operationPrefix = SarsMonitorContext.getOperationPrefix();
-//            if (StringUtils.isNotBlank(operationPrefix)) {
-//                CounterRepository.increaseCounter("[" + operationPrefix + "] " + serviceName + "." + operationName, handlingTime, fault);
-//            }
-            // logger
             if (!fault) {
                 if (handlingTime < SarsMonitorContext.WARN_VALUE) {
                     logger.info(SarsMonitorContext.getLogPrefix() + "invoke " + serviceName + "." + operationName + ", usage=" + handlingTime + "ms");
