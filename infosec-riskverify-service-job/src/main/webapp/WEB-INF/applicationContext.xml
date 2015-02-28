@@ -4,15 +4,9 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans.xsd 
-http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-
-context.xsd http://www.springframework.org/schema/mvc 
-http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop 
-http://www.springframework.org/schema/aop/spring-aop.xsd 
-http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-
-rabbit.xsd">
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-">
 
     <context:component-scan base-package="biz"/>
     <context:annotation-config/>
@@ -189,7 +183,7 @@ method="init"/>-->
 
     <bean class="ReceiverManagerImpl.Manager" init-method="manage">
         <constructor-arg name="asyncReceivers">
-            <map key-type="java.lang.String" value-type="com.ctrip.infosec.riskverify.Receiver">
+            <map key-type="java.lang.String" value-type="manager.Receiver">
                 <entry key="OrderIndex_Flight" value-ref="OrderIndex_Flight"></entry>
                 <entry key="OrderIndex_Activity" value-ref="OrderIndex_Activity"></entry>
                 <entry key="OrderIndex_Lipin" value-ref="OrderIndex_Lipin"></entry>
