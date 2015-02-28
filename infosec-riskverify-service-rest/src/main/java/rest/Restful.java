@@ -1,3 +1,5 @@
+package rest;
+
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.google.common.collect.ImmutableMap;
