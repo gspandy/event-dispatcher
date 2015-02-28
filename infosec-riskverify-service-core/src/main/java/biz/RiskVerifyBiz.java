@@ -5,6 +5,8 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.Ext;
+import com.ctrip.infosec.configs.event.Channel;
+import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -65,6 +67,12 @@ public class RiskVerifyBiz {
         if(Configs.hasSyncRules(req)){
             DroolsHystrixCommand drools_command = new DroolsHystrixCommand(req);
             result =  drools_command.execute();
+
+            Throwable t = drools_command.getFailedExecutionException();
+            if(t!=null){
+                CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
+                logger.error("sync rule called",t);
+            }
             if(req.getExt()==null){
                 req.setExt(new HashMap<String, Object>());
             }

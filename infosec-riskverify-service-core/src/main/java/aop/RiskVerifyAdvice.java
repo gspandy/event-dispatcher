@@ -1,5 +1,7 @@
 package aop;
 
+import com.ctrip.infosec.configs.event.Channel;
+import com.ctrip.infosec.configs.event.monitor.EventCounterRepository;
 import com.ctrip.infosec.sars.monitor.SarsMonitorContext;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -41,6 +43,7 @@ public class RiskVerifyAdvice implements MethodInterceptor {
             long handlingTime = clock.getTime();
             CounterRepository.increaseCounter(cp + "." + fact, handlingTime, fault);
             CounterRepository.increaseCounter(fact, handlingTime, fault);
+            EventCounterRepository.increaseCounter(cp, Channel.valueOf(fact));
             // operationPrefix
 //            String operationPrefix = SarsMonitorContext.getOperationPrefix();
 //            if (StringUtils.isNotBlank(operationPrefix)) {

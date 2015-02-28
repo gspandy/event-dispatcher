@@ -45,7 +45,6 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
                 .connectTimeout(5000)
                 .socketTimeout(10000)
                 .execute().returnContent().asBytes();
-
         RiskFact riskFact = Utils.JSON.parseObject(new String(response, "utf-8"), RiskFact.class);
         RiskResult result = transform(riskFact, true);
 

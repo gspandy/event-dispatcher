@@ -1,5 +1,7 @@
 package receiverImpl;
 
+import com.ctrip.infosec.configs.event.Channel;
+import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.google.common.collect.ImmutableMap;
 import manager.Lifecycle;
 import manager.Receiver;
@@ -49,7 +51,12 @@ public class SecLog implements Receiver {
         container.setMessageListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {
-                standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", FACT, "body",message.getBody()));
+                try {
+                    standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", FACT, "body",message.getBody()));
+                }catch (Throwable t){
+                    CounterRepository.increaseCounter("SecLog", 0, true);
+                    logger.error("SecLog",t);
+                }
             }
         });
         container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());

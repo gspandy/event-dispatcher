@@ -1,6 +1,8 @@
 package receiverImpl;
 
 import com.ctrip.infosec.common.model.RiskFact;
+import com.ctrip.infosec.configs.event.Channel;
+import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import handlerImpl.Handler;
@@ -21,7 +23,7 @@ import java.nio.charset.Charset;
  * Created by zhangsx on 2015/2/3.
  */
 public class RabbitMq implements Receiver {
-    private final String FACT = "RabbitMq";
+//    private final String FACT = "RabbitMq";
     private static final Logger logger = LoggerFactory.getLogger(RabbitMq.class);
     private SimpleMessageListenerContainer container;
     @Autowired
@@ -44,9 +46,14 @@ public class RabbitMq implements Receiver {
         container.setMessageListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {
-                System.out.println(new String(message.getBody()));
-                RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                handler.send(ImmutableMap.of("FACT", FACT, "CP", fact.getEventPoint(), "body", fact));
+//                System.out.println(new String(message.getBody()));
+                try{
+                    RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
+                    handler.send(ImmutableMap.of("FACT", Channel.MQ.toString(), "CP", fact.getEventPoint(), "body", fact));
+                }catch (Throwable t){
+                    CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
+                    logger.error("RabbitMq",t);
+                }
             }
         });
         container.setAutoDeclare(true);

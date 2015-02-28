@@ -11,7 +11,7 @@ import java.util.Map;
 public class CommonHandler implements Handler {
     @Autowired
     private RiskVerifyBiz biz;
-//
+
     @Override
     public RiskResult send(Map map) {
         return biz.exe(map);

@@ -2,6 +2,7 @@ package rest;
 
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
+import com.ctrip.infosec.configs.event.Channel;
 import com.google.common.collect.ImmutableMap;
 import handlerImpl.Handler;
 import manager.Receiver;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class Restful implements Receiver {
-    private final String FACT = "REST";
+//    private final String FACT = "REST";
     @Autowired
     private Handler handler;
 
@@ -32,7 +33,7 @@ public class Restful implements Receiver {
     public
     @ResponseBody
     ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
-        RiskResult riskResult = handler.send(ImmutableMap.of("FACT", FACT, "CP", req.getEventPoint(), "body", req));
+        RiskResult riskResult = handler.send(ImmutableMap.of("FACT", Channel.REST.toString(), "CP", req.getEventPoint(), "body", req));
         return new ResponseEntity<RiskResult>(riskResult, HttpStatus.OK);
     }
 

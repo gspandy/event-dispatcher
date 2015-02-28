@@ -8,6 +8,7 @@ import com.ctrip.cmessaging.client.exception.IllegalExchangeName;
 import com.ctrip.cmessaging.client.exception.IllegalTopic;
 import com.ctrip.cmessaging.client.impl.Config;
 import com.ctrip.cmessaging.client.impl.ConsumerFactory;
+import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
@@ -25,7 +26,7 @@ public class CMessage implements Receiver {
     @Autowired
     @Qualifier(value = "orderIndexStandard")
     private StandardMiddleware standardMiddleware;
-    private final String FACT = "CMessage";
+//    private final String FACT = "CMessage";
     private IAsyncConsumer consumer = null;
     private String identifier;
     private String subject;
@@ -77,10 +78,10 @@ public class CMessage implements Receiver {
                 @Override
                 public void callback(IMessage iMessage) throws Exception {
                     try {
-                        standardMiddleware.assembleAndSend(ImmutableMap.of("fact", FACT, "CP", cp, "body", iMessage.getBody()));
+                        standardMiddleware.assembleAndSend(ImmutableMap.of("fact", Channel.CMessage.toString(), "CP", cp, "body", iMessage.getBody()));
                     } catch (Throwable t) {
-                        CounterRepository.increaseCounter(FACT, 0, true);
-                        logger.error(t.getMessage(),t);
+                        CounterRepository.increaseCounter(Channel.CMessage.toString(), 0, true);
+                        logger.error("CMessage",t);
                     } finally {
                         iMessage.setAcks(AckMode.Ack);
                         iMessage.dispose();
