@@ -5,11 +5,9 @@
     <artifactId>infosec-riskverify-service</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>infosec-riskverify-service Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+    <name>event-dispatcher v${project.version}</name>
 
     <properties>
-        <filter.file>conf/config.dev.properties</filter.file>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
         <slf4j.version>1.7.5</slf4j.version>
@@ -92,9 +90,9 @@
             <version>${infosec-monitor-client.version}</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>com.ctrip.infosec.sars</groupId>-->
-            <!--<artifactId>sars.util</artifactId>-->
-            <!--<version>1.0.0-SNAPSHOT</version>-->
+        <!--<groupId>com.ctrip.infosec.sars</groupId>-->
+        <!--<artifactId>sars.util</artifactId>-->
+        <!--<version>1.0.0-SNAPSHOT</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -109,9 +107,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>cglib</groupId>-->
-            <!--<artifactId>cglib-nodep</artifactId>-->
-            <!--<version>2.2.2</version>-->
+        <!--<groupId>cglib</groupId>-->
+        <!--<artifactId>cglib-nodep</artifactId>-->
+        <!--<version>2.2.2</version>-->
         <!--</dependency>-->
 
         <!-- Spring -->
@@ -227,56 +225,17 @@
     </dependencies>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
         <finalName>riskverify</finalName>
-        <!--<plugins>-->
-        <!--<plugin>-->
-        <!--<groupId>org.mortbay.jetty</groupId>-->
-        <!--<artifactId>maven-jetty-plugin</artifactId>-->
-        <!--<version>6.1.10</version>-->
-        <!--<configuration>-->
-        <!--<scanIntervalSeconds>10</scanIntervalSeconds>-->
-        <!--<stopKey>foo</stopKey>-->
-        <!--<stopPort>9999</stopPort>-->
-        <!--</configuration>-->
-        <!--<executions>-->
-        <!--<execution>-->
-        <!--<id>start-jetty</id>-->
-        <!--<phase>pre-integration-test</phase>-->
-        <!--<goals>-->
-        <!--<goal>run</goal>-->
-        <!--</goals>-->
-        <!--<configuration>-->
-        <!--<scanIntervalSeconds>0</scanIntervalSeconds>-->
-        <!--<daemon>true</daemon>-->
-        <!--</configuration>-->
-        <!--</execution>-->
-        <!--<execution>-->
-        <!--<id>stop-jetty</id>-->
-        <!--<phase>post-integration-test</phase>-->
-        <!--<goals>-->
-        <!--<goal>stop</goal>-->
-        <!--</goals>-->
-        <!--</execution>-->
-        <!--</executions>-->
-        <!--</plugin>-->
-        <!--</plugins>-->
-
-        <!--<resources>-->
-            <!--<resource>-->
-                <!--<directory>src/main/resources</directory>-->
-                <!--<filtering>false</filtering>-->
-            <!--</resource>-->
-            <!--<resource>-->
-                <!--<directory>src/main/resources</directory>-->
-                <!--<filtering>true</filtering>-->
-                <!--<includes>-->
-                    <!--<include>GlobalConfig.properties</include>-->
-                <!--</includes>-->
-            <!--</resource>-->
-        <!--</resources>-->
-        <!--<filters>-->
-            <!--<filter>./${filter.file}</filter>-->
-        <!--</filters>-->
     </build>
 
 </project>

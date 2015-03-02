@@ -42,14 +42,18 @@ public class RiskVerifyBiz {
 
         // 设置时间戳及扩展字段
         fact.setEventId(Configs.timeBasedUUID());
-        fact.setRequestReceive(fastDateFormat.format(new Date()));
+        long receiveTime = new Date().getTime();
+        fact.setRequestReceive(fastDateFormat.format(receiveTime));
         // 数据标准化
         Configs.normalizeEvent(fact);
-        // 设置CHANNEL
+
         if (fact.getExt() == null) {
             fact.setExt(new HashMap<String, Object>());
         }
+        // 设置CHANNEL
         fact.getExt().put(Ext.CHANNEL, channel);
+        // 设置descTimestamp(等于: 2099年(4070880000000L) - 当前时间戳), 用户HBase的RowKey拼装
+        fact.getExt().put("descTimestamp", (4070880000000L - receiveTime));
 
         String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
         logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
