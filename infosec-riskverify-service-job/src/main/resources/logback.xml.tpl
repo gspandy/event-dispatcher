@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <substitutionProperty name="default_pattern" value="%date %-5level %logger{40} - %msg%n" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoding>UTF-8</encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${default_pattern}</pattern>
+        </layout>
+    </appender>
+
     <!--Output to central logging -->
     <appender name="CentralLogging"
               class="com.ctrip.freeway.appender.CentralLoggingAppender">
@@ -22,6 +31,7 @@
     <root level="INFO">
         <appender-ref ref="fileAppender"/>
         <appender-ref ref="CentralLogging"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 
 </configuration>

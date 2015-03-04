@@ -26,7 +26,7 @@ public class Restful implements Receiver {
 
     @Override
     public void init() {
-        throw new RuntimeException("过期方法");
+
     }
 
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)

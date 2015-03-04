@@ -1,52 +1,12 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-
-    <context:component-scan base-package="biz"/>
+    
     <context:component-scan base-package="rest"/>
     <context:annotation-config/>
     <mvc:annotation-driven/>
-
-    <!--监控-->
-    <bean id="sarsMonitorAdvice" class="aop.RiskVerifyAdvice"/>
-    <aop:config proxy-target-class="true">
-        <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* biz.RiskVerifyBiz.exe(..))"/>
-        <!--<aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* com.ctrip.infosec.riskverify.rest.RiskRestImpl.checkHealth(..))"/>-->
-    </aop:config>
-    <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
-        <property name="appId" value="100000557"/>
-        <property name="postUrl" value="http://10.2.10.75:8080/monitorws/rest/monitor"/>
-    </bean>
-
-    <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
-        <property name="url" value="http://10.2.10.76:8080/configsws/rest/loadconfig"/>
-        <property name="part" value="EventDispatcher"/>
-    </bean>
-    <bean class="com.ctrip.infosec.configs.event.monitor.EventCounterSender" init-method="start">
-    </bean>
-    <bean class="handlerImpl.CommonHandler"/>
-    <!--大安-->
-    <bean id="connectionFactory0"
-          class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
-        <property name="host" value="secbd1.qa.nt.ctripcorp.com"/>
-        <property name="virtualHost" value="infosec"/>
-        <property name="username" value="sec-read"/>
-        <property name="password" value="sec-read"/>
-        <property name="channelCacheSize" value="10"/>
-    </bean>
-
-    <bean id="connectionFactory1"
-          class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
-        <property name="host" value="10.3.6.42"/>
-        <property name="virtualHost" value="medusa"/>
-        <property name="username" value="bsc-medusa"/>
-        <property name="password" value="bsc-medusa"/>
-    </bean>
-
-    <bean id="mqsender" class="org.springframework.amqp.rabbit.core.RabbitTemplate">
-        <constructor-arg name="connectionFactory" ref="connectionFactory1"/>
-    </bean>
+    
 </beans>

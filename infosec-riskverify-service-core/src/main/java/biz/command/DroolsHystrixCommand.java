@@ -3,6 +3,8 @@ package biz.command;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
+import com.ctrip.infosec.configs.event.Channel;
+import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.netflix.hystrix.*;
@@ -54,6 +56,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     @Override
     protected RiskResult getFallback() {
         String logPrefix = "[" + req.getEventPoint() + "][" + req.getEventId() + "] ";
+        CounterRepository.increaseCounter(Channel.REST.toString(), 0, true);
         logger.error(logPrefix + "invoke ruleEngine timeout or exception.");
         return transform(req, false);
     }

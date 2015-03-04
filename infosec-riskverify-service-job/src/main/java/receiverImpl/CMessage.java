@@ -45,7 +45,6 @@ public class CMessage implements Receiver {
 
     @Override
     public void init() {
-        throw new RuntimeException("过期方法");
     }
 
     /**

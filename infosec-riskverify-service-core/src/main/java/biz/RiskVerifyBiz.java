@@ -68,11 +68,6 @@ public class RiskVerifyBiz {
             DroolsHystrixCommand drools_command = new DroolsHystrixCommand(req);
             result =  drools_command.execute();
 
-            Throwable t = drools_command.getFailedExecutionException();
-            if(t!=null){
-                CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
-                logger.error("sync rule called",t);
-            }
             if(req.getExt()==null){
                 req.setExt(new HashMap<String, Object>());
             }

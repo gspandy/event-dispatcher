@@ -18,9 +18,15 @@
             <scope>test</scope>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>com.ctrip.infosec</groupId>-->
+            <!--<artifactId>infosec-riskverify-service-core</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>com.ctrip.infosec</groupId>
-            <artifactId>infosec-riskverify-service-core</artifactId>
+            <artifactId>infosec-riskverify-service-job</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

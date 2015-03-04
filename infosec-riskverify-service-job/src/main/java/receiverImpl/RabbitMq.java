@@ -35,7 +35,6 @@ public class RabbitMq implements Receiver {
 
     @Override
     public void init() {
-        throw new RuntimeException("过期方法");
     }
 
     @Override
@@ -50,6 +49,7 @@ public class RabbitMq implements Receiver {
                 try{
                     RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
                     handler.send(ImmutableMap.of("FACT", Channel.MQ.toString(), "CP", fact.getEventPoint(), "body", fact));
+                    logger.info("***MQ"+fact.getEventPoint()+"***"+Thread.currentThread().getName());
                 }catch (Throwable t){
                     CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
                     logger.error("RabbitMq",t);
@@ -59,7 +59,6 @@ public class RabbitMq implements Receiver {
         container.setAutoDeclare(true);
         container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
         container.start();
-        System.out.println("***start");
     }
 
     @Override

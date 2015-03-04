@@ -5,6 +5,10 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
 
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:appContext/riskverify*.xml</param-value>
+    </context-param>
     <!--Spring的ApplicationContext 载入 -->
     <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

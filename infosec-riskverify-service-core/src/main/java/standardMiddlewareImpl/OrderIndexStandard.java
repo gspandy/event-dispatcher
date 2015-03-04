@@ -5,6 +5,7 @@ import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import handlerImpl.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -15,7 +16,9 @@ import java.util.Map;
  * Created by zhangsx on 2015/2/3.
  */
 public class OrderIndexStandard implements StandardMiddleware {
+
     @Autowired
+    @Qualifier("commonHandler")
     private Handler handler;
     public void assembleAndSend(Map map) {
         if (map != null) {

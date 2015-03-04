@@ -34,7 +34,6 @@ public class SecLog implements Receiver {
 
     @Override
     public void init() {
-        throw new RuntimeException("过期方法");
     }
 
     @Override
@@ -53,6 +52,7 @@ public class SecLog implements Receiver {
             public void onMessage(Message message) {
                 try {
                     standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", FACT, "body",message.getBody()));
+                    logger.info("***SecLog***"+Thread.currentThread().getName());
                 }catch (Throwable t){
                     CounterRepository.increaseCounter("SecLog", 0, true);
                     logger.error("SecLog",t);
@@ -60,7 +60,6 @@ public class SecLog implements Receiver {
             }
         });
         container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
-
         container.start();
     }
 

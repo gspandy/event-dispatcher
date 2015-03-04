@@ -5,6 +5,7 @@ import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import handlerImpl.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
@@ -17,6 +18,7 @@ import java.util.Objects;
  */
 public class SecStandard implements StandardMiddleware {
     @Autowired
+    @Qualifier("commonHandler")
     private Handler handler;
     private final String prefix = "C";
 
