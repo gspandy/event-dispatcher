@@ -2,6 +2,7 @@ package handlerImpl;
 import biz.RiskVerifyBiz;
 import com.ctrip.infosec.common.model.RiskResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 

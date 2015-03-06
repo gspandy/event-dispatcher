@@ -4,29 +4,32 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoding>UTF-8</encoding>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>${default_pattern}</pattern>
-        </layout>
+                <encoder><!-- 必须指定，否则不会往文件输出内容 -->
+                    <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+                </encoder>
     </appender>
     
     <!--Output to central logging -->
-    <appender name="CentralLogging"
-              class="com.ctrip.freeway.appender.CentralLoggingAppender">
-        <appId>100000557</appId>
-        <serverIp>{$ClogIp}</serverIp>
-        <serverPort>{$ClogPort}</serverPort>
-    </appender>
+        <appender name="CentralLogging"
+                  class="com.ctrip.freeway.appender.CentralLoggingAppender">
+            <appId>100000557</appId>
+            <serverIp>collector.logging.fws.qa.nt.ctripcorp.com</serverIp>
+            <serverPort>63100</serverPort>
+            <encoder><!-- 必须指定，否则不会往文件输出内容 -->
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+            </encoder>
+        </appender>
 
-    <appender name="bizfileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <appender name="bizfileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <encoding>UTF-8</encoding>
             <file>/opt/logs/tomcat/bizeventdispatcher.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <fileNamePattern>/opt/logs/tomcat/bizeventdispatcher.log.%d{yyyyMMddHH}</fileNamePattern>
                 <maxHistory>7</maxHistory>
             </rollingPolicy>
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>%date %-5level %logger{40} - %msg%n</pattern>
-            </layout>
+            <encoder><!-- 必须指定，否则不会往文件输出内容 -->
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+            </encoder>
         </appender>
 
         <appender name="debugfileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -36,9 +39,9 @@
                 <fileNamePattern>/opt/logs/tomcat/debugeventdispatcher.log.%d{yyyy-MM-dd}</fileNamePattern>
                 <maxHistory>30</maxHistory>
             </rollingPolicy>
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>%date %-5level %logger{40} - %msg%n</pattern>
-            </layout>
+            <encoder><!-- 必须指定，否则不会往文件输出内容 -->
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+            </encoder>
         </appender>
 
         <logger level="info" name="biz" additivity="false">

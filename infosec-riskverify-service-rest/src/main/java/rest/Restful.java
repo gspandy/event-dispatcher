@@ -6,6 +6,8 @@ import com.ctrip.infosec.configs.event.Channel;
 import com.google.common.collect.ImmutableMap;
 import handlerImpl.Handler;
 import manager.Receiver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,7 @@ public class Restful implements Receiver {
     public
     @ResponseBody
     ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
+        LoggerFactory.getLogger("123456").info("asdfgh");
         RiskResult riskResult = handler.send(ImmutableMap.of("FACT", Channel.REST.toString(), "CP", req.getEventPoint(), "body", req));
         return new ResponseEntity<RiskResult>(riskResult, HttpStatus.OK);
     }
