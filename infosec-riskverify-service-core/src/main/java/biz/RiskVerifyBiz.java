@@ -45,13 +45,16 @@ public class RiskVerifyBiz {
         String cp = map.get("CP").toString();
         String channel = map.get("FACT").toString();
 
-        req.setRequestReceive(sdf.format(new Date()));
+        long receiveTime = new Date().getTime();
+        req.setRequestReceive(sdf.format(receiveTime));
         req.setEventId(Configs.timeBasedUUID());
+        Configs.normalizeEvent(req);
+
         if(req.getExt()==null) {
             req.setExt(new HashMap<String, Object>());
         }
         req.getExt().put(Ext.CHANNEL, channel);
-        Configs.normalizeEvent(req);
+        req.getExt().put("descTimestamp", (4070880000000L - receiveTime));
 
         String logPrefix = "[" + channel + "][" + req.getEventPoint() + "][" + req.getEventId() + "]";
         logger.info(logPrefix + "[step0]" + Utils.JSON.toJSONString(req));
@@ -65,6 +68,7 @@ public class RiskVerifyBiz {
             result.setResponseReceive(sdf.format(new Date()));
             result.setResponseTime(sdf.format(new Date()));
             result.setResults(invalidEventPointResult);
+            logger.info(logPrefix + "[step3]" + Utils.JSON.toJSONString(result));
             return result;
         }
         if(Configs.hasSyncRules(req)){
