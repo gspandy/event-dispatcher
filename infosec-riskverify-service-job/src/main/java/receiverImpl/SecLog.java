@@ -33,9 +33,6 @@ public class SecLog implements Receiver {
     @Qualifier(value = "connectionFactory0")
     private ConnectionFactory factory;
 
-    @Override
-    public void init() {
-    }
 
     @Override
     public void start() {

@@ -6,11 +6,6 @@ package manager;
  */
 public interface Lifecycle {
     /**
-     * 初始化接收器
-     */
-    @Deprecated
-    void init();
-    /**
      * 开启接收器
      */
     void start();

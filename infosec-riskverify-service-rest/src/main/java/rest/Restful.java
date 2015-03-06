@@ -26,11 +26,6 @@ public class Restful implements Receiver {
     @Autowired
     private Handler handler;
 
-    @Override
-    public void init() {
-
-    }
-
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
     public
     @ResponseBody

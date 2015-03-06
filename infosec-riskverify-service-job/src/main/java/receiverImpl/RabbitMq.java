@@ -34,10 +34,6 @@ public class RabbitMq implements Receiver {
     private ConnectionFactory factory;
 
     @Override
-    public void init() {
-    }
-
-    @Override
     public void start() {
         container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(factory);

@@ -43,9 +43,6 @@ public class CMessage implements Receiver {
 
     }
 
-    @Override
-    public void init() {
-    }
 
     /**
      * FWS:http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/
