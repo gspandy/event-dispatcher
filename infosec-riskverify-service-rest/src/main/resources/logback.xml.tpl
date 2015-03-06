@@ -44,7 +44,7 @@
         <logger level="info" name="biz" additivity="false">
             <appender-ref ref="bizfileAppender"/>
         </logger>
-        <root level="debug">
+        <root level="info">
             <appender-ref ref="debugfileAppender"/>
             <appender-ref ref="CentralLogging"/>
             <appender-ref ref="STDOUT"/>
