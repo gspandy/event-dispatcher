@@ -26,7 +26,7 @@
        </bean>
 
        <bean class="com.ctrip.infosec.configs.event.monitor.EventCounterSender" init-method="start">
-           <property name="url" value=""/>
+              <property name="url" value="http://10.2.10.76:8080/configsws/rest/loadconfig/rest/eventmonitor"/>
        </bean>
        <bean id="commonHandler" class="handlerImpl.CommonHandler"/>
 

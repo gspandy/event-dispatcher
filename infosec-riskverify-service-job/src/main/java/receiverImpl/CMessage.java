@@ -59,14 +59,14 @@ public class CMessage implements Receiver {
         }
         status = ReceiverStatus.running;
 
-        logger.info("cmessage start");
+        logger.info("cmessage start.");
         try {
             consumer = ConsumerFactory.instance.createConsumerAsAsync(identifier, subject, exchange);
         } catch (IllegalTopic illegalTopic) {
-            //TODO
+            logger.error("cmessage call start failed.",illegalTopic);
             throw new RuntimeException(illegalTopic);
         } catch (IllegalExchangeName illegalExchangeName) {
-            //TODO
+            logger.error("cmessage call start failed.",illegalExchangeName);
             throw new RuntimeException(illegalExchangeName);
         }
         Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
@@ -80,7 +80,7 @@ public class CMessage implements Receiver {
                         standardMiddleware.assembleAndSend(ImmutableMap.of("fact", Channel.CMessage.toString(), "CP", cp, "body", iMessage.getBody()));
                     } catch (Throwable t) {
                         CounterRepository.increaseCounter(Channel.CMessage.toString(), 0, true);
-                        logger.error("CMessage",t);
+                        logger.error("CMessage ConsumerCallbackEventHandler error.",t);
                     } finally {
                         iMessage.setAcks(AckMode.Ack);
                         iMessage.dispose();
@@ -97,7 +97,7 @@ public class CMessage implements Receiver {
         if (consumer != null && status == ReceiverStatus.running) {
             consumer.stop();
             status = ReceiverStatus.stoped;
-            logger.info("cmessage stop");
+            logger.info("cmessage stop.");
         }
     }
 

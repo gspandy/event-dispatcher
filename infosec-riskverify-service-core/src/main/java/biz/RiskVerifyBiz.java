@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Component
 public class RiskVerifyBiz {
-    private static final Logger logger = LoggerFactory.getLogger(RiskVerifyBiz.class);
+    private static final Logger logger = LoggerFactory.getLogger("biz");
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private final String exchangeName = "infosec.ruleengine.exchange";
     private final String routingKey = "ruleengine";
@@ -53,6 +53,9 @@ public class RiskVerifyBiz {
         req.getExt().put(Ext.CHANNEL, channel);
         Configs.normalizeEvent(req);
 
+        String logPrefix = "[" + channel + "][" + req.getEventPoint() + "][" + req.getEventId() + "]";
+        logger.info(logPrefix + "[step0]" + Utils.JSON.toJSONString(req));
+
         RiskResult result = new RiskResult();
         result.setEventId(req.getEventId());
         result.setEventPoint(req.getEventPoint());
@@ -76,6 +79,8 @@ public class RiskVerifyBiz {
             result.setResponseTime(sdf.format(new Date()));
             result.setResults(Configs.DEFAULT_RESULTS);
         }
+
+        logger.info(logPrefix + "[step1]" + Utils.JSON.toJSONString(result));
 
         String s = Utils.JSON.toJSONString(req);
         sender.send(exchangeName,routingKey,new Message(s.getBytes(),new MessageProperties()));

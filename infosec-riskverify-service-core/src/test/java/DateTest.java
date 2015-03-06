@@ -1,26 +1,25 @@
+import com.ctrip.infosec.configs.utils.Utils;
+import com.google.common.collect.Lists;
 import ttt.Test0;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhangsx on 2015/3/2.
  */
+class ClassTest{
+    public Object obj;
+}
 public abstract class DateTest {
     public static void main(String[] args) {
-        MyClassLoader myClassLoader = new MyClassLoader();
+        MyClassLoader loader = new MyClassLoader();
         try {
-            Class cl = myClassLoader.loadClass("");
-            try {
-                System.out.println(cl.getClass().getName());
-                Object obj = cl.getClass().newInstance();
-                System.out.println(obj instanceof Test0);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            Class cla = loader.loadClass("");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -30,9 +29,6 @@ public abstract class DateTest {
 class MyClassLoader extends ClassLoader{
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if(name.startsWith("java.")){
-            super.loadClass(name);
-        }
         try {
             FileInputStream fileInputStream = new FileInputStream("E:\\GIT_WORKSPACE\\event-dispatcher\\infosec-riskverify-service-core\\target\\test-classes\\ttt\\Test0.class");
             byte[] bytes = new byte[1024];
@@ -45,7 +41,7 @@ class MyClassLoader extends ClassLoader{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        throw new RuntimeException();
+        return super.loadClass(name);
     }
 
 //    @Override

@@ -17,21 +17,37 @@
         <serverPort>{$ClogPort}</serverPort>
     </appender>
 
-    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <encoding>UTF-8</encoding>
-        <file>/opt/logs/tomcat/eventdispatcher.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/opt/logs/tomcat/eventdispatcher.log.%d{yyyy-MM-dd}</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%date %-5level %logger{40} - %msg%n</pattern>
-        </layout>
-    </appender>
-    <root level="INFO">
-        <appender-ref ref="fileAppender"/>
-        <appender-ref ref="CentralLogging"/>
-        <appender-ref ref="STDOUT"/>
-    </root>
+    <appender name="bizfileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoding>UTF-8</encoding>
+            <file>/opt/logs/tomcat/bizeventdispatcher.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>/opt/logs/tomcat/bizeventdispatcher.log.%d{yyyyMMddHH}</fileNamePattern>
+                <maxHistory>7</maxHistory>
+            </rollingPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%date %-5level %logger{40} - %msg%n</pattern>
+            </layout>
+        </appender>
+
+        <appender name="debugfileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoding>UTF-8</encoding>
+            <file>/opt/logs/tomcat/debugeventdispatcher.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>/opt/logs/tomcat/debugeventdispatcher.log.%d{yyyy-MM-dd}</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%date %-5level %logger{40} - %msg%n</pattern>
+            </layout>
+        </appender>
+
+        <logger level="info" name="biz" additivity="false">
+            <appender-ref ref="bizfileAppender"/>
+        </logger>
+        <root level="debug">
+            <appender-ref ref="debugfileAppender"/>
+            <appender-ref ref="CentralLogging"/>
+            <appender-ref ref="STDOUT"/>
+        </root>
 
 </configuration>

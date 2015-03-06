@@ -1,5 +1,6 @@
 package receiverImpl;
 
+import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.google.common.collect.ImmutableMap;
@@ -20,7 +21,7 @@ import standardMiddlewareImpl.StandardMiddleware;
  * Created by zhangsx on 2015/2/4.
  */
 public class SecLog implements Receiver {
-    private final String FACT = "SecLog";
+//    private final String FACT = "SecLog";
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
     private volatile Lifecycle.ReceiverStatus status;
     private SimpleMessageListenerContainer container;
@@ -51,11 +52,10 @@ public class SecLog implements Receiver {
             @Override
             public void onMessage(Message message) {
                 try {
-                    standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", FACT, "body",message.getBody()));
-                    logger.info("***SecLog***"+Thread.currentThread().getName());
+                    standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", Channel.MQ, "body",message.getBody()));
                 }catch (Throwable t){
                     CounterRepository.increaseCounter("SecLog", 0, true);
-                    logger.error("SecLog",t);
+                    logger.error("SecLog MessageListener error.",t);
                 }
             }
         });
@@ -68,7 +68,7 @@ public class SecLog implements Receiver {
         if (status == ReceiverStatus.running) {
             status = ReceiverStatus.stoped;
             container.shutdown();
-            logger.info("seclog stoped");
+            logger.info("seclog stoped.");
         }
     }
 

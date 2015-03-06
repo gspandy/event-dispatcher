@@ -26,6 +26,7 @@
        </bean>
 
        <bean class="com.ctrip.infosec.configs.event.monitor.EventCounterSender" init-method="start">
+              <property name="url" value="{$EventCounter}"/>
        </bean>
        <bean id="commonHandler" class="handlerImpl.CommonHandler"/>
 

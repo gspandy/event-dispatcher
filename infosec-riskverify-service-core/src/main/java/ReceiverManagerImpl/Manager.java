@@ -45,7 +45,7 @@ public class Manager implements ReceiverManager {
                         }
                     }
                 }catch (Throwable throwable){
-                    logger.error(throwable.getMessage(),throwable);
+                    logger.error("ReceiverManager error.",throwable);
                 }
             }
 

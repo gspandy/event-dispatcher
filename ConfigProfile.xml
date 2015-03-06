@@ -41,6 +41,7 @@
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.10.76:8080/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
@@ -63,6 +64,7 @@
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.10.76:8080/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
@@ -85,6 +87,7 @@
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.10.76:8080/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
@@ -107,6 +110,7 @@
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.10.76:8080/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<DBDataCenter></DBDataCenter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
@@ -129,6 +133,7 @@
 		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.10.76:8080/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</fws>
@@ -150,6 +155,7 @@
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.25.53:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.25.53:8080/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<ClogIp>collector.logging.uat.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</uat>
@@ -171,6 +177,7 @@
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://10.2.25.53:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.25.53:8080/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<ClogIp>collector.logging.uat.qa.nt.ctripcorp.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</uat_nt>
@@ -192,6 +199,7 @@
 		<CMessageUrl>http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.8.85.45:8080/infosec-monitor-ws/rest/monitor</MONITOR>
 		<DATACONFI_URL>http://ws.configs.infosec.ctripcorp.com/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://ws.configs.infosec.ctripcorp.com/configsws/rest/loadconfig/rest/eventmonitor</EventCounter>
 		<ClogIp>collector.logging.sh.ctriptravel.com</ClogIp>
 		<ClogPort>63100</ClogPort>
 	</prd>

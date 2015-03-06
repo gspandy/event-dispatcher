@@ -19,7 +19,8 @@ import java.util.Date;
  * Created by zhangsx on 2015/1/6.
  */
 public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DroolsHystrixCommand.class);
+    private static final org.slf4j.Logger loggerDebug = LoggerFactory.getLogger(DroolsHystrixCommand.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger("biz");
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private static String url = GlobalConfig.getString("RuleEngineUrl");
     private RiskFact req;
@@ -57,7 +58,8 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     protected RiskResult getFallback() {
         String logPrefix = "[" + req.getEventPoint() + "][" + req.getEventId() + "] ";
         CounterRepository.increaseCounter(Channel.REST.toString(), 0, true);
-        logger.error(logPrefix + "invoke ruleEngine timeout or exception.");
+        logger.info(logPrefix + "[step2]" + Utils.JSON.toJSONString(req));
+        loggerDebug.error("call droolengine failed.");
         return transform(req, false);
     }
 
