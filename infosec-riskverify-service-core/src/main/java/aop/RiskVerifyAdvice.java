@@ -1,4 +1,4 @@
-package com.ctrip.infosec.riskverify.aop;
+package aop;
 
 import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.configs.event.monitor.EventCounterRepository;
