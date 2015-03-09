@@ -30,7 +30,6 @@ public class Restful implements Receiver {
     public
     @ResponseBody
     ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
-        LoggerFactory.getLogger("123456").info("asdfgh");
         RiskResult riskResult = handler.send(ImmutableMap.of("FACT", Channel.REST.toString(), "CP", req.getEventPoint(), "body", req));
         return new ResponseEntity<RiskResult>(riskResult, HttpStatus.OK);
     }

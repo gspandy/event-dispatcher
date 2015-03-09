@@ -79,7 +79,10 @@ public class SecStandard implements StandardMiddleware {
         C3("CP1001003"),
         C4("CP1001004"),
         C5("CP1001005"),
-        C6("CP1001006");
+        C6("CP1001006"),
+
+//        //TODO LogType==8?
+//        C8("UNKNOWN");
 
         private String value;
 
