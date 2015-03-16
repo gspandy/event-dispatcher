@@ -16,6 +16,7 @@ public class Clazz {
     public static void main(String[] args) {
 //        final ForkJoinPool forkJoinPool = new ForkJoinPool();
 //        forkJoinPool.invoke(new MyRecursiveTask());
+
         FutureTask<String> task = new FutureTask<String>(new Callable() {
             @Override
             public String call() throws Exception {
