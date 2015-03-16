@@ -74,10 +74,11 @@ public class SecStandard implements StandardMiddleware {
             for (int i = 0; i < msgBody.size(); i++) {
                 String key = Objects.toString(msgBody.get(i).get("Key"), "nullKey");
                 String value = Objects.toString(msgBody.get(i).get("Value"), "nullValue");
+                //判断CP1001008接入点 如果是POST方式，则将key为Field2的value做md5
                 if ("CP1001008".equals(cp) && "OperationType".equalsIgnoreCase(key) && "POST".equalsIgnoreCase(value)) {
-                    Map _m = encryptSecData(msgBody);
-                    if(_m!=null){
-                        req_body.put("Field2",_m.get("Field2"));
+                    String psw = encryptSecData(msgBody);
+                    if(psw!=null){
+                        req_body.put("Field2",psw);
                     }
                 } else {
                     req_body.put(key, value);
@@ -118,7 +119,7 @@ public class SecStandard implements StandardMiddleware {
         }
     }
 
-    private Map encryptSecData(List<Map> msgBody) {
+    private String encryptSecData(List<Map> msgBody) {
         for (Map<String, String> map : msgBody) {
             String key = map.get("Key");
             String value = map.get("Value");
@@ -126,7 +127,8 @@ public class SecStandard implements StandardMiddleware {
                 if (value == null) {
                     return null;
                 }
-                return ImmutableMap.of("Field2", replacePW(value));
+//                return ImmutableMap.of("Field2", replacePW(value));
+                return replacePW(value);
             }
         }
         return null;
