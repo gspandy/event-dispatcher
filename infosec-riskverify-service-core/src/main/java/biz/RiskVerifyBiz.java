@@ -18,6 +18,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +75,6 @@ public class RiskVerifyBiz {
         if(Configs.hasSyncRules(req)){
             DroolsHystrixCommand drools_command = new DroolsHystrixCommand(req);
             result =  drools_command.execute();
-
             if(req.getExt()==null){
                 req.setExt(new HashMap<String, Object>());
             }
@@ -87,7 +87,7 @@ public class RiskVerifyBiz {
         logger.info(logPrefix + "[step1]" + Utils.JSON.toJSONString(result));
 
         String s = Utils.JSON.toJSONString(req);
-        sender.send(exchangeName,routingKey,new Message(s.getBytes(),new MessageProperties()));
+        sender.send(exchangeName,routingKey,new Message(s.getBytes(Charset.forName("utf-8")),new MessageProperties()));
         return result;
     }
 
