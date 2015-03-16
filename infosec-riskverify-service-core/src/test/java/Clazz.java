@@ -3,10 +3,7 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.SimpleTimeZone;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**

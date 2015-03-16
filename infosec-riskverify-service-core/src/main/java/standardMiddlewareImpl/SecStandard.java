@@ -2,12 +2,17 @@ package standardMiddlewareImpl;
 
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.sars.monitor.util.Utils;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import handlerImpl.Handler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +26,18 @@ public class SecStandard implements StandardMiddleware {
     @Qualifier("commonHandler")
     private Handler handler;
     private final String prefix = "C";
+    private static Logger logger = LoggerFactory.getLogger(SecStandard.class);
+    private static MessageDigest MD5;
+    private static Splitter PARAM_SPLITER;
+
+    static {
+        try {
+            MD5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("MessageDigest.getInstance error.", e);
+        }
+        PARAM_SPLITER = Splitter.on('&').omitEmptyStrings().trimResults();
+    }
 
     @Override
     public void assembleAndSend(Map map) {
@@ -57,7 +74,14 @@ public class SecStandard implements StandardMiddleware {
             for (int i = 0; i < msgBody.size(); i++) {
                 String key = Objects.toString(msgBody.get(i).get("Key"), "nullKey");
                 String value = Objects.toString(msgBody.get(i).get("Value"), "nullValue");
-                req_body.put(key, value);
+                if ("CP1001008".equals(cp) && "OperationType".equalsIgnoreCase(key) && "POST".equalsIgnoreCase(value)) {
+                    Map _m = encryptSecData(msgBody);
+                    if(_m!=null){
+                        req_body.put("Field2",_m.get("Field2"));
+                    }
+                } else {
+                    req_body.put(key, value);
+                }
             }
             req.setAppId(appid);
             req.setEventPoint(cp);
@@ -79,10 +103,9 @@ public class SecStandard implements StandardMiddleware {
         C3("CP1001003"),
         C4("CP1001004"),
         C5("CP1001005"),
-        C6("CP1001006");
+        C6("CP1001006"),
 
-//        //TODO LogType==8?
-//        C8("UNKNOWN");
+        C8("CP1001008");
 
         private String value;
 
@@ -94,4 +117,69 @@ public class SecStandard implements StandardMiddleware {
             return this.value;
         }
     }
+
+    private Map encryptSecData(List<Map> msgBody) {
+        for (Map<String, String> map : msgBody) {
+            String key = map.get("Key");
+            String value = map.get("Value");
+            if (key!=null&&"Field2".equalsIgnoreCase(key)) {
+                if (value == null) {
+                    return null;
+                }
+                return ImmutableMap.of("Field2", replacePW(value));
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 加密方式
+     * <p/>
+     * Password=123456
+     * 或
+     * "Password":"E5D5845A8660D090"
+     *
+     * @param content
+     * @return
+     */
+
+
+    private String replacePW(String content) {
+        String key = "Password=";
+        if (content.startsWith(key) == false) {
+            key = "&Password=";
+        }
+        int index = content.indexOf(key);
+        if (index >= 0) {
+
+            StringBuilder ret = new StringBuilder();
+
+            ret.append(content.substring(0, index + key.length()));
+            int end = content.indexOf('&', index + key.length());
+            if (end < 0) {
+                end = content.length();
+            }
+            String encryptContent = content.substring(index + key.length(), end);
+            for (int i = 0; i < 5; i++) {
+                encryptContent = hex(MD5.digest(encryptContent.getBytes()));
+            }
+            ret.append(encryptContent);
+            if (content.length() > end) {
+                ret.append(content.substring(end, content.length()));
+            }
+            return ret.toString();
+        } else {
+            return content;
+        }
+    }
+
+    public String hex(byte[] array) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < array.length; ++i) {
+            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+        }
+        return sb.toString();
+    }
+
 }
