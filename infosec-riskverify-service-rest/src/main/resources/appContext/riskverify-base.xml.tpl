@@ -20,7 +20,7 @@
               <property name="postUrl" value="{$MONITOR}"/>
        </bean>
 
-       <bean class="com.ctrip.infosec.configs.Caches" init-method="init">
+       <bean class="com.ctrip.infosec.configs.ConfigsDeamon" init-method="start">
               <property name="url" value="{$DATACONFI_URL}"/>
               <property name="part" value="EventDispatcher"/>
        </bean>
