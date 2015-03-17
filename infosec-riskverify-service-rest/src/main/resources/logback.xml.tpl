@@ -5,7 +5,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoding>UTF-8</encoding>
                 <encoder><!-- 必须指定，否则不会往文件输出内容 -->
-                    <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
                 </encoder>
     </appender>
     
@@ -16,7 +16,7 @@
             <serverIp>collector.logging.fws.qa.nt.ctripcorp.com</serverIp>
             <serverPort>63100</serverPort>
             <encoder><!-- 必须指定，否则不会往文件输出内容 -->
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
             </encoder>
         </appender>
 
@@ -28,7 +28,7 @@
                 <maxHistory>7</maxHistory>
             </rollingPolicy>
             <encoder><!-- 必须指定，否则不会往文件输出内容 -->
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
             </encoder>
         </appender>
 
@@ -40,7 +40,7 @@
                 <maxHistory>30</maxHistory>
             </rollingPolicy>
             <encoder><!-- 必须指定，否则不会往文件输出内容 -->
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
             </encoder>
         </appender>
 
