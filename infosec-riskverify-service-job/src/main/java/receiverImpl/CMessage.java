@@ -12,6 +12,7 @@ import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.google.common.collect.ImmutableMap;
+import enums.InnerEnum;
 import manager.Receiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class CMessage implements Receiver {
                 @Override
                 public void callback(IMessage iMessage) throws Exception {
                     try {
-                        standardMiddleware.assembleAndSend(ImmutableMap.of("fact", Channel.CMessage.toString(), "CP", cp, "body", iMessage.getBody()));
+                        standardMiddleware.assembleAndSend(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.CMessage.toString(), InnerEnum.CP.toString(), cp, InnerEnum.BODY.toString(), iMessage.getBody()));
                     } catch (Throwable t) {
                         CounterRepository.increaseCounter(Channel.CMessage.toString(), 0, true);
                         logger.error("CMessage ConsumerCallbackEventHandler error.",t);

@@ -5,6 +5,7 @@ import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
+import enums.InnerEnum;
 import handlerImpl.Handler;
 import manager.Receiver;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class RabbitMq implements Receiver {
 //                System.out.println(new String(message.getBody()));
                 try{
                     RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                    handler.send(ImmutableMap.of("FACT", Channel.MQ.toString(), "CP", fact.getEventPoint(), "body", fact));
+                    handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.MQ.toString(), InnerEnum.CP.toString(), fact.getEventPoint(), InnerEnum.BODY.toString(), fact));
                 }catch (Throwable t){
                     CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
                     logger.error("RabbitMq MessageListener error.",t);

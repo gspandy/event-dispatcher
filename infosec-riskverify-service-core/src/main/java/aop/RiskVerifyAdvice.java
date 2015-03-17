@@ -4,6 +4,7 @@ import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.configs.event.monitor.EventCounterRepository;
 import com.ctrip.infosec.sars.monitor.SarsMonitorContext;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
+import enums.InnerEnum;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.time.StopWatch;
@@ -24,8 +25,8 @@ public class RiskVerifyAdvice implements MethodInterceptor {
         String operationName = invocation.getMethod().getName();
 
         Map map = (Map) invocation.getArguments()[0];
-        String fact = map.get("FACT").toString();
-        String cp = map.get("CP").toString();
+        String fact = map.get(InnerEnum.FACT.toString()).toString();
+        String cp = map.get(InnerEnum.CP.toString()).toString();
         // invoke
         boolean fault = false;
         StopWatch clock = new StopWatch();

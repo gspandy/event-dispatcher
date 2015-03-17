@@ -4,6 +4,7 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
+import enums.InnerEnum;
 import handlerImpl.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +43,8 @@ public class SecStandard implements StandardMiddleware {
     @Override
     public void assembleAndSend(Map map) {
         if (map != null) {
-            String fact = map.get("fact").toString();
-            byte[] body = (byte[]) map.get("body");
+            String fact = map.get(InnerEnum.FACT.toString()).toString();
+            byte[] body = (byte[]) map.get(InnerEnum.BODY.toString());
             String body_str = new String(body, Charset.forName("utf-8"));
 
             Map bodyMap = Utils.JSON.parseObject(body_str, Map.class);
@@ -87,7 +88,7 @@ public class SecStandard implements StandardMiddleware {
             req.setAppId(appid);
             req.setEventPoint(cp);
             req.setEventBody(req_body);
-            handler.send(ImmutableMap.of("FACT", fact, "CP", cp, "body", req));
+            handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), fact, InnerEnum.CP.toString(), cp, InnerEnum.BODY.toString(), req));
         }
     }
 

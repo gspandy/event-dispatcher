@@ -4,6 +4,7 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.event.Channel;
 import com.google.common.collect.ImmutableMap;
+import enums.InnerEnum;
 import handlerImpl.Handler;
 import manager.Receiver;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class Restful implements Receiver {
     public
     @ResponseBody
     ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
-        RiskResult riskResult = handler.send(ImmutableMap.of("FACT", Channel.REST.toString(), "CP", req.getEventPoint(), "body", req));
+        RiskResult riskResult = handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.REST.toString(), InnerEnum.CP.toString(), req.getEventPoint(), InnerEnum.BODY.toString(), req));
         return new ResponseEntity<RiskResult>(riskResult, HttpStatus.OK);
     }
 

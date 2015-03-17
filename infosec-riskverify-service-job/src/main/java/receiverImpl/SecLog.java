@@ -4,6 +4,7 @@ import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.google.common.collect.ImmutableMap;
+import enums.InnerEnum;
 import manager.Lifecycle;
 import manager.Receiver;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class SecLog implements Receiver {
             @Override
             public void onMessage(Message message) {
                 try {
-                    standardMiddleware.assembleAndSend(ImmutableMap.of("FACT", Channel.MQ, "body",message.getBody()));
+                    standardMiddleware.assembleAndSend(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.MQ, InnerEnum.BODY.toString(),message.getBody()));
                 }catch (Throwable t){
                     CounterRepository.increaseCounter("SecLog", 0, true);
                     logger.error("SecLog MessageListener error.",t);

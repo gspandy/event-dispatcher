@@ -9,6 +9,7 @@ import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.collect.ImmutableMap;
+import enums.InnerEnum;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +43,9 @@ public class RiskVerifyBiz {
 
 
     public RiskResult exe(Map map) {
-        RiskFact req = (RiskFact)map.get("body");
-        String cp = map.get("CP").toString();
-        String channel = map.get("FACT").toString();
+        RiskFact req = (RiskFact)map.get(InnerEnum.BODY.toString());
+        String cp = map.get(InnerEnum.CP.toString()).toString();
+        String channel = map.get(InnerEnum.FACT.toString()).toString();
 
         long receiveTime = new Date().getTime();
         req.setRequestReceive(sdf.format(receiveTime));
