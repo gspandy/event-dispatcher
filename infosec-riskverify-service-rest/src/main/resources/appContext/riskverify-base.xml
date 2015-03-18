@@ -20,10 +20,10 @@
               <property name="postUrl" value="http://10.2.10.75:8080/monitorws/rest/monitor"/>
        </bean>
 
-    <bean class="com.ctrip.infosec.configs.ConfigsDeamon" init-method="start">
-        <property name="url" value="http://10.2.10.76:8080/configsws/rest/loadconfig"/>
-        <property name="part" value="EventDispatcher"/>
-    </bean>
+       <bean class="com.ctrip.infosec.configs.ConfigsDeamon" init-method="start">
+              <property name="url" value="http://10.2.10.76:8080/configsws/rest/loadconfig"/>
+              <property name="part" value="EventDispatcher"/>
+       </bean>
 
        <bean class="com.ctrip.infosec.configs.event.monitor.EventCounterSender" init-method="start">
               <property name="url" value="http://10.2.10.76:8080/configsws/rest/eventmonitor"/>

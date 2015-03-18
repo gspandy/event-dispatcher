@@ -13,11 +13,8 @@
         <appender name="CentralLogging"
                   class="com.ctrip.freeway.appender.CentralLoggingAppender">
             <appId>100000557</appId>
-            <serverIp>collector.logging.fws.qa.nt.ctripcorp.com</serverIp>
-            <serverPort>63100</serverPort>
-            <encoder><!-- 必须指定，否则不会往文件输出内容 -->
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
-            </encoder>
+            <serverIp>{$ClogIp}</serverIp>
+            <serverPort>{$ClogPort}</serverPort>
         </appender>
 
         <appender name="bizfileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
