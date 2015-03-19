@@ -42,8 +42,8 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     protected RiskResult run() throws Exception {
         String fact = Utils.JSON.toJSONString(req);
         byte[] response = Request.Post(url)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept-Encoding", "utf-8")
+//                .addHeader("Content-Type", "application/json")
+//                .addHeader("Accept-Encoding", "utf-8")
                 .bodyString(fact, ContentType.APPLICATION_JSON)
                 .connectTimeout(5000)
                 .socketTimeout(10000)
