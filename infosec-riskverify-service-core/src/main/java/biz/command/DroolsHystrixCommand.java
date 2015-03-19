@@ -9,8 +9,11 @@ import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.netflix.hystrix.*;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
@@ -41,16 +44,11 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     @Override
     protected RiskResult run() throws Exception {
         String fact = Utils.JSON.toJSONString(req);
-        byte[] response = Request.Post(url)
-//                .addHeader("Content-Type", "application/json")
-//                .addHeader("Accept-Encoding", "utf-8")
-                .bodyString(fact, ContentType.APPLICATION_JSON)
-                .connectTimeout(5000)
-                .socketTimeout(10000)
-                .execute().returnContent().asBytes();
-        RiskFact riskFact = Utils.JSON.parseObject(new String(response, "utf-8"), RiskFact.class);
+        RiskFact riskFact = Utils.JSON.parseObject(Request.Post(url)
+                .body(new StringEntity(fact, "UTF-8"))
+                .connectTimeout(1000).socketTimeout(5000)
+                .execute().returnContent().asString(), RiskFact.class);
         RiskResult result = transform(riskFact, true);
-
         return result;
     }
 
@@ -72,7 +70,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
         result.setResponseReceive(sdf.format(new Date()));
         result.setResponseTime(sdf.format(new Date()));
         result.setResults(req.getFinalResult());
-        if(!isSuccess||req.getFinalResult()==null){
+        if (!isSuccess || req.getFinalResult() == null) {
             result.setResults(Configs.DEFAULT_RESULTS);
         }
         return result;
