@@ -11,7 +11,7 @@
     
     <!--Output to central logging -->
         <appender name="CentralLogging"
-                  class="com.ctrip.framework.clogging.agent.appender.CLoggingAppender">
+                  class="com.ctrip.freeway.appender.CentralLoggingAppender">
             <appId>100000557</appId>
             <serverIp>{$ClogIp}</serverIp>
             <serverPort>{$ClogPort}</serverPort>
