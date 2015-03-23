@@ -58,7 +58,11 @@ public class CMessage implements Receiver {
         status = ReceiverStatus.running;
 
         logger.info("cmessage start.");
+
         try {
+            Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
+//        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
+            Config.setAppId("100000557");
             consumer = ConsumerFactory.instance.createConsumerAsAsync(identifier, subject, exchange);
         } catch (IllegalTopic illegalTopic) {
             logger.error("cmessage call start failed.",illegalTopic);
@@ -67,9 +71,7 @@ public class CMessage implements Receiver {
             logger.error("cmessage call start failed.",illegalExchangeName);
             throw new RuntimeException(illegalExchangeName);
         }
-        Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
-//        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
-        Config.setAppId("100000557");
+
         if (consumer != null) {
             consumer.addConsumerCallbackEventHandler(new IConsumerCallbackEventHandler() {
                 @Override
