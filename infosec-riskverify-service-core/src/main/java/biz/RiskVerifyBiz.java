@@ -61,36 +61,52 @@ public class RiskVerifyBiz {
         String logPrefix = "[" + channel + "][" + req.getEventPoint() + "][" + req.getEventId() + "]";
         logger.info(logPrefix + "[step0]" + Utils.JSON.toJSONString(req));
 
-        RiskResult result = new RiskResult();
-        result.setEventId(req.getEventId());
-        result.setEventPoint(req.getEventPoint());
-        result.setRequestTime(req.getRequestTime());
-        result.setRequestReceive(req.getRequestReceive());
         if (!Configs.isValidEventPoint(req.getEventPoint())) {
+            RiskResult result = new RiskResult();
+            result.setEventId(req.getEventId());
+            result.setEventPoint(req.getEventPoint());
+            result.setRequestTime(req.getRequestTime());
+            result.setRequestReceive(req.getRequestReceive());
             result.setResponseReceive(sdf.format(new Date()));
             result.setResponseTime(sdf.format(new Date()));
             result.setResults(invalidEventPointResult);
-            logger.info(logPrefix + "[step3]" + Utils.JSON.toJSONString(result));
+            logger.info(logPrefix + "[step1]" + Utils.JSON.toJSONString(result));
             return result;
         }
-        if(Configs.hasSyncRules(req)){
+        if(!Configs.hasSyncRules(req)){
+            RiskResult result = new RiskResult();
+            result.setEventId(req.getEventId());
+            result.setEventPoint(req.getEventPoint());
+            result.setRequestTime(req.getRequestTime());
+            result.setRequestReceive(req.getRequestReceive());
+            result.setResponseTime(sdf.format(new Date()));
+            result.setResults(Configs.DEFAULT_RESULTS);
+            logger.info(logPrefix + "[step2]" + Utils.JSON.toJSONString(result));
+            return result;
+        }else{
             DroolsHystrixCommand drools_command = new DroolsHystrixCommand(req);
-            result =  drools_command.execute();
+            req = drools_command.execute();
             if(req.getExt()==null){
                 req.setExt(new HashMap<String, Object>());
             }
             req.getExt().put(Ext.SYNC_RULE_EXECUTED, true);
-        }else {
-            result.setResponseTime(sdf.format(new Date()));
-            result.setResults(Configs.DEFAULT_RESULTS);
+            String strResult = Utils.JSON.toJSONString(req);
+            logger.info(logPrefix + "[step3]" + Utils.JSON.toJSONString(strResult));
+            sender.send(exchangeName,routingKey,new Message(strResult.getBytes(Charset.forName("utf-8")),new MessageProperties()));
+            return transform(req);
         }
-
-        logger.info(logPrefix + "[step1]" + Utils.JSON.toJSONString(result));
-
-        String s = Utils.JSON.toJSONString(req);
-        sender.send(exchangeName,routingKey,new Message(s.getBytes(Charset.forName("utf-8")),new MessageProperties()));
-        return result;
     }
 
+    private RiskResult transform(RiskFact req) {
+        RiskResult result = new RiskResult();
+        result.setRequestReceive(req.getRequestReceive());
+        result.setEventPoint(req.getEventPoint());
+        result.setEventId(req.getEventId());
+        result.setRequestTime(req.getRequestTime());
+        result.setResponseReceive(sdf.format(new Date()));
+        result.setResponseTime(sdf.format(new Date()));
+        result.setResults(req.getFinalResult());
+        return result;
+    }
 }
 

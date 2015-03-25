@@ -21,10 +21,9 @@ import java.util.Date;
 /**
  * Created by zhangsx on 2015/1/6.
  */
-public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
+public class DroolsHystrixCommand extends HystrixCommand<RiskFact> {
     private static final org.slf4j.Logger loggerDebug = LoggerFactory.getLogger(DroolsHystrixCommand.class);
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("biz");
-    private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private static String url = GlobalConfig.getString("RuleEngineUrl");
     private RiskFact req;
 
@@ -42,37 +41,21 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskResult> {
     }
 
     @Override
-    protected RiskResult run() throws Exception {
+    protected RiskFact run() throws Exception {
         String fact = Utils.JSON.toJSONString(req);
-        RiskFact riskFact = Utils.JSON.parseObject(Request.Post(url)
+        return Utils.JSON.parseObject(Request.Post(url)
                 .body(new StringEntity(fact, "UTF-8"))
                 .connectTimeout(1000).socketTimeout(5000)
                 .execute().returnContent().asString(), RiskFact.class);
-        RiskResult result = transform(riskFact, true);
-        return result;
     }
 
     @Override
-    protected RiskResult getFallback() {
+    protected RiskFact getFallback() {
+        req.setFinalResult(Configs.DEFAULT_RESULTS);
         String logPrefix = "[" + req.getEventPoint() + "][" + req.getEventId() + "] ";
         CounterRepository.increaseCounter(Channel.REST.toString(), 0, true);
-        logger.info(logPrefix + "[step2]" + Utils.JSON.toJSONString(req));
+        logger.info(logPrefix + "[step4]" + Utils.JSON.toJSONString(req));
         loggerDebug.error("call droolengine failed.");
-        return transform(req, false);
-    }
-
-    private RiskResult transform(RiskFact req, boolean isSuccess) {
-        RiskResult result = new RiskResult();
-        result.setRequestReceive(req.getRequestReceive());
-        result.setEventPoint(req.getEventPoint());
-        result.setEventId(req.getEventId());
-        result.setRequestTime(req.getRequestTime());
-        result.setResponseReceive(sdf.format(new Date()));
-        result.setResponseTime(sdf.format(new Date()));
-        result.setResults(req.getFinalResult());
-        if (!isSuccess || req.getFinalResult() == null) {
-            result.setResults(Configs.DEFAULT_RESULTS);
-        }
-        return result;
+        return req;
     }
 }
