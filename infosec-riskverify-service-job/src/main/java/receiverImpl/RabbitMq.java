@@ -19,12 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.nio.charset.Charset;
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 
 /**
  * Created by zhangsx on 2015/2/3.
  */
 public class RabbitMq implements Receiver {
 //    private final String FACT = "RabbitMq";
+
     private static final Logger logger = LoggerFactory.getLogger(RabbitMq.class);
     private SimpleMessageListenerContainer container;
     @Autowired
@@ -43,17 +46,18 @@ public class RabbitMq implements Receiver {
             @Override
             public void onMessage(Message message) {
 //                System.out.println(new String(message.getBody()));
-                try{
+                try {
                     RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
                     handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.MQ.toString(), InnerEnum.CP.toString(), fact.getEventPoint(), InnerEnum.BODY.toString(), fact));
-                }catch (Throwable t){
+                } catch (Throwable t) {
                     CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
-                    logger.error("RabbitMq MessageListener error.",t);
+                    logger.error("RabbitMq MessageListener error.", t);
                 }
             }
         });
-        container.setAutoDeclare(true);
-        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
+        container.setPrefetchCount(1000);
+        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors() * 4);
         container.start();
     }
 

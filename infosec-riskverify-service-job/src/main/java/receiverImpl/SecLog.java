@@ -9,6 +9,7 @@ import manager.Lifecycle;
 import manager.Receiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.core.Queue;
@@ -23,6 +24,7 @@ import standardMiddlewareImpl.StandardMiddleware;
  */
 public class SecLog implements Receiver {
 //    private final String FACT = "SecLog";
+
     private static final Logger logger = LoggerFactory.getLogger(SecLog.class);
     private volatile Lifecycle.ReceiverStatus status;
     private SimpleMessageListenerContainer container;
@@ -33,7 +35,6 @@ public class SecLog implements Receiver {
     @Autowired
     @Qualifier(value = "connectionFactory0")
     private ConnectionFactory factory;
-
 
     @Override
     public void start() {
@@ -50,14 +51,16 @@ public class SecLog implements Receiver {
             @Override
             public void onMessage(Message message) {
                 try {
-                    standardMiddleware.assembleAndSend(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.MQ, InnerEnum.BODY.toString(),message.getBody()));
-                }catch (Throwable t){
+                    standardMiddleware.assembleAndSend(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.MQ, InnerEnum.BODY.toString(), message.getBody()));
+                } catch (Throwable t) {
                     CounterRepository.increaseCounter("SecLog", 0, true);
-                    logger.error("SecLog MessageListener error.",t);
+                    logger.error("SecLog MessageListener error.", t);
                 }
             }
         });
-        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors());
+        container.setPrefetchCount(1000);
+        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        container.setMaxConcurrentConsumers(Runtime.getRuntime().availableProcessors() * 4);
         container.start();
     }
 

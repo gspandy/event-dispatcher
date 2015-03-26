@@ -29,10 +29,11 @@ import java.util.Map;
  */
 @Component
 public class RiskVerifyBiz {
+
     private static final Logger logger = LoggerFactory.getLogger("biz");
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
-    private final String exchangeName = "infosec.ruleengine.exchange";
-    private final String routingKey = "ruleengine";
+//    private final String exchangeName = "infosec.ruleengine.exchange";
+//    private final String routingKey = "ruleengine";
     @Autowired
     private RabbitTemplate sender;
 
@@ -41,60 +42,70 @@ public class RiskVerifyBiz {
      */
     private final Map<String, Object> invalidEventPointResult = ImmutableMap.<String, Object>of("riskLevel", Integer.valueOf(0), "riskMessage", "非法的EventPoint");
 
-
     public RiskResult exe(Map map) {
-        RiskFact req = (RiskFact)map.get(InnerEnum.BODY.toString());
-        String cp = map.get(InnerEnum.CP.toString()).toString();
+        RiskFact fact = (RiskFact) map.get(InnerEnum.BODY.toString());
+//        String cp = map.get(InnerEnum.CP.toString()).toString();
         String channel = map.get(InnerEnum.FACT.toString()).toString();
 
+        // 事件预处理
         long receiveTime = new Date().getTime();
-        req.setRequestReceive(sdf.format(receiveTime));
-        req.setEventId(Configs.timeBasedUUID());
-        Configs.normalizeEvent(req);
+        fact.setRequestReceive(sdf.format(receiveTime));
+        fact.setEventId(Configs.timeBasedUUID());
+        Configs.normalizeEvent(fact);
 
-        if(req.getExt()==null) {
-            req.setExt(new HashMap<String, Object>());
+        if (fact.getExt() == null) {
+            fact.setExt(new HashMap<String, Object>());
         }
-        req.getExt().put(Ext.CHANNEL, channel);
-        req.getExt().put("descTimestamp", (4070880000000L - receiveTime));
+        fact.getExt().put(Ext.CHANNEL, channel);
+        fact.getExt().put("descTimestamp", (4070880000000L - receiveTime));
 
-        String logPrefix = "[" + channel + "][" + req.getEventPoint() + "][" + req.getEventId() + "]";
-        logger.info(logPrefix + "[step0]" + Utils.JSON.toJSONString(req));
+        String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "]";
+        logger.info(logPrefix + "[step0]" + Utils.JSON.toJSONString(fact));
 
-        if (!Configs.isValidEventPoint(req.getEventPoint())) {
+        // 验证EventPoint
+        if (!Configs.isValidEventPoint(fact.getEventPoint())) {
             RiskResult result = new RiskResult();
-            result.setEventId(req.getEventId());
-            result.setEventPoint(req.getEventPoint());
-            result.setRequestTime(req.getRequestTime());
-            result.setRequestReceive(req.getRequestReceive());
+            result.setEventId(fact.getEventId());
+            result.setEventPoint(fact.getEventPoint());
+            result.setRequestTime(fact.getRequestTime());
+            result.setRequestReceive(fact.getRequestReceive());
             result.setResponseReceive(sdf.format(new Date()));
             result.setResponseTime(sdf.format(new Date()));
             result.setResults(invalidEventPointResult);
             logger.info(logPrefix + "[step1]" + Utils.JSON.toJSONString(result));
             return result;
         }
-        if(!Configs.hasSyncRules(req)){
-            RiskResult result = new RiskResult();
-            result.setEventId(req.getEventId());
-            result.setEventPoint(req.getEventPoint());
-            result.setRequestTime(req.getRequestTime());
-            result.setRequestReceive(req.getRequestReceive());
+
+        // 
+        String factTxt = null;
+        RiskResult result = null;
+        if (!Configs.hasSyncRules(fact)) {
+            result = new RiskResult();
+            result.setEventId(fact.getEventId());
+            result.setEventPoint(fact.getEventPoint());
+            result.setRequestTime(fact.getRequestTime());
+            result.setRequestReceive(fact.getRequestReceive());
             result.setResponseTime(sdf.format(new Date()));
             result.setResults(Configs.DEFAULT_RESULTS);
+
+            factTxt = Utils.JSON.toJSONString(fact);
             logger.info(logPrefix + "[step2]" + Utils.JSON.toJSONString(result));
-            return result;
-        }else{
-            DroolsHystrixCommand drools_command = new DroolsHystrixCommand(req);
-            req = drools_command.execute();
-            if(req.getExt()==null){
-                req.setExt(new HashMap<String, Object>());
+        } else {
+            // 执行同步规则
+            DroolsHystrixCommand drools_command = new DroolsHystrixCommand(fact);
+            fact = drools_command.execute();
+            if (fact.getExt() == null) {
+                fact.setExt(new HashMap<String, Object>());
             }
-            req.getExt().put(Ext.SYNC_RULE_EXECUTED, true);
-            String strResult = Utils.JSON.toJSONString(req);
-            logger.info(logPrefix + "[step3]" + Utils.JSON.toJSONString(strResult));
-            sender.send(exchangeName,routingKey,new Message(strResult.getBytes(Charset.forName("utf-8")),new MessageProperties()));
-            return transform(req);
+            result = transform(fact);
+
+            factTxt = Utils.JSON.toJSONString(fact);
+            logger.info(logPrefix + "[step3]" + factTxt);
         }
+
+        // 发往异步规则
+        sender.convertAndSend(factTxt);
+        return result;
     }
 
     private RiskResult transform(RiskFact req) {
@@ -109,4 +120,3 @@ public class RiskVerifyBiz {
         return result;
     }
 }
-
