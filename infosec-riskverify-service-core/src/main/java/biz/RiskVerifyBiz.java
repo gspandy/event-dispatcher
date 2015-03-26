@@ -32,8 +32,8 @@ public class RiskVerifyBiz {
 
     private static final Logger logger = LoggerFactory.getLogger("biz");
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
-//    private final String exchangeName = "infosec.ruleengine.exchange";
-//    private final String routingKey = "ruleengine";
+    private final String exchangeName = "infosec.ruleengine.exchange";
+    private final String routingKey = "ruleengine";
     @Autowired
     private RabbitTemplate sender;
 
@@ -104,7 +104,9 @@ public class RiskVerifyBiz {
         }
 
         // 发往异步规则
-        sender.convertAndSend(factTxt);
+        logger.info(logPrefix + "send to aysnc rule engine ...");
+        sender.convertAndSend(exchangeName, routingKey, factTxt);
+        logger.info(logPrefix + "send to aysnc rule engine ... OK");
         return result;
     }
 
