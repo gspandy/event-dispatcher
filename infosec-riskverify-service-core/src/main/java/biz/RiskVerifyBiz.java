@@ -1,5 +1,4 @@
 package biz;
-
 import biz.command.DroolsHystrixCommand;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
@@ -44,7 +43,6 @@ public class RiskVerifyBiz {
 
     public RiskResult exe(Map map) {
         RiskFact fact = (RiskFact) map.get(InnerEnum.BODY.toString());
-//        String cp = map.get(InnerEnum.CP.toString()).toString();
         String channel = map.get(InnerEnum.FACT.toString()).toString();
 
         // 事件预处理

@@ -190,7 +190,7 @@
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
-		<SecLogHost>10.8.91.151</SecLogHost>
+		<SecLogHost>colletor.infosec.ctripcorp.com</SecLogHost>
 		<SecLogVirtualHost>infosec</SecLogVirtualHost>
 		<SecLogUsername>sec-read</SecLogUsername>
 		<SecLogPassword>sec-read</SecLogPassword>
