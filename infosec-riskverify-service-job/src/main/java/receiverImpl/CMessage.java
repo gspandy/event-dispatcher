@@ -57,7 +57,7 @@ public class CMessage implements Receiver {
             return;
         }
 
-        logger.info("Cmessage[" + eventPoint + "] start ...");
+        logger.info("CMessage[" + eventPoint + "] start ...");
         try {
             Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
 //        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
@@ -76,7 +76,7 @@ public class CMessage implements Receiver {
                                 ));
                     } catch (Throwable t) {
                         CounterRepository.increaseCounter(Channel.CMessage.toString(), 0, true);
-                        logger.error("Cmessage[" + eventPoint + "] ConsumerCallbackEventHandler error.", t);
+                        logger.error("CMessage[" + eventPoint + "] ConsumerCallbackEventHandler error.", t);
                     } finally {
                         iMessage.setAcks(AckMode.Ack);
                         iMessage.dispose();
@@ -84,15 +84,15 @@ public class CMessage implements Receiver {
                 }
             });
             consumer.setBatchSize(20);
-            consumer.ConsumeAsync(5, false);
+            consumer.ConsumeAsync(5, true);
 
             status = ReceiverStatus.running;
-            logger.info("Cmessage[" + eventPoint + "] start ... OK");
+            logger.info("CMessage[" + eventPoint + "] start ... OK");
         } catch (IllegalTopic illegalTopic) {
-            logger.error("Cmessage[" + eventPoint + "] call start failed.", illegalTopic);
+            logger.error("CMessage[" + eventPoint + "] call start failed.", illegalTopic);
             throw new RuntimeException(illegalTopic);
         } catch (IllegalExchangeName illegalExchangeName) {
-            logger.error("Cmessage[" + eventPoint + "] call start failed.", illegalExchangeName);
+            logger.error("CMessage[" + eventPoint + "] call start failed.", illegalExchangeName);
             throw new RuntimeException(illegalExchangeName);
         }
 
@@ -100,20 +100,20 @@ public class CMessage implements Receiver {
 
     @Override
     public void stop() {
-        logger.info("Cmessage[" + eventPoint + "] stop ...");
+        logger.info("CMessage[" + eventPoint + "] stop ...");
         if (consumer != null && status == ReceiverStatus.running) {
             consumer.stop();
             status = ReceiverStatus.stoped;
-            logger.info("Cmessage[" + eventPoint + "] stop ... OK");
+            logger.info("CMessage[" + eventPoint + "] stop ... OK");
         }
     }
 
     @Override
     public void restart() {
-        logger.info("Cmessage[" + eventPoint + "] restart ...");
+        logger.info("CMessage[" + eventPoint + "] restart ...");
         stop();
         start();
-        logger.info("Cmessage[" + eventPoint + "] restart ... OK");
+        logger.info("CMessage[" + eventPoint + "] restart ... OK");
     }
 
 }
