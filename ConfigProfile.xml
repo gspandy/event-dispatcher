@@ -67,7 +67,7 @@
 		<SecLogPassword>sec-read</SecLogPassword>
 		<!-- RuleEngine -->
 		<RuleEngineUrl>http://10.2.25.54:8080/ruleenginews/rule/query</RuleEngineUrl>
-		<RuleEngine.Venus.ipAddressList>10.2.25.54:16800</RuleEngine.Venus.ipAddressList>
+		<RuleEngine.Venus.ipAddressList>10.2.25.54:16800,10.2.27.62:16800</RuleEngine.Venus.ipAddressList>
 		<!-- CMessage -->
 		<CMessageUrl>http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
 		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
