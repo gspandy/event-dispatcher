@@ -1,7 +1,6 @@
 package biz.command;
 
 import com.ctrip.infosec.common.model.RiskFact;
-import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.Ext;
 import com.ctrip.infosec.configs.event.Channel;
@@ -9,19 +8,15 @@ import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.netflix.hystrix.*;
-import org.apache.commons.lang3.time.FastDateFormat;
-import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
-import org.apache.http.client.fluent.Response;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 
 /**
  * Created by zhangsx on 2015/1/6.
  */
+@Deprecated
 public class DroolsHystrixCommand extends HystrixCommand<RiskFact> {
 
     private static final org.slf4j.Logger loggerDebug = LoggerFactory.getLogger(DroolsHystrixCommand.class);
@@ -48,7 +43,7 @@ public class DroolsHystrixCommand extends HystrixCommand<RiskFact> {
 
         fact = Utils.JSON.parseObject(Request.Post(url)
                 .body(new StringEntity(factTxt, "UTF-8"))
-                .connectTimeout(1000).socketTimeout(5000)
+                .connectTimeout(1000).socketTimeout(2000)
                 .execute().returnContent().asString(), RiskFact.class);
 
         // 设置同步已执行的标识

@@ -24,20 +24,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class Restful implements Receiver {
 //    private final String FACT = "REST";
+
     @Autowired
     private Handler handler;
 
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact req) {
-        RiskResult riskResult = handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.REST.toString(), InnerEnum.CP.toString(), req.getEventPoint(), InnerEnum.BODY.toString(), req));
+    public @ResponseBody
+    ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact fact) {
+        RiskResult riskResult = handler.send(
+                ImmutableMap.of(
+                        InnerEnum.Channel, Channel.REST,
+                        InnerEnum.EventPoint, fact.getEventPoint(),
+                        InnerEnum.BODY, fact
+                ));
         return new ResponseEntity<RiskResult>(riskResult, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/check", method = RequestMethod.GET)
-    public
-    @ResponseBody
+    public @ResponseBody
     String checkHealth() {
         return "hello!";
     }

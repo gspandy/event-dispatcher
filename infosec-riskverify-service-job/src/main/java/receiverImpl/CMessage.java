@@ -19,10 +19,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import standardMiddlewareImpl.StandardMiddleware;
+
 /**
  * Created by zhangsx on 2015/2/3.
  */
 public class CMessage implements Receiver {
+
     private volatile ReceiverStatus status;
     @Autowired
     @Qualifier(value = "orderIndexStandard")
@@ -32,18 +34,17 @@ public class CMessage implements Receiver {
     private String identifier;
     private String subject;
     private String exchange;
-    private String cp;
+    private String eventPoint;
     private static final Logger logger = LoggerFactory.getLogger(CMessage.class);
 
-    public CMessage(String identifier, String subject, String exchange, String cp) {
+    public CMessage(String identifier, String subject, String exchange, String eventPoint) {
         this.identifier = identifier;
         this.subject = subject;
         this.exchange = exchange;
-        this.cp = cp;
+        this.eventPoint = eventPoint;
         status = ReceiverStatus.init;
 
     }
-
 
     /**
      * FWS:http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/
@@ -55,32 +56,27 @@ public class CMessage implements Receiver {
         if (status == ReceiverStatus.running) {
             return;
         }
-        status = ReceiverStatus.running;
 
-        logger.info("cmessage start.");
-
+        logger.info("Cmessage[" + eventPoint + "] start ...");
         try {
             Config.setConfigWsUri(GlobalConfig.getString("CMessageUrl"));
 //        Config.setConfigWsUri("http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/");
             Config.setAppId("100000557");
-            consumer = ConsumerFactory.instance.createConsumerAsAsync(identifier, subject, exchange);
-        } catch (IllegalTopic illegalTopic) {
-            logger.error("cmessage call start failed.",illegalTopic);
-            throw new RuntimeException(illegalTopic);
-        } catch (IllegalExchangeName illegalExchangeName) {
-            logger.error("cmessage call start failed.",illegalExchangeName);
-            throw new RuntimeException(illegalExchangeName);
-        }
 
-        if (consumer != null) {
+            consumer = ConsumerFactory.instance.createConsumerAsAsync(identifier, subject, exchange);
             consumer.addConsumerCallbackEventHandler(new IConsumerCallbackEventHandler() {
                 @Override
                 public void callback(IMessage iMessage) throws Exception {
                     try {
-                        standardMiddleware.assembleAndSend(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.CMessage.toString(), InnerEnum.CP.toString(), cp, InnerEnum.BODY.toString(), iMessage.getBody()));
+                        standardMiddleware.assembleAndSend(
+                                ImmutableMap.of(
+                                        InnerEnum.Channel, Channel.CMessage,
+                                        InnerEnum.EventPoint, eventPoint,
+                                        InnerEnum.BODY, iMessage.getBody()
+                                ));
                     } catch (Throwable t) {
                         CounterRepository.increaseCounter(Channel.CMessage.toString(), 0, true);
-                        logger.error("CMessage ConsumerCallbackEventHandler error.",t);
+                        logger.error("Cmessage[" + eventPoint + "] ConsumerCallbackEventHandler error.", t);
                     } finally {
                         iMessage.setAcks(AckMode.Ack);
                         iMessage.dispose();
@@ -89,22 +85,35 @@ public class CMessage implements Receiver {
             });
             consumer.setBatchSize(20);
             consumer.ConsumeAsync(5, false);
+
+            status = ReceiverStatus.running;
+            logger.info("Cmessage[" + eventPoint + "] start ... OK");
+        } catch (IllegalTopic illegalTopic) {
+            logger.error("Cmessage[" + eventPoint + "] call start failed.", illegalTopic);
+            throw new RuntimeException(illegalTopic);
+        } catch (IllegalExchangeName illegalExchangeName) {
+            logger.error("Cmessage[" + eventPoint + "] call start failed.", illegalExchangeName);
+            throw new RuntimeException(illegalExchangeName);
         }
+
     }
 
     @Override
     public void stop() {
+        logger.info("Cmessage[" + eventPoint + "] stop ...");
         if (consumer != null && status == ReceiverStatus.running) {
             consumer.stop();
             status = ReceiverStatus.stoped;
-            logger.info("cmessage stop.");
+            logger.info("Cmessage[" + eventPoint + "] stop ... OK");
         }
     }
 
     @Override
     public void restart() {
+        logger.info("Cmessage[" + eventPoint + "] restart ...");
         stop();
         start();
+        logger.info("Cmessage[" + eventPoint + "] restart ... OK");
     }
 
 }

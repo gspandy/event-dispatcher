@@ -22,7 +22,7 @@
             <file>/opt/logs/tomcat/bizeventdispatcher.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <fileNamePattern>/opt/logs/tomcat/bizeventdispatcher.log.%d{yyyyMMddHH}</fileNamePattern>
-                <maxHistory>7</maxHistory>
+                <maxHistory>3</maxHistory>
             </rollingPolicy>
             <encoder><!-- 必须指定，否则不会往文件输出内容 -->
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
@@ -34,7 +34,7 @@
             <file>/opt/logs/tomcat/debugeventdispatcher.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <fileNamePattern>/opt/logs/tomcat/debugeventdispatcher.log.%d{yyyy-MM-dd}</fileNamePattern>
-                <maxHistory>30</maxHistory>
+                <maxHistory>3</maxHistory>
             </rollingPolicy>
             <encoder><!-- 必须指定，否则不会往文件输出内容 -->
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>

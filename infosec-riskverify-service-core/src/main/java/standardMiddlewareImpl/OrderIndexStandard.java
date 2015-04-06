@@ -21,16 +21,17 @@ public class OrderIndexStandard implements StandardMiddleware {
     @Autowired
     @Qualifier("commonHandler")
     private Handler handler;
+
     public void assembleAndSend(Map map) {
         if (map != null) {
-            String fact = map.get(InnerEnum.FACT.toString()).toString();
-            String cp = map.get(InnerEnum.CP.toString()).toString();
-            byte[] body = (byte[]) map.get(InnerEnum.BODY.toString());
+            String channel = map.get(InnerEnum.Channel).toString();
+            String eventPoint = map.get(InnerEnum.EventPoint).toString();
+            byte[] body = (byte[]) map.get(InnerEnum.BODY);
             Map bodyMap = Utils.JSON.parseObject(new String(body, Charset.forName("utf-8")), Map.class);
             List<Map> subjects = (List<Map>) bodyMap.get("Subjects");
             for (Map item : subjects) {
-                RiskFact req = new RiskFact();
-                req.setEventPoint(cp);
+                RiskFact fact = new RiskFact();
+                fact.setEventPoint(eventPoint);
 
                 Map _map = new HashMap();
                 for (Object o : item.keySet()) {
@@ -39,11 +40,10 @@ public class OrderIndexStandard implements StandardMiddleware {
                     String rest = key.substring(1, key.length());
                     _map.put(first + rest, item.get(key));
                 }
-                req.setEventBody(_map);
-                handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), fact, InnerEnum.CP.toString(), cp, InnerEnum.BODY.toString(), req));
+                fact.setEventBody(_map);
+                handler.send(ImmutableMap.of(InnerEnum.Channel, channel, InnerEnum.EventPoint, eventPoint, InnerEnum.BODY, fact));
             }
         }
 
     }
 }
-

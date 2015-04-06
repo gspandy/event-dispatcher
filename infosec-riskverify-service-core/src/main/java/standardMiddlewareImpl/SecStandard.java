@@ -23,6 +23,7 @@ import java.util.Objects;
  * Created by zhangsx on 2015/2/5.
  */
 public class SecStandard implements StandardMiddleware {
+
     @Autowired
     @Qualifier("commonHandler")
     private Handler handler;
@@ -43,8 +44,8 @@ public class SecStandard implements StandardMiddleware {
     @Override
     public void assembleAndSend(Map map) {
         if (map != null) {
-            String fact = map.get(InnerEnum.FACT.toString()).toString();
-            byte[] body = (byte[]) map.get(InnerEnum.BODY.toString());
+            String channel = map.get(InnerEnum.Channel).toString();
+            byte[] body = (byte[]) map.get(InnerEnum.BODY);
             String body_str = new String(body, Charset.forName("utf-8"));
 
             Map bodyMap = Utils.JSON.parseObject(body_str, Map.class);
@@ -57,11 +58,11 @@ public class SecStandard implements StandardMiddleware {
             String timeStamp = Objects.toString(bodyMap.get("TimeStamp"), "");
             String uid = Objects.toString(bodyMap.get("UID"), "");
             String userIp = Objects.toString(bodyMap.get("UserIp"), "");
-            String cp = SEC.valueOf(prefix + logType).getValue();
+            String eventPoint = SEC.valueOf(prefix + logType).getValue();
 
             List<Map> msgBody = (List<Map>) bodyMap.get("MsgBody");
 
-            RiskFact req = new RiskFact();
+            RiskFact fact = new RiskFact();
             Map req_body = new LinkedHashMap();
             req_body.put("logType", logType);
             req_body.put("appid", appid);
@@ -72,23 +73,24 @@ public class SecStandard implements StandardMiddleware {
             req_body.put("timeStamp", timeStamp);
             req_body.put("uid", uid);
             req_body.put("userIp", userIp);
+
             for (int i = 0; i < msgBody.size(); i++) {
                 String key = Objects.toString(msgBody.get(i).get("Key"), "nullKey");
                 String value = Objects.toString(msgBody.get(i).get("Value"), "nullValue");
                 //判断CP1001008接入点 如果是POST方式，则将key为Field2的value做md5
-                if ("CP1001008".equals(cp) && "OperationType".equalsIgnoreCase(key) && "POST".equalsIgnoreCase(value)) {
+                if ("CP1001008".equals(eventPoint) && "OperationType".equalsIgnoreCase(key) && "POST".equalsIgnoreCase(value)) {
                     String psw = encryptSecData(msgBody);
-                    if(psw!=null){
-                        req_body.put("Field2",psw);
+                    if (psw != null) {
+                        req_body.put("Field2", psw);
                     }
                 } else {
                     req_body.put(key, value);
                 }
             }
-            req.setAppId(appid);
-            req.setEventPoint(cp);
-            req.setEventBody(req_body);
-            handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), fact, InnerEnum.CP.toString(), cp, InnerEnum.BODY.toString(), req));
+            fact.setAppId(appid);
+            fact.setEventPoint(eventPoint);
+            fact.setEventBody(req_body);
+            handler.send(ImmutableMap.of(InnerEnum.Channel, channel, InnerEnum.EventPoint, eventPoint, InnerEnum.BODY, fact));
         }
     }
 
@@ -106,7 +108,6 @@ public class SecStandard implements StandardMiddleware {
         C4("CP1001004"),
         C5("CP1001005"),
         C6("CP1001006"),
-
         C8("CP1001008");
 
         private String value;
@@ -124,7 +125,7 @@ public class SecStandard implements StandardMiddleware {
         for (Map<String, String> map : msgBody) {
             String key = map.get("Key");
             String value = map.get("Value");
-            if (key!=null&&"Field2".equalsIgnoreCase(key)) {
+            if (key != null && "Field2".equalsIgnoreCase(key)) {
                 if (value == null) {
                     return null;
                 }
@@ -135,19 +136,14 @@ public class SecStandard implements StandardMiddleware {
         return null;
     }
 
-
     /**
      * 加密方式
      * <p/>
-     * Password=123456
-     * 或
-     * "Password":"E5D5845A8660D090"
+     * Password=123456 或 "Password":"E5D5845A8660D090"
      *
      * @param content
      * @return
      */
-
-
     private String replacePW(String content) {
         String key = "Password=";
         if (content.startsWith(key) == false) {

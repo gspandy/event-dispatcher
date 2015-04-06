@@ -51,7 +51,10 @@ public class SecLog implements Receiver {
             @Override
             public void onMessage(Message message) {
                 try {
-                    standardMiddleware.assembleAndSend(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.MQ, InnerEnum.BODY.toString(), message.getBody()));
+                    standardMiddleware.assembleAndSend(
+                            ImmutableMap.of(
+                                    InnerEnum.Channel, Channel.MQ,
+                                    InnerEnum.BODY, message.getBody()));
                 } catch (Throwable t) {
                     CounterRepository.increaseCounter("SecLog", 0, true);
                     logger.error("SecLog MessageListener error.", t);

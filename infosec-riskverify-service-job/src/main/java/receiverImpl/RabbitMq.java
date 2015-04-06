@@ -48,7 +48,12 @@ public class RabbitMq implements Receiver {
 //                System.out.println(new String(message.getBody()));
                 try {
                     RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                    handler.send(ImmutableMap.of(InnerEnum.FACT.toString(), Channel.MQ.toString(), InnerEnum.CP.toString(), fact.getEventPoint(), InnerEnum.BODY.toString(), fact));
+                    handler.send(
+                            ImmutableMap.of(
+                                    InnerEnum.Channel, Channel.MQ,
+                                    InnerEnum.EventPoint, fact.getEventPoint(),
+                                    InnerEnum.BODY, fact
+                            ));
                 } catch (Throwable t) {
                     CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
                     logger.error("RabbitMq MessageListener error.", t);

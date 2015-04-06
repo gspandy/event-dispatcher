@@ -3,10 +3,10 @@ package standardMiddlewareImpl;
 import java.util.Map;
 
 /**
- * Created by zhangsx on 2015/2/3.
- * 标准化中间件 对不标准数据进行标准化
+ * Created by zhangsx on 2015/2/3. 标准化中间件 对不标准数据进行标准化
  */
 public interface StandardMiddleware {
+
     /**
      * 添加需要标准化的管道
      */

@@ -16,11 +16,14 @@ import java.util.concurrent.TimeUnit;
  * Created by zhangsx on 2015/2/4.
  */
 public class Manager implements ReceiverManager {
+
     Map<String, Receiver> asyncReceivers;
+
     public Manager(Map<String, Receiver> asyncReceivers) {
         this.asyncReceivers = asyncReceivers;
     }
     private static final Logger logger = LoggerFactory.getLogger(Manager.class);
+
     @Override
     public void addReceiver() {
 
@@ -44,8 +47,8 @@ public class Manager implements ReceiverManager {
                             }
                         }
                     }
-                }catch (Throwable throwable){
-                    logger.error("ReceiverManager error.",throwable);
+                } catch (Throwable throwable) {
+                    logger.error("ReceiverManager error.", throwable);
                 }
             }
 

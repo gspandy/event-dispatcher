@@ -17,16 +17,16 @@ import java.util.Map;
  * Created by zhangsx on 2015/1/8.
  */
 public class RiskVerifyAdvice implements MethodInterceptor {
+
     private final Log logger = LogFactory.getLog(RiskVerifyAdvice.class);
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        String serviceName = invocation.getThis().getClass().getSimpleName();
-        String operationName = invocation.getMethod().getName();
 
         Map map = (Map) invocation.getArguments()[0];
-        String fact = map.get(InnerEnum.FACT.toString()).toString();
-        String cp = map.get(InnerEnum.CP.toString()).toString();
+        String channel = map.get(InnerEnum.Channel).toString();
+        String eventPoint = map.get(InnerEnum.EventPoint).toString();
+
         // invoke
         boolean fault = false;
         StopWatch clock = new StopWatch();
@@ -42,18 +42,9 @@ public class RiskVerifyAdvice implements MethodInterceptor {
         } finally {
             clock.stop();
             long handlingTime = clock.getTime();
-            CounterRepository.increaseCounter(cp + "." + fact, handlingTime, fault);
-            CounterRepository.increaseCounter(fact, handlingTime, fault);
-            EventCounterRepository.increaseCounter(cp, Channel.valueOf(fact));
-//            if (!fault) {
-//                if (handlingTime < SarsMonitorContext.WARN_VALUE) {
-//                    logger.info(SarsMonitorContext.getLogPrefix() + "invoke " + serviceName + "." + operationName + ", usage=" + handlingTime + "ms");
-//                } else {
-//                    logger.warn(SarsMonitorContext.getLogPrefix() + "invoke " + serviceName + "." + operationName + ", usage=" + handlingTime + "ms");
-//                }
-//            } else {
-//                logger.warn(SarsMonitorContext.getLogPrefix() + "invoke " + serviceName + "." + operationName + ", fault.");
-//            }
+            CounterRepository.increaseCounter(eventPoint + "." + channel, handlingTime, fault);
+            CounterRepository.increaseCounter(channel, handlingTime, fault);
+            EventCounterRepository.increaseCounter(eventPoint, Channel.valueOf(channel));
         }
     }
 }
