@@ -3,12 +3,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
+    <!-- SpringContextHolder -->
+    <bean class="com.ctrip.infosec.sars.util.SpringContextHolder"/>
+    
     <!-- use venus placeholder config process -->
     <bean class="com.meidusa.venus.spring.VenusPropertyPlaceholderConfigurer">
         <property name="location" value="classpath:GlobalConfig.properties"/>
     </bean>    
     
-<!--    <bean id="serviceFactory" class="com.meidusa.venus.client.VenusServiceFactory" destroy-method="destroy">
+    <bean id="serviceFactory" class="com.meidusa.venus.client.VenusServiceFactory" destroy-method="destroy" lazy-init="true">
         <property name="configFiles">
             <list>
                 <value>classpath:VenusClient.xml</value>
@@ -16,6 +19,6 @@
         </property>
     </bean>
     
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />-->
+    <!--<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />-->
     
 </beans>

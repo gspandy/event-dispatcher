@@ -11,8 +11,8 @@ import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.rule.venus.RuleEngineRemoteService;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
+import com.ctrip.infosec.sars.util.SpringContextHolder;
 import com.google.common.collect.ImmutableMap;
-import enums.InnerEnum;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.StringEntity;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by zhangsx on 2014/12/26.
@@ -41,18 +40,14 @@ public class RiskVerifyBiz {
     private RabbitTemplate sender;
     private static String url = GlobalConfig.getString("RuleEngineUrl");
     /**
-     * 规则引擎Venus接口
-     */
-//    @Autowired
-//    RuleEngineRemoteService ruleEngineRemoteService;
-    /**
      * 异步模拟同步（多线程）调用同步规则引擎.
      */
-    PooledMethodProxy syncRuleEngineRemoteService;
+    PooledMethodProxy ruleEngineRemoteService;
     private static final int coreSize = GlobalConfig.getInteger("pooled.sync.coreSize", 32);
     private static final int maxThreadSize = GlobalConfig.getInteger("pooled.sync.maxThreadSize", 512);
     private static final int keepAliveTime = GlobalConfig.getInteger("pooled.sync.keepAliveTime", 60);
     private static final int queueSize = GlobalConfig.getInteger("pooled.sync.queueSize", -1);
+    private Lock lock = new ReentrantLock();
 
     /**
      * 非法的EventPoint
@@ -96,15 +91,16 @@ public class RiskVerifyBiz {
             logger.info(logPrefix + "invoke sync rule engine ...");
             long timeout = Configs.timeoutInvokeSyncRule(fact.eventPoint);
             try {
-                factTxt = Request.Post(url)
-                        .body(new StringEntity(factTxt, "UTF-8"))
-                        .connectTimeout((int) timeout).socketTimeout((int) timeout)
-                        .execute().returnContent().asString();
-                fact = Utils.JSON.parseObject(factTxt, RiskFact.class);
+//                factTxt = Request.Post(url)
+//                        .body(new StringEntity(factTxt, "UTF-8"))
+//                        .connectTimeout((int) timeout).socketTimeout((int) timeout)
+//                        .execute().returnContent().asString();
+//                fact = Utils.JSON.parseObject(factTxt, RiskFact.class);
 
                 // 使用线程池模拟同步方式调用RuleEngine服务
-//                fact = syncRuleEngineRemoteService.syncInvoke(timeout, fact);
-                
+                initRuleEngineRemoteService();
+                fact = ruleEngineRemoteService.syncInvoke(timeout, fact);
+
                 // 设置同步已执行的标识
                 if (fact.getExt() == null) {
                     fact.setExt(new HashMap<String, Object>());
@@ -144,22 +140,29 @@ public class RiskVerifyBiz {
     /**
      * 初始化规则引擎执行的POOL
      */
-    @PostConstruct
-    public void init() {
-        try {
-//            logger.info("init rule engine client ...");
-//            syncRuleEngineRemoteService = MethodProxyFactory
-//                    .newMethodProxy(ruleEngineRemoteService, "verify", RiskFact.class)
-//                    .supportAsyncInvoke()
-//                    .pooledWithConfig(new PoolConfig()
-//                            .withCorePoolSize(coreSize)
-//                            .withKeepAliveTime(keepAliveTime)
-//                            .withMaxPoolSize(maxThreadSize)
-//                            .withQueueSize(queueSize)
-//                    );
-//            logger.info("init rule engine client ... OK");
-        } catch (Exception e) {
-            logger.info("init rule engine client ... Exception", e);
+    void initRuleEngineRemoteService() {
+        if (ruleEngineRemoteService == null) {
+            lock.lock();
+            try {
+                if (ruleEngineRemoteService == null) {
+                    logger.info("init rule engine client ...");
+                    RuleEngineRemoteService service = SpringContextHolder.getBean(RuleEngineRemoteService.class);
+                    this.ruleEngineRemoteService = MethodProxyFactory
+                            .newMethodProxy(service, "verify", RiskFact.class)
+                            .supportAsyncInvoke()
+                            .pooledWithConfig(new PoolConfig()
+                                    .withCorePoolSize(coreSize)
+                                    .withKeepAliveTime(keepAliveTime)
+                                    .withMaxPoolSize(maxThreadSize)
+                                    .withQueueSize(queueSize)
+                            );
+                    logger.info("init rule engine client ... OK");
+                }
+            } catch (Exception e) {
+                logger.info("init rule engine client ... Exception", e);
+            } finally {
+                lock.unlock();
+            }
         }
     }
 }
