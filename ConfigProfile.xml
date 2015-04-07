@@ -22,7 +22,31 @@
 	<!--FWS:http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
 	<!--* UAT:http://ws.config.framework.uat.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
 	<!--* PRD:http://ws.config.framework.sh.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/-->
-	<dev></dev>
+	<dev>
+		<EventHost>10.3.6.42</EventHost>
+		<EventVirtualHost>medusa</EventVirtualHost>
+		<EventUsername>bsc-medusa</EventUsername>
+		<EventPassword>bsc-medusa</EventPassword>
+		<InnerHost>10.3.6.42</InnerHost>
+		<InnerVirtualHost>medusa</InnerVirtualHost>
+		<InnerUsername>bsc-medusa</InnerUsername>
+		<InnerPassword>bsc-medusa</InnerPassword>
+		<SecLogHost>secbd1.qa.nt.ctripcorp.com</SecLogHost>
+		<SecLogVirtualHost>infosec</SecLogVirtualHost>
+		<SecLogUsername>sec-read</SecLogUsername>
+		<SecLogPassword>sec-read</SecLogPassword>
+		<!-- RuleEngine -->
+		<RuleEngineUrl>http://10.2.10.77:8080/ruleenginews/rule/query</RuleEngineUrl>
+		<RuleEngine.Venus.ipAddressList>10.2.10.77:16800</RuleEngine.Venus.ipAddressList>
+		<!-- CMessage -->
+		<CMessageUrl>http://ws.config.framework.fws.qa.nt.ctripcorp.com/Configws/ServiceConfig/ConfigInfoes/Get/</CMessageUrl>
+		<MONITOR>http://10.2.10.75:8080/monitorws/rest/monitor</MONITOR>
+		<DATACONFI_URL>http://10.2.10.76:8080/configsws/rest/loadconfig</DATACONFI_URL>
+		<EventCounter>http://10.2.10.76:8080/configsws/rest/eventmonitor</EventCounter>
+		<DBDataCenter></DBDataCenter>
+		<ClogIp>collector.logging.fws.qa.nt.ctripcorp.com</ClogIp>
+		<ClogPort>63100</ClogPort>
+	</dev>
 	<test></test>
 	<lpt></lpt>
 	<fat>
