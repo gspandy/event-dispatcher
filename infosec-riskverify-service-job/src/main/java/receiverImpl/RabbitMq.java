@@ -4,8 +4,6 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
 import com.ctrip.infosec.sars.monitor.util.Utils;
-import com.google.common.collect.ImmutableMap;
-import enums.InnerEnum;
 import handlerImpl.Handler;
 import manager.Receiver;
 import org.slf4j.Logger;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.nio.charset.Charset;
 import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 
 /**
  * Created by zhangsx on 2015/2/3.
@@ -48,12 +45,7 @@ public class RabbitMq implements Receiver {
 //                System.out.println(new String(message.getBody()));
                 try {
                     RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                    handler.send(
-                            ImmutableMap.of(
-                                    InnerEnum.Channel, Channel.MQ,
-                                    InnerEnum.EventPoint, fact.getEventPoint(),
-                                    InnerEnum.BODY, fact
-                            ));
+                    handler.send(Channel.MQ, fact);
                 } catch (Throwable t) {
                     CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
                     logger.error("RabbitMq MessageListener error.", t);

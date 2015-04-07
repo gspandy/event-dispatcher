@@ -1,10 +1,9 @@
 package standardMiddlewareImpl;
 
 import com.ctrip.infosec.common.model.RiskFact;
+import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
-import enums.InnerEnum;
 import handlerImpl.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,56 +41,55 @@ public class SecStandard implements StandardMiddleware {
     }
 
     @Override
-    public void assembleAndSend(Map map) {
-        if (map != null) {
-            String channel = map.get(InnerEnum.Channel).toString();
-            byte[] body = (byte[]) map.get(InnerEnum.BODY);
-            String body_str = new String(body, Charset.forName("utf-8"));
+    public void assembleAndSend(Channel channel, String eventPoint, byte[] body) {
+        String body_str = new String(body, Charset.forName("utf-8"));
 
-            Map bodyMap = Utils.JSON.parseObject(body_str, Map.class);
-            String logType = Objects.toString(bodyMap.get("LogType"), "");
-            String appid = Objects.toString(bodyMap.get("AppId"), "");
-            String clientId = Objects.toString(bodyMap.get("ClientId"), "");
-            String sceneType = Objects.toString(bodyMap.get("SceneType"), "");
-            String sourceFrom = Objects.toString(bodyMap.get("SourceFrom"), "");
-            String subSourceFrom = Objects.toString(bodyMap.get("SubSourceFrom"), "");
-            String timeStamp = Objects.toString(bodyMap.get("TimeStamp"), "");
-            String uid = Objects.toString(bodyMap.get("UID"), "");
-            String userIp = Objects.toString(bodyMap.get("UserIp"), "");
-            String eventPoint = SEC.valueOf(prefix + logType).getValue();
+        Map bodyMap = Utils.JSON.parseObject(body_str, Map.class);
+        String logType = Objects.toString(bodyMap.get("LogType"), "");
+        String appid = Objects.toString(bodyMap.get("AppId"), "");
+        String clientId = Objects.toString(bodyMap.get("ClientId"), "");
+        String sceneType = Objects.toString(bodyMap.get("SceneType"), "");
+        String sourceFrom = Objects.toString(bodyMap.get("SourceFrom"), "");
+        String subSourceFrom = Objects.toString(bodyMap.get("SubSourceFrom"), "");
+        String timeStamp = Objects.toString(bodyMap.get("TimeStamp"), "");
+        String uid = Objects.toString(bodyMap.get("UID"), "");
+        String userIp = Objects.toString(bodyMap.get("UserIp"), "");
 
-            List<Map> msgBody = (List<Map>) bodyMap.get("MsgBody");
-
-            RiskFact fact = new RiskFact();
-            Map req_body = new LinkedHashMap();
-            req_body.put("logType", logType);
-            req_body.put("appid", appid);
-            req_body.put("clientId", clientId);
-            req_body.put("sceneType", sceneType);
-            req_body.put("sourceFrom", sourceFrom);
-            req_body.put("subSourceFrom", subSourceFrom);
-            req_body.put("timeStamp", timeStamp);
-            req_body.put("uid", uid);
-            req_body.put("userIp", userIp);
-
-            for (int i = 0; i < msgBody.size(); i++) {
-                String key = Objects.toString(msgBody.get(i).get("Key"), "nullKey");
-                String value = Objects.toString(msgBody.get(i).get("Value"), "nullValue");
-                //判断CP1001008接入点 如果是POST方式，则将key为Field2的value做md5
-                if ("CP1001008".equals(eventPoint) && "OperationType".equalsIgnoreCase(key) && "POST".equalsIgnoreCase(value)) {
-                    String psw = encryptSecData(msgBody);
-                    if (psw != null) {
-                        req_body.put("Field2", psw);
-                    }
-                } else {
-                    req_body.put(key, value);
-                }
-            }
-            fact.setAppId(appid);
-            fact.setEventPoint(eventPoint);
-            fact.setEventBody(req_body);
-            handler.send(ImmutableMap.of(InnerEnum.Channel, channel, InnerEnum.EventPoint, eventPoint, InnerEnum.BODY, fact));
+        if (eventPoint == null) {
+            eventPoint = SEC.valueOf(prefix + logType).getValue();
         }
+
+        List<Map> msgBody = (List<Map>) bodyMap.get("MsgBody");
+
+        RiskFact fact = new RiskFact();
+        Map req_body = new LinkedHashMap();
+        req_body.put("logType", logType);
+        req_body.put("appid", appid);
+        req_body.put("clientId", clientId);
+        req_body.put("sceneType", sceneType);
+        req_body.put("sourceFrom", sourceFrom);
+        req_body.put("subSourceFrom", subSourceFrom);
+        req_body.put("timeStamp", timeStamp);
+        req_body.put("uid", uid);
+        req_body.put("userIp", userIp);
+
+        for (int i = 0; i < msgBody.size(); i++) {
+            String key = Objects.toString(msgBody.get(i).get("Key"), "nullKey");
+            String value = Objects.toString(msgBody.get(i).get("Value"), "nullValue");
+            //判断CP1001008接入点 如果是POST方式，则将key为Field2的value做md5
+            if ("CP1001008".equals(eventPoint) && "OperationType".equalsIgnoreCase(key) && "POST".equalsIgnoreCase(value)) {
+                String psw = encryptSecData(msgBody);
+                if (psw != null) {
+                    req_body.put("Field2", psw);
+                }
+            } else {
+                req_body.put(key, value);
+            }
+        }
+        fact.setAppId(appid);
+        fact.setEventPoint(eventPoint);
+        fact.setEventBody(req_body);
+        handler.send(channel, fact);
     }
 
     private enum SEC {

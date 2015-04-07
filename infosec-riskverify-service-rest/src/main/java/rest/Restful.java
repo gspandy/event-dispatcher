@@ -29,14 +29,10 @@ public class Restful implements Receiver {
     private Handler handler;
 
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact fact) {
-        RiskResult riskResult = handler.send(
-                ImmutableMap.of(
-                        InnerEnum.Channel, Channel.REST,
-                        InnerEnum.EventPoint, fact.getEventPoint(),
-                        InnerEnum.BODY, fact
-                ));
+    @ResponseBody
+    public ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact fact) {
+
+        RiskResult riskResult = handler.send(Channel.REST, fact);
         return new ResponseEntity<RiskResult>(riskResult, HttpStatus.OK);
     }
 

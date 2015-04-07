@@ -1,17 +1,14 @@
 package aop;
 
+import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.configs.event.monitor.EventCounterRepository;
-import com.ctrip.infosec.sars.monitor.SarsMonitorContext;
 import com.ctrip.infosec.sars.monitor.counters.CounterRepository;
-import enums.InnerEnum;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Map;
 
 /**
  * Created by zhangsx on 2015/1/8.
@@ -23,9 +20,9 @@ public class RiskVerifyAdvice implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
-        Map map = (Map) invocation.getArguments()[0];
-        String channel = map.get(InnerEnum.Channel).toString();
-        String eventPoint = map.get(InnerEnum.EventPoint).toString();
+        Channel channel = (Channel) invocation.getArguments()[0];
+        RiskFact fact = (RiskFact) invocation.getArguments()[1];
+        String eventPoint = fact.getEventPoint();
 
         // invoke
         boolean fault = false;
@@ -43,8 +40,8 @@ public class RiskVerifyAdvice implements MethodInterceptor {
             clock.stop();
             long handlingTime = clock.getTime();
             CounterRepository.increaseCounter(eventPoint + "." + channel, handlingTime, fault);
-            CounterRepository.increaseCounter(channel, handlingTime, fault);
-            EventCounterRepository.increaseCounter(eventPoint, Channel.valueOf(channel));
+            CounterRepository.increaseCounter(channel.toString(), handlingTime, fault);
+            EventCounterRepository.increaseCounter(eventPoint, channel);
         }
     }
 }

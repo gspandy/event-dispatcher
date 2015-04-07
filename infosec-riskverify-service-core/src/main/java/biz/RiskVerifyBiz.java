@@ -7,6 +7,7 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.Ext;
+import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.rule.venus.RuleEngineRemoteService;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
@@ -58,9 +59,7 @@ public class RiskVerifyBiz {
      */
     private final Map<String, Object> invalidEventPointResult = ImmutableMap.<String, Object>of("riskLevel", Integer.valueOf(0), "riskMessage", "非法的EventPoint");
 
-    public RiskResult exe(Map map) {
-        RiskFact fact = (RiskFact) map.get(InnerEnum.BODY);
-        String channel = map.get(InnerEnum.Channel).toString();
+    public RiskResult exe(Channel channel, RiskFact fact) {
 
         // 事件预处理
         long receiveTime = new Date().getTime();
