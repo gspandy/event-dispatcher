@@ -71,7 +71,7 @@ public class CMessage implements Receiver {
                         CounterRepository.increaseCounter(Channel.CMessage.toString(), 0, true);
                         logger.error("CMessage[" + eventPoint + "] ConsumerCallbackEventHandler error.", t);
                     } finally {
-                        iMessage.setAcks(AckMode.Ack);
+//                        iMessage.setAcks(AckMode.Ack);
                         iMessage.dispose();
                     }
                 }
