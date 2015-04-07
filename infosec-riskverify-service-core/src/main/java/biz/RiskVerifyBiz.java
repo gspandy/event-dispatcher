@@ -43,8 +43,8 @@ public class RiskVerifyBiz {
     /**
      * 规则引擎Venus接口
      */
-    @Autowired
-    RuleEngineRemoteService ruleEngineRemoteService;
+//    @Autowired
+//    RuleEngineRemoteService ruleEngineRemoteService;
     /**
      * 异步模拟同步（多线程）调用同步规则引擎.
      */
@@ -94,17 +94,17 @@ public class RiskVerifyBiz {
         // 执行同步规则
         if (Configs.hasSyncRules(fact)) {
             logger.info(logPrefix + "invoke sync rule engine ...");
+            long timeout = Configs.timeoutInvokeSyncRule(fact.eventPoint);
             try {
-//                factTxt = Request.Post(url)
-//                        .body(new StringEntity(factTxt, "UTF-8"))
-//                        .connectTimeout(500).socketTimeout(2000)
-//                        .execute().returnContent().asString();
-//                fact = Utils.JSON.parseObject(factTxt, RiskFact.class);
+                factTxt = Request.Post(url)
+                        .body(new StringEntity(factTxt, "UTF-8"))
+                        .connectTimeout((int) timeout).socketTimeout((int) timeout)
+                        .execute().returnContent().asString();
+                fact = Utils.JSON.parseObject(factTxt, RiskFact.class);
 
                 // 使用线程池模拟同步方式调用RuleEngine服务
-                long timeout = Configs.timeoutInvokeSyncRule(fact.eventPoint);
-                fact = syncRuleEngineRemoteService.syncInvoke(timeout, fact);
-
+//                fact = syncRuleEngineRemoteService.syncInvoke(timeout, fact);
+                
                 // 设置同步已执行的标识
                 if (fact.getExt() == null) {
                     fact.setExt(new HashMap<String, Object>());
@@ -147,17 +147,17 @@ public class RiskVerifyBiz {
     @PostConstruct
     public void init() {
         try {
-            logger.info("init rule engine client ...");
-            syncRuleEngineRemoteService = MethodProxyFactory
-                    .newMethodProxy(ruleEngineRemoteService, "verify", RiskFact.class)
-                    .supportAsyncInvoke()
-                    .pooledWithConfig(new PoolConfig()
-                            .withCorePoolSize(coreSize)
-                            .withKeepAliveTime(keepAliveTime)
-                            .withMaxPoolSize(maxThreadSize)
-                            .withQueueSize(queueSize)
-                    );
-            logger.info("init rule engine client ... OK");
+//            logger.info("init rule engine client ...");
+//            syncRuleEngineRemoteService = MethodProxyFactory
+//                    .newMethodProxy(ruleEngineRemoteService, "verify", RiskFact.class)
+//                    .supportAsyncInvoke()
+//                    .pooledWithConfig(new PoolConfig()
+//                            .withCorePoolSize(coreSize)
+//                            .withKeepAliveTime(keepAliveTime)
+//                            .withMaxPoolSize(maxThreadSize)
+//                            .withQueueSize(queueSize)
+//                    );
+//            logger.info("init rule engine client ... OK");
         } catch (Exception e) {
             logger.info("init rule engine client ... Exception", e);
         }
