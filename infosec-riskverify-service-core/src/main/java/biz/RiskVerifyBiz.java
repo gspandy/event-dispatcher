@@ -147,7 +147,7 @@ public class RiskVerifyBiz {
                 if (ruleEngineRemoteService == null) {
                     logger.info("init rule engine client ...");
                     RuleEngineRemoteService service = SpringContextHolder.getBean(RuleEngineRemoteService.class);
-                    this.ruleEngineRemoteService = MethodProxyFactory
+                    PooledMethodProxy proxy = MethodProxyFactory
                             .newMethodProxy(service, "verify", RiskFact.class)
                             .supportAsyncInvoke()
                             .pooledWithConfig(new PoolConfig()
@@ -156,6 +156,7 @@ public class RiskVerifyBiz {
                                     .withMaxPoolSize(maxThreadSize)
                                     .withQueueSize(queueSize)
                             );
+                    ruleEngineRemoteService = proxy;
                     logger.info("init rule engine client ... OK");
                 }
             } catch (Exception e) {
