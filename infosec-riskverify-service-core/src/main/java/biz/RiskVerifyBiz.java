@@ -9,6 +9,7 @@ import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.Ext;
 import com.ctrip.infosec.configs.event.Channel;
 import com.ctrip.infosec.rule.venus.RuleEngineRemoteService;
+import com.ctrip.infosec.sars.monitor.SarsMonitorContext;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import com.ctrip.infosec.sars.util.GlobalConfig;
 import com.ctrip.infosec.sars.util.SpringContextHolder;
@@ -69,6 +70,7 @@ public class RiskVerifyBiz {
         fact.getExt().put("descTimestamp", (4070880000000L - receiveTime));
 
         String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+        SarsMonitorContext.setLogPrefix(logPrefix);
         String factTxt = Utils.JSON.toJSONString(fact);
         logger.info(logPrefix + "[step0]" + factTxt);
 
@@ -145,7 +147,7 @@ public class RiskVerifyBiz {
             lock.lock();
             try {
                 if (ruleEngineRemoteService == null) {
-                    logger.info("init rule engine client ...");
+                    logger.info(SarsMonitorContext.getLogPrefix() + "init rule engine client ...");
                     RuleEngineRemoteService service = SpringContextHolder.getBean(RuleEngineRemoteService.class);
                     PooledMethodProxy proxy = MethodProxyFactory
                             .newMethodProxy(service, "verify", RiskFact.class)
@@ -157,10 +159,10 @@ public class RiskVerifyBiz {
                                     .withQueueSize(queueSize)
                             );
                     ruleEngineRemoteService = proxy;
-                    logger.info("init rule engine client ... OK");
+                    logger.info(SarsMonitorContext.getLogPrefix() + "init rule engine client ... OK");
                 }
             } catch (Exception e) {
-                logger.info("init rule engine client ... Exception", e);
+                logger.info(SarsMonitorContext.getLogPrefix() + "init rule engine client ... Exception", e);
             } finally {
                 lock.unlock();
             }
