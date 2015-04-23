@@ -148,11 +148,11 @@
 		<ClogPort>63100</ClogPort>
 	</fws>
 	<uat>
-		<EventHost>10.3.6.42</EventHost>
+		<EventHost>10.2.24.236</EventHost>
 		<EventVirtualHost>medusa</EventVirtualHost>
 		<EventUsername>bsc-medusa</EventUsername>
 		<EventPassword>bsc-medusa</EventPassword>
-		<InnerHost>10.3.6.42</InnerHost>
+		<InnerHost>10.2.24.236</InnerHost>
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
@@ -172,11 +172,11 @@
 		<ClogPort>63100</ClogPort>
 	</uat>
 	<uat_nt>
-		<EventHost>10.3.6.42</EventHost>
+		<EventHost>10.2.24.236</EventHost>
 		<EventVirtualHost>medusa</EventVirtualHost>
 		<EventUsername>bsc-medusa</EventUsername>
 		<EventPassword>bsc-medusa</EventPassword>
-		<InnerHost>10.3.6.42</InnerHost>
+		<InnerHost>10.2.24.236</InnerHost>
 		<InnerVirtualHost>medusa</InnerVirtualHost>
 		<InnerUsername>bsc-medusa</InnerUsername>
 		<InnerPassword>bsc-medusa</InnerPassword>
