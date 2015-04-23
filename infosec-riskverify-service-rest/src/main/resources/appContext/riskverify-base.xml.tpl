@@ -15,7 +15,7 @@
               <aop:advisor advice-ref="sarsMonitorAdvice" pointcut="execution(* biz.RiskVerifyBiz.exe(..))"/>
        </aop:config>
 
-       <bean class="com.ctrip.infosec.sars.monitor.scheduler.SarsMonitorScheduler" init-method="start">
+       <bean class="com.ctrip.infosec.sars.monitor.SarsMonitorDeamon" init-method="start">
               <property name="appId" value="100000557"/>
               <property name="postUrl" value="{$MONITOR}"/>
        </bean>
