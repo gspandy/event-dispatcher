@@ -38,7 +38,21 @@ public class Restful implements Receiver {
     }
 
     /**
-     * 执行规则验证（针对支付风控、返回finalResult以及results）
+     * 风控审核（针对外部PD、只返回finalResult、调用时不需要设置Header）
+     *
+     * @param factTxt
+     * @return
+     */
+    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<RiskResult> verify(@RequestBody String factTxt) {
+        RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
+        RiskResult result = handler.verify(Channel.REST, fact);
+        return new ResponseEntity<RiskResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 执行规则验证（针对支付风控、返回finalResult以及results、调用时不需要设置Header）
      *
      * @param factTxt
      * @return
