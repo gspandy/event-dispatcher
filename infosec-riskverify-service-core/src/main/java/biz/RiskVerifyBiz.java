@@ -4,7 +4,6 @@ import com.ctrip.infosec.configs.utils.concurrent.PoolConfig;
 import com.ctrip.infosec.configs.utils.concurrent.PooledMethodProxy;
 import com.ctrip.infosec.configs.utils.concurrent.MethodProxyFactory;
 import com.ctrip.infosec.common.model.RiskFact;
-import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.Configs;
 import com.ctrip.infosec.configs.Ext;
 import com.ctrip.infosec.configs.event.Channel;
@@ -55,7 +54,7 @@ public class RiskVerifyBiz {
      */
     private final Map<String, Object> invalidEventPointResult = ImmutableMap.<String, Object>of("riskLevel", Integer.valueOf(0), "riskMessage", "非法的EventPoint");
 
-    public RiskResult exe(Channel channel, RiskFact fact) {
+    public RiskFact exe(Channel channel, RiskFact fact) {
 
         // 事件预处理
         long receiveTime = new Date().getTime();
@@ -71,21 +70,13 @@ public class RiskVerifyBiz {
 
         String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
         SarsMonitorContext.setLogPrefix(logPrefix);
-        String factTxt = Utils.JSON.toJSONString(fact);
-        logger.info(logPrefix + "[step0]" + factTxt);
+        logger.info(logPrefix + "FACT: " + Utils.JSON.toJSONString(fact));
 
         // 验证EventPoint
         if (!Configs.isValidEventPoint(fact.getEventPoint())) {
-            RiskResult result = new RiskResult();
-            result.setEventId(fact.getEventId());
-            result.setEventPoint(fact.getEventPoint());
-            result.setRequestTime(fact.getRequestTime());
-            result.setRequestReceive(fact.getRequestReceive());
-            result.setResponseReceive(sdf.format(new Date()));
-            result.setResponseTime(sdf.format(new Date()));
-            result.setResults(invalidEventPointResult);
-            logger.info(logPrefix + "[step1]" + Utils.JSON.toJSONString(result));
-            return result;
+            fact.setFinalResult(invalidEventPointResult);
+            logger.info(logPrefix + "RESULT: " + Utils.JSON.toJSONString(fact.getFinalResult()));
+            return fact;
         }
 
         // 执行同步规则
@@ -116,27 +107,11 @@ public class RiskVerifyBiz {
             }
         }
 
-        // 处理返回值
-        RiskResult result = transform(fact);
-        logger.info(logPrefix + "RESULT: " + Utils.JSON.toJSONString(result));
-
         // 发往异步规则
-        logger.info(logPrefix + "send to aysnc rule engine ...");
         sender.convertAndSend(exchangeName, routingKey, Utils.JSON.toJSONString(fact));
-        logger.info(logPrefix + "send to aysnc rule engine ... OK");
-        return result;
-    }
 
-    private RiskResult transform(RiskFact fact) {
-        RiskResult result = new RiskResult();
-        result.setRequestReceive(fact.getRequestReceive());
-        result.setEventPoint(fact.getEventPoint());
-        result.setEventId(fact.getEventId());
-        result.setRequestTime(fact.getRequestTime());
-        result.setResponseReceive(sdf.format(new Date()));
-        result.setResponseTime(sdf.format(new Date()));
-        result.setResults(fact.getFinalResult());
-        return result;
+        logger.info(logPrefix + "RESULT: " + Utils.JSON.toJSONString(fact.getFinalResult()));
+        return fact;
     }
 
     /**

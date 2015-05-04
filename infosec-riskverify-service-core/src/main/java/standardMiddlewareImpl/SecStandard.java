@@ -89,7 +89,7 @@ public class SecStandard implements StandardMiddleware {
         fact.setAppId(appid);
         fact.setEventPoint(eventPoint);
         fact.setEventBody(req_body);
-        handler.send(channel, fact);
+        handler.verify(channel, fact);
     }
 
     private enum SEC {

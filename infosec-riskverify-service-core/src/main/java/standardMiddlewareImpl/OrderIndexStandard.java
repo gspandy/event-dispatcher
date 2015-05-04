@@ -44,7 +44,7 @@ public class OrderIndexStandard implements StandardMiddleware {
                     _map.put(first + rest, item.get(key));
                 }
                 fact.setEventBody(_map);
-                handler.send(channel, fact);
+                handler.verify(channel, fact);
             }
         } else {
             logger.warn("CMessage[" + eventPoint + "] Base64Body: " + Base64.encodeBase64String(body));

@@ -45,7 +45,7 @@ public class RabbitMq implements Receiver {
 //                System.out.println(new String(message.getBody()));
                 try {
                     RiskFact fact = Utils.JSON.parseObject(new String(message.getBody(), Charset.forName("utf-8")), RiskFact.class);
-                    handler.send(Channel.MQ, fact);
+                    handler.verify(Channel.MQ, fact);
                 } catch (Throwable t) {
                     CounterRepository.increaseCounter(Channel.MQ.toString(), 0, true);
                     logger.error("RabbitMq MessageListener error.", t);
