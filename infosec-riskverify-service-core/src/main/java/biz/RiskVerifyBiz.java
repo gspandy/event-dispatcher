@@ -70,12 +70,12 @@ public class RiskVerifyBiz {
 
         String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
         SarsMonitorContext.setLogPrefix(logPrefix);
-        logger.info(logPrefix + "FACT: " + Utils.JSON.toJSONString(fact));
+        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
 
         // 验证EventPoint
         if (!Configs.isValidEventPoint(fact.getEventPoint())) {
             fact.setFinalResult(invalidEventPointResult);
-            logger.info(logPrefix + "RESULT: " + Utils.JSON.toJSONString(fact.getFinalResult()));
+            logger.info(logPrefix + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()));
             return fact;
         }
 
@@ -110,7 +110,7 @@ public class RiskVerifyBiz {
         // 发往异步规则
         sender.convertAndSend(exchangeName, routingKey, Utils.JSON.toJSONString(fact));
 
-        logger.info(logPrefix + "RESULT: " + Utils.JSON.toJSONString(fact.getFinalResult()));
+        logger.info(logPrefix + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()) + "finalResultGroupByScene: " + Utils.JSON.toJSONString(fact.getFinalResultGroupByScene()));
         return fact;
     }
 
