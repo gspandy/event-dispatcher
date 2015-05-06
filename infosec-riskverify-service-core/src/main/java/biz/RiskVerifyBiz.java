@@ -110,7 +110,7 @@ public class RiskVerifyBiz {
         // 发往异步规则
         sender.convertAndSend(exchangeName, routingKey, Utils.JSON.toJSONString(fact));
 
-        logger.info(logPrefix + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()) + "finalResultGroupByScene: " + Utils.JSON.toJSONString(fact.getFinalResultGroupByScene()));
+        logger.info(logPrefix + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()) + ", finalResultGroupByScene: " + Utils.JSON.toJSONString(fact.getFinalResultGroupByScene()));
         return fact;
     }
 
