@@ -31,6 +31,7 @@ public class CommonHandler implements Handler {
 
     public RiskFact execute(Channel channel, RiskFact fact) {
         fact = biz.exe(channel, fact);
+        fact.setResponseTime(sdf.format(new Date()));
         return fact;
     }
 
@@ -40,7 +41,6 @@ public class CommonHandler implements Handler {
         result.setEventPoint(fact.getEventPoint());
         result.setEventId(fact.getEventId());
         result.setRequestTime(fact.getRequestTime());
-        result.setResponseReceive(sdf.format(new Date()));
         result.setResponseTime(sdf.format(new Date()));
         result.setResults(fact.getFinalResult());
         return result;
