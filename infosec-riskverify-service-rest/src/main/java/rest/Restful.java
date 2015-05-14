@@ -3,9 +3,7 @@ package rest;
 import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.event.Channel;
-import static com.ctrip.infosec.configs.utils.Utils.JSON;
 import com.ctrip.infosec.sars.monitor.SarsMonitorContext;
-import com.ctrip.infosec.sars.monitor.util.Utils;
 import handlerImpl.Handler;
 import manager.Receiver;
 import org.slf4j.Logger;
@@ -39,27 +37,9 @@ public class Restful implements Receiver {
     @ResponseBody
     public ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact fact) {
 
-        String logPrefix = "[verify]";
+        String logPrefix = "[riskverify]";
         SarsMonitorContext.setLogPrefix(logPrefix);
 
-        RiskResult result = handler.verify(Channel.REST, fact);
-        return new ResponseEntity<RiskResult>(result, HttpStatus.OK);
-    }
-
-    /**
-     * 风控审核（针对外部PD、只返回finalResult、调用时不需要设置Header）
-     *
-     * @param factTxt
-     * @return
-     */
-    @RequestMapping(value = "/verify", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<RiskResult> verify(@RequestBody String factTxt) {
-
-        String logPrefix = "[verify]";
-        SarsMonitorContext.setLogPrefix(logPrefix);
-
-        RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
         RiskResult result = handler.verify(Channel.REST, fact);
         return new ResponseEntity<RiskResult>(result, HttpStatus.OK);
     }
@@ -67,17 +47,16 @@ public class Restful implements Receiver {
     /**
      * 执行规则验证（针对支付风控、返回finalResult以及results、调用时不需要设置Header）
      *
-     * @param factTxt
+     * @param fact
      * @return
      */
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<RiskFact> execute(@RequestBody String factTxt) {
+    public ResponseEntity<RiskFact> execute(@RequestBody RiskFact fact) {
 
         String logPrefix = "[execute]";
         SarsMonitorContext.setLogPrefix(logPrefix);
 
-        RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
         fact = handler.execute(Channel.REST, fact);
         fact.eventBody.clear();
         fact.ext.clear();
