@@ -70,7 +70,9 @@ public class RiskVerifyBiz {
 
         String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
         SarsMonitorContext.setLogPrefix(logPrefix);
-        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
+        if (channel != Channel.REST) {
+            logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
+        }
 
         // 验证EventPoint
         if (!Configs.isValidEventPoint(fact.getEventPoint())) {
