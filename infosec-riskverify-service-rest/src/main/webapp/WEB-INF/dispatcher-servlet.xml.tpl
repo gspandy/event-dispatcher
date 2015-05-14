@@ -9,15 +9,4 @@
     <context:annotation-config/>
     <mvc:annotation-driven/>
     
-    <!-- RESTful接口访问监控 -->
-    <mvc:interceptors>
-        <bean class="com.ctrip.infosec.sars.monitor.springmvc.SarsMonitorSpringMvcInterceptor">
-            <property name="urlList">
-                <util:list>
-                    <value>/**</value>
-                </util:list>
-            </property>
-        </bean>
-    </mvc:interceptors>
-    
 </beans>
