@@ -68,22 +68,22 @@ public class RiskVerifyBiz {
         fact.getExt().put(Ext.CHANNEL, channel);
         fact.getExt().put("descTimestamp", (4070880000000L - receiveTime));
 
-        String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
-        SarsMonitorContext.setLogPrefix(logPrefix);
         if (channel != Channel.REST) {
+            String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+            SarsMonitorContext.setLogPrefix(logPrefix);
             logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
         }
 
         // 验证EventPoint
         if (!Configs.isValidEventPoint(fact.getEventPoint())) {
             fact.setFinalResult(invalidEventPointResult);
-            logger.info(logPrefix + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()));
+            logger.info(SarsMonitorContext.getLogPrefix() + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()));
             return fact;
         }
 
         // 执行同步规则
         if (Configs.hasSyncRules(fact)) {
-            logger.info(logPrefix + "invoke sync rule engine ...");
+            logger.info(SarsMonitorContext.getLogPrefix() + "invoke sync rule engine ...");
             long timeout = Configs.timeoutInvokeSyncRule(fact.eventPoint);
             try {
 //                factTxt = Request.Post(url)
@@ -101,18 +101,18 @@ public class RiskVerifyBiz {
                     fact.setExt(new HashMap<String, Object>());
                 }
                 fact.getExt().put(Ext.SYNC_RULE_EXECUTED, true);
-                logger.info(logPrefix + "invoke sync rule engine ... OK");
+                logger.info(SarsMonitorContext.getLogPrefix() + "invoke sync rule engine ... OK");
 
             } catch (Exception ex) {
                 fact.setFinalResult(Configs.DEFAULT_RESULTS);
-                logger.warn(logPrefix + "invoke sync rule engine timeout or exception.", ex);
+                logger.warn(SarsMonitorContext.getLogPrefix() + "invoke sync rule engine timeout or exception.", ex);
             }
         }
 
         // 发往异步规则
         sender.convertAndSend(exchangeName, routingKey, Utils.JSON.toJSONString(fact));
 
-        logger.info(logPrefix + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()) + ", finalResultGroupByScene: " + Utils.JSON.toJSONString(fact.getFinalResultGroupByScene()));
+        logger.info(SarsMonitorContext.getLogPrefix() + "finalResult: " + Utils.JSON.toJSONString(fact.getFinalResult()) + ", finalResultGroupByScene: " + Utils.JSON.toJSONString(fact.getFinalResultGroupByScene()));
         return fact;
     }
 

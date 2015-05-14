@@ -4,6 +4,7 @@ import com.ctrip.infosec.common.model.RiskFact;
 import com.ctrip.infosec.common.model.RiskResult;
 import com.ctrip.infosec.configs.event.Channel;
 import static com.ctrip.infosec.configs.utils.Utils.JSON;
+import com.ctrip.infosec.sars.monitor.SarsMonitorContext;
 import com.ctrip.infosec.sars.monitor.util.Utils;
 import handlerImpl.Handler;
 import manager.Receiver;
@@ -37,7 +38,10 @@ public class Restful implements Receiver {
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact fact) {
-        logger.info("[verify] fact: " + Utils.JSON.toJSONString(fact));
+        String logPrefix = "[verify][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+        SarsMonitorContext.setLogPrefix(logPrefix);
+        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
+
         RiskResult result = handler.verify(Channel.REST, fact);
         return new ResponseEntity<RiskResult>(result, HttpStatus.OK);
     }
@@ -51,8 +55,12 @@ public class Restful implements Receiver {
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<RiskResult> verify(@RequestBody String factTxt) {
-        logger.info("[verify] fact: " + factTxt);
         RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
+
+        String logPrefix = "[verify][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+        SarsMonitorContext.setLogPrefix(logPrefix);
+        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
+
         RiskResult result = handler.verify(Channel.REST, fact);
         return new ResponseEntity<RiskResult>(result, HttpStatus.OK);
     }
@@ -66,8 +74,12 @@ public class Restful implements Receiver {
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<RiskFact> execute(@RequestBody String factTxt) {
-        logger.info("[execute] fact: " + factTxt);
         RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
+
+        String logPrefix = "[execute][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+        SarsMonitorContext.setLogPrefix(logPrefix);
+        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
+
         fact = handler.execute(Channel.REST, fact);
         fact.eventBody.clear();
         fact.ext.clear();
