@@ -38,9 +38,9 @@ public class Restful implements Receiver {
     @RequestMapping(value = "/riskverify", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<RiskResult> riskverify(@RequestBody RiskFact fact) {
-        String logPrefix = "[verify][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+
+        String logPrefix = "[verify]";
         SarsMonitorContext.setLogPrefix(logPrefix);
-        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
 
         RiskResult result = handler.verify(Channel.REST, fact);
         return new ResponseEntity<RiskResult>(result, HttpStatus.OK);
@@ -55,12 +55,11 @@ public class Restful implements Receiver {
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<RiskResult> verify(@RequestBody String factTxt) {
-        RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
 
-        String logPrefix = "[verify][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+        String logPrefix = "[verify]";
         SarsMonitorContext.setLogPrefix(logPrefix);
-        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
 
+        RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
         RiskResult result = handler.verify(Channel.REST, fact);
         return new ResponseEntity<RiskResult>(result, HttpStatus.OK);
     }
@@ -74,12 +73,11 @@ public class Restful implements Receiver {
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<RiskFact> execute(@RequestBody String factTxt) {
-        RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
 
-        String logPrefix = "[execute][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+        String logPrefix = "[execute]";
         SarsMonitorContext.setLogPrefix(logPrefix);
-        logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
 
+        RiskFact fact = JSON.parseObject(factTxt, RiskFact.class);
         fact = handler.execute(Channel.REST, fact);
         fact.eventBody.clear();
         fact.ext.clear();

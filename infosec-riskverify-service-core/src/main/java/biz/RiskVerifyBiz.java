@@ -68,7 +68,11 @@ public class RiskVerifyBiz {
         fact.getExt().put(Ext.CHANNEL, channel);
         fact.getExt().put("descTimestamp", (4070880000000L - receiveTime));
 
-        if (channel != Channel.REST) {
+        if (channel == Channel.REST) {
+            String logPrefix = SarsMonitorContext.getLogPrefix() + "[" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
+            SarsMonitorContext.setLogPrefix(logPrefix);
+            logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
+        } else {
             String logPrefix = "[" + channel + "][" + fact.getEventPoint() + "][" + fact.getEventId() + "] ";
             SarsMonitorContext.setLogPrefix(logPrefix);
             logger.info(logPrefix + "fact: " + Utils.JSON.toJSONString(fact));
